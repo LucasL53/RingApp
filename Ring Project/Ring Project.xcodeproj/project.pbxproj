@@ -1,0 +1,776 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D00F5852A0059D9003ECACF /* Ring_ProjectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D00F5842A0059D9003ECACF /* Ring_ProjectApp.swift */; };
+		1D00F5872A0059D9003ECACF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D00F5862A0059D9003ECACF /* ContentView.swift */; };
+		1D00F5892A0059DB003ECACF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D00F5882A0059DB003ECACF /* Assets.xcassets */; };
+		1D00F58C2A0059DB003ECACF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D00F58B2A0059DB003ECACF /* Preview Assets.xcassets */; };
+		1D00F58E2A0059DB003ECACF /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D00F58D2A0059DB003ECACF /* Persistence.swift */; };
+		1D00F5912A0059DB003ECACF /* Ring_Project.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1D00F58F2A0059DB003ECACF /* Ring_Project.xcdatamodeld */; };
+		1D00F59B2A0059DB003ECACF /* Ring_ProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D00F59A2A0059DB003ECACF /* Ring_ProjectTests.swift */; };
+		1D00F5A52A0059DB003ECACF /* Ring_ProjectUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D00F5A42A0059DB003ECACF /* Ring_ProjectUITests.swift */; };
+		1D00F5A72A0059DB003ECACF /* Ring_ProjectUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D00F5A62A0059DB003ECACF /* Ring_ProjectUITestsLaunchTests.swift */; };
+		1D0A2EBD2A045E8A00CFB3E4 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EBC2A045E8A00CFB3E4 /* CameraView.swift */; };
+		1D0A2EBF2A045E9400CFB3E4 /* ServiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */; };
+		1D0A2EC42A0461FE00CFB3E4 /* Button View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EC32A0461FE00CFB3E4 /* Button View.swift */; };
+		1D0A2EC92A0471E200CFB3E4 /* SwipeActions in Frameworks */ = {isa = PBXBuildFile; productRef = 1D0A2EC82A0471E200CFB3E4 /* SwipeActions */; };
+		1D0A2ED12A0EBE8800CFB3E4 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2ED02A0EBE8800CFB3E4 /* DataModel.swift */; };
+		1D0A2ED42A0EBED000CFB3E4 /* CachedImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2ED32A0EBED000CFB3E4 /* CachedImageManager.swift */; };
+		1D0A2ED62A0EBEE800CFB3E4 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2ED52A0EBEE800CFB3E4 /* Camera.swift */; };
+		1D0A2ED82A0EBF2800CFB3E4 /* PhotoAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2ED72A0EBF2800CFB3E4 /* PhotoAsset.swift */; };
+		1D0A2EDA2A0EBF3B00CFB3E4 /* PhotoAssetCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2ED92A0EBF3B00CFB3E4 /* PhotoAssetCollection.swift */; };
+		1D0A2EDC2A0EBF7200CFB3E4 /* PhotoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EDB2A0EBF7200CFB3E4 /* PhotoCollection.swift */; };
+		1D0A2EDE2A0EBFA300CFB3E4 /* PhotoCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EDD2A0EBFA300CFB3E4 /* PhotoCollectionView.swift */; };
+		1D0A2EE02A0EBFBF00CFB3E4 /* PhotoItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EDF2A0EBFBF00CFB3E4 /* PhotoItemView.swift */; };
+		1D0A2EE22A0EBFD400CFB3E4 /* PhotoLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EE12A0EBFD400CFB3E4 /* PhotoLibrary.swift */; };
+		1D0A2EE42A0EBFE900CFB3E4 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EE32A0EBFE900CFB3E4 /* PhotoView.swift */; };
+		1D0A2EE62A0EBFFE00CFB3E4 /* ThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EE52A0EBFFE00CFB3E4 /* ThumbnailView.swift */; };
+		1D0A2EE82A0EC01400CFB3E4 /* ViewfinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EE72A0EC01400CFB3E4 /* ViewfinderView.swift */; };
+		1D2FA2B02A17FB1200D5EC12 /* HomeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2FA2AF2A17FB1200D5EC12 /* HomeStore.swift */; };
+		1D2FA2B22A17FD3E00D5EC12 /* AccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2FA2B12A17FD3E00D5EC12 /* AccessoryView.swift */; };
+		1D2FA2B62A17FF3300D5EC12 /* ServicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2FA2B52A17FF3300D5EC12 /* ServicesView.swift */; };
+		1D2FA2B82A18002400D5EC12 /* CharacteristicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2FA2B72A18002400D5EC12 /* CharacteristicsView.swift */; };
+		1D2FA2BA2A18006F00D5EC12 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2FA2B92A18006F00D5EC12 /* HomeView.swift */; };
+		1DB264FB2A3FCAA200BC2FF8 /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1D00F5972A0059DB003ECACF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D00F5792A0059D9003ECACF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D00F5802A0059D9003ECACF;
+			remoteInfo = "Ring Project";
+		};
+		1D00F5A12A0059DB003ECACF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D00F5792A0059D9003ECACF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D00F5802A0059D9003ECACF;
+			remoteInfo = "Ring Project";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1D00F5812A0059D9003ECACF /* Ring Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ring Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D00F5842A0059D9003ECACF /* Ring_ProjectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_ProjectApp.swift; sourceTree = "<group>"; };
+		1D00F5862A0059D9003ECACF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1D00F5882A0059DB003ECACF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1D00F58B2A0059DB003ECACF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1D00F58D2A0059DB003ECACF /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		1D00F5902A0059DB003ECACF /* Ring_Project.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ring_Project.xcdatamodel; sourceTree = "<group>"; };
+		1D00F5962A0059DB003ECACF /* Ring ProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ring ProjectTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D00F59A2A0059DB003ECACF /* Ring_ProjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_ProjectTests.swift; sourceTree = "<group>"; };
+		1D00F5A02A0059DB003ECACF /* Ring ProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ring ProjectUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D00F5A42A0059DB003ECACF /* Ring_ProjectUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_ProjectUITests.swift; sourceTree = "<group>"; };
+		1D00F5A62A0059DB003ECACF /* Ring_ProjectUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_ProjectUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		1D0A2EBC2A045E8A00CFB3E4 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceModel.swift; sourceTree = "<group>"; };
+		1D0A2EC32A0461FE00CFB3E4 /* Button View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button View.swift"; sourceTree = "<group>"; };
+		1D0A2ECE2A0DB3EF00CFB3E4 /* Ring-Project-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Ring-Project-Info.plist"; sourceTree = SOURCE_ROOT; };
+		1D0A2ECF2A0DB6E900CFB3E4 /* Ring Project.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Ring Project.entitlements"; sourceTree = "<group>"; };
+		1D0A2ED02A0EBE8800CFB3E4 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
+		1D0A2ED32A0EBED000CFB3E4 /* CachedImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedImageManager.swift; sourceTree = "<group>"; };
+		1D0A2ED52A0EBEE800CFB3E4 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		1D0A2ED72A0EBF2800CFB3E4 /* PhotoAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAsset.swift; sourceTree = "<group>"; };
+		1D0A2ED92A0EBF3B00CFB3E4 /* PhotoAssetCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAssetCollection.swift; sourceTree = "<group>"; };
+		1D0A2EDB2A0EBF7200CFB3E4 /* PhotoCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollection.swift; sourceTree = "<group>"; };
+		1D0A2EDD2A0EBFA300CFB3E4 /* PhotoCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionView.swift; sourceTree = "<group>"; };
+		1D0A2EDF2A0EBFBF00CFB3E4 /* PhotoItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoItemView.swift; sourceTree = "<group>"; };
+		1D0A2EE12A0EBFD400CFB3E4 /* PhotoLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrary.swift; sourceTree = "<group>"; };
+		1D0A2EE32A0EBFE900CFB3E4 /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
+		1D0A2EE52A0EBFFE00CFB3E4 /* ThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailView.swift; sourceTree = "<group>"; };
+		1D0A2EE72A0EC01400CFB3E4 /* ViewfinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewfinderView.swift; sourceTree = "<group>"; };
+		1D2FA2AF2A17FB1200D5EC12 /* HomeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStore.swift; sourceTree = "<group>"; };
+		1D2FA2B12A17FD3E00D5EC12 /* AccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessoryView.swift; sourceTree = "<group>"; };
+		1D2FA2B52A17FF3300D5EC12 /* ServicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesView.swift; sourceTree = "<group>"; };
+		1D2FA2B72A18002400D5EC12 /* CharacteristicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicsView.swift; sourceTree = "<group>"; };
+		1D2FA2B92A18006F00D5EC12 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D00F57E2A0059D9003ECACF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D0A2EC92A0471E200CFB3E4 /* SwipeActions in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D00F5932A0059DB003ECACF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D00F59D2A0059DB003ECACF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1D00F5782A0059D9003ECACF = {
+			isa = PBXGroup;
+			children = (
+				1D00F5832A0059D9003ECACF /* Ring Project */,
+				1D00F5992A0059DB003ECACF /* Ring ProjectTests */,
+				1D00F5A32A0059DB003ECACF /* Ring ProjectUITests */,
+				1D00F5822A0059D9003ECACF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1D00F5822A0059D9003ECACF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D00F5812A0059D9003ECACF /* Ring Project.app */,
+				1D00F5962A0059DB003ECACF /* Ring ProjectTests.xctest */,
+				1D00F5A02A0059DB003ECACF /* Ring ProjectUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1D00F5832A0059D9003ECACF /* Ring Project */ = {
+			isa = PBXGroup;
+			children = (
+				1D0A2ECF2A0DB6E900CFB3E4 /* Ring Project.entitlements */,
+				1D0A2ECE2A0DB3EF00CFB3E4 /* Ring-Project-Info.plist */,
+				1D0A2EC22A0461D600CFB3E4 /* View Controller */,
+				1D0A2EC12A0461AC00CFB3E4 /* View Model */,
+				1D0A2EC02A04619200CFB3E4 /* Model */,
+				1D0A2ED22A0EBEBE00CFB3E4 /* Camera */,
+				1D2FA2AE2A17FAF900D5EC12 /* HomeKit */,
+				1D00F5882A0059DB003ECACF /* Assets.xcassets */,
+				1D00F5842A0059D9003ECACF /* Ring_ProjectApp.swift */,
+				1D00F58D2A0059DB003ECACF /* Persistence.swift */,
+				1D00F58F2A0059DB003ECACF /* Ring_Project.xcdatamodeld */,
+				1D00F58A2A0059DB003ECACF /* Preview Content */,
+			);
+			path = "Ring Project";
+			sourceTree = "<group>";
+		};
+		1D00F58A2A0059DB003ECACF /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				1D00F58B2A0059DB003ECACF /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		1D00F5992A0059DB003ECACF /* Ring ProjectTests */ = {
+			isa = PBXGroup;
+			children = (
+				1D00F59A2A0059DB003ECACF /* Ring_ProjectTests.swift */,
+			);
+			path = "Ring ProjectTests";
+			sourceTree = "<group>";
+		};
+		1D00F5A32A0059DB003ECACF /* Ring ProjectUITests */ = {
+			isa = PBXGroup;
+			children = (
+				1D00F5A42A0059DB003ECACF /* Ring_ProjectUITests.swift */,
+				1D00F5A62A0059DB003ECACF /* Ring_ProjectUITestsLaunchTests.swift */,
+			);
+			path = "Ring ProjectUITests";
+			sourceTree = "<group>";
+		};
+		1D0A2EC02A04619200CFB3E4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */,
+				1D0A2ED02A0EBE8800CFB3E4 /* DataModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		1D0A2EC12A0461AC00CFB3E4 /* View Model */ = {
+			isa = PBXGroup;
+			children = (
+				1D0A2EC32A0461FE00CFB3E4 /* Button View.swift */,
+				1D0A2EBC2A045E8A00CFB3E4 /* CameraView.swift */,
+				1D0A2EDD2A0EBFA300CFB3E4 /* PhotoCollectionView.swift */,
+				1D0A2EDF2A0EBFBF00CFB3E4 /* PhotoItemView.swift */,
+				1D0A2EE32A0EBFE900CFB3E4 /* PhotoView.swift */,
+				1D0A2EE52A0EBFFE00CFB3E4 /* ThumbnailView.swift */,
+				1D0A2EE72A0EC01400CFB3E4 /* ViewfinderView.swift */,
+				1D2FA2B92A18006F00D5EC12 /* HomeView.swift */,
+				1D2FA2B12A17FD3E00D5EC12 /* AccessoryView.swift */,
+				1D2FA2B52A17FF3300D5EC12 /* ServicesView.swift */,
+				1D2FA2B72A18002400D5EC12 /* CharacteristicsView.swift */,
+				1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */,
+			);
+			path = "View Model";
+			sourceTree = "<group>";
+		};
+		1D0A2EC22A0461D600CFB3E4 /* View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				1D00F5862A0059D9003ECACF /* ContentView.swift */,
+			);
+			path = "View Controller";
+			sourceTree = "<group>";
+		};
+		1D0A2ED22A0EBEBE00CFB3E4 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				1D0A2ED32A0EBED000CFB3E4 /* CachedImageManager.swift */,
+				1D0A2EDB2A0EBF7200CFB3E4 /* PhotoCollection.swift */,
+				1D0A2ED52A0EBEE800CFB3E4 /* Camera.swift */,
+				1D0A2ED72A0EBF2800CFB3E4 /* PhotoAsset.swift */,
+				1D0A2ED92A0EBF3B00CFB3E4 /* PhotoAssetCollection.swift */,
+				1D0A2EE12A0EBFD400CFB3E4 /* PhotoLibrary.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		1D2FA2AE2A17FAF900D5EC12 /* HomeKit */ = {
+			isa = PBXGroup;
+			children = (
+				1D2FA2AF2A17FB1200D5EC12 /* HomeStore.swift */,
+			);
+			path = HomeKit;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D00F5802A0059D9003ECACF /* Ring Project */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D00F5AA2A0059DB003ECACF /* Build configuration list for PBXNativeTarget "Ring Project" */;
+			buildPhases = (
+				1D00F57D2A0059D9003ECACF /* Sources */,
+				1D00F57E2A0059D9003ECACF /* Frameworks */,
+				1D00F57F2A0059D9003ECACF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Ring Project";
+			packageProductDependencies = (
+				1D0A2EC82A0471E200CFB3E4 /* SwipeActions */,
+			);
+			productName = "Ring Project";
+			productReference = 1D00F5812A0059D9003ECACF /* Ring Project.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1D00F5952A0059DB003ECACF /* Ring ProjectTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D00F5AD2A0059DB003ECACF /* Build configuration list for PBXNativeTarget "Ring ProjectTests" */;
+			buildPhases = (
+				1D00F5922A0059DB003ECACF /* Sources */,
+				1D00F5932A0059DB003ECACF /* Frameworks */,
+				1D00F5942A0059DB003ECACF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1D00F5982A0059DB003ECACF /* PBXTargetDependency */,
+			);
+			name = "Ring ProjectTests";
+			productName = "Ring ProjectTests";
+			productReference = 1D00F5962A0059DB003ECACF /* Ring ProjectTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		1D00F59F2A0059DB003ECACF /* Ring ProjectUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D00F5B02A0059DB003ECACF /* Build configuration list for PBXNativeTarget "Ring ProjectUITests" */;
+			buildPhases = (
+				1D00F59C2A0059DB003ECACF /* Sources */,
+				1D00F59D2A0059DB003ECACF /* Frameworks */,
+				1D00F59E2A0059DB003ECACF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1D00F5A22A0059DB003ECACF /* PBXTargetDependency */,
+			);
+			name = "Ring ProjectUITests";
+			productName = "Ring ProjectUITests";
+			productReference = 1D00F5A02A0059DB003ECACF /* Ring ProjectUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1D00F5792A0059D9003ECACF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					1D00F5802A0059D9003ECACF = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					1D00F5952A0059DB003ECACF = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 1D00F5802A0059D9003ECACF;
+					};
+					1D00F59F2A0059DB003ECACF = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 1D00F5802A0059D9003ECACF;
+					};
+				};
+			};
+			buildConfigurationList = 1D00F57C2A0059D9003ECACF /* Build configuration list for PBXProject "Ring Project" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1D00F5782A0059D9003ECACF;
+			packageReferences = (
+				1D0A2EC72A0471E200CFB3E4 /* XCRemoteSwiftPackageReference "SwipeActions" */,
+			);
+			productRefGroup = 1D00F5822A0059D9003ECACF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D00F5802A0059D9003ECACF /* Ring Project */,
+				1D00F5952A0059DB003ECACF /* Ring ProjectTests */,
+				1D00F59F2A0059DB003ECACF /* Ring ProjectUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D00F57F2A0059D9003ECACF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D00F58C2A0059DB003ECACF /* Preview Assets.xcassets in Resources */,
+				1D00F5892A0059DB003ECACF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D00F5942A0059DB003ECACF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D00F59E2A0059DB003ECACF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D00F57D2A0059D9003ECACF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D0A2EBD2A045E8A00CFB3E4 /* CameraView.swift in Sources */,
+				1D0A2EDC2A0EBF7200CFB3E4 /* PhotoCollection.swift in Sources */,
+				1D00F58E2A0059DB003ECACF /* Persistence.swift in Sources */,
+				1D0A2ED42A0EBED000CFB3E4 /* CachedImageManager.swift in Sources */,
+				1DB264FB2A3FCAA200BC2FF8 /* SelectButton.swift in Sources */,
+				1D2FA2B22A17FD3E00D5EC12 /* AccessoryView.swift in Sources */,
+				1D2FA2B02A17FB1200D5EC12 /* HomeStore.swift in Sources */,
+				1D0A2EE22A0EBFD400CFB3E4 /* PhotoLibrary.swift in Sources */,
+				1D0A2EDE2A0EBFA300CFB3E4 /* PhotoCollectionView.swift in Sources */,
+				1D0A2EE42A0EBFE900CFB3E4 /* PhotoView.swift in Sources */,
+				1D00F5872A0059D9003ECACF /* ContentView.swift in Sources */,
+				1D0A2EC42A0461FE00CFB3E4 /* Button View.swift in Sources */,
+				1D0A2EBF2A045E9400CFB3E4 /* ServiceModel.swift in Sources */,
+				1D0A2ED12A0EBE8800CFB3E4 /* DataModel.swift in Sources */,
+				1D0A2ED62A0EBEE800CFB3E4 /* Camera.swift in Sources */,
+				1D2FA2BA2A18006F00D5EC12 /* HomeView.swift in Sources */,
+				1D0A2EE82A0EC01400CFB3E4 /* ViewfinderView.swift in Sources */,
+				1D2FA2B82A18002400D5EC12 /* CharacteristicsView.swift in Sources */,
+				1D0A2EE02A0EBFBF00CFB3E4 /* PhotoItemView.swift in Sources */,
+				1D00F5852A0059D9003ECACF /* Ring_ProjectApp.swift in Sources */,
+				1D0A2ED82A0EBF2800CFB3E4 /* PhotoAsset.swift in Sources */,
+				1D0A2EDA2A0EBF3B00CFB3E4 /* PhotoAssetCollection.swift in Sources */,
+				1D2FA2B62A17FF3300D5EC12 /* ServicesView.swift in Sources */,
+				1D0A2EE62A0EBFFE00CFB3E4 /* ThumbnailView.swift in Sources */,
+				1D00F5912A0059DB003ECACF /* Ring_Project.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D00F5922A0059DB003ECACF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D00F59B2A0059DB003ECACF /* Ring_ProjectTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D00F59C2A0059DB003ECACF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D00F5A72A0059DB003ECACF /* Ring_ProjectUITestsLaunchTests.swift in Sources */,
+				1D00F5A52A0059DB003ECACF /* Ring_ProjectUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1D00F5982A0059DB003ECACF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D00F5802A0059D9003ECACF /* Ring Project */;
+			targetProxy = 1D00F5972A0059DB003ECACF /* PBXContainerItemProxy */;
+		};
+		1D00F5A22A0059DB003ECACF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D00F5802A0059D9003ECACF /* Ring Project */;
+			targetProxy = 1D00F5A12A0059DB003ECACF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1D00F5A82A0059DB003ECACF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1D00F5A92A0059DB003ECACF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1D00F5AB2A0059DB003ECACF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Ring Project/Ring Project.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Ring Project/Preview Content\"";
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Ring-Project-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "App requires access to you Camera";
+				INFOPLIST_KEY_NSHomeKitUsageDescription = "App requires access to your Home Appliances";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App will use photos of your appliances for better identification";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.BetaHomeKit.Ring-Project";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1D00F5AC2A0059DB003ECACF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Ring Project/Ring Project.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Ring Project/Preview Content\"";
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Ring-Project-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "App requires access to you Camera";
+				INFOPLIST_KEY_NSHomeKitUsageDescription = "App requires access to your Home Appliances";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App will use photos of your appliances for better identification";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.BetaHomeKit.Ring-Project";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1D00F5AE2A0059DB003ECACF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.BetaHomeKit.Ring-ProjectTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ring Project.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Ring Project";
+			};
+			name = Debug;
+		};
+		1D00F5AF2A0059DB003ECACF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.BetaHomeKit.Ring-ProjectTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ring Project.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Ring Project";
+			};
+			name = Release;
+		};
+		1D00F5B12A0059DB003ECACF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.BetaHomeKit.Ring-ProjectUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Ring Project";
+			};
+			name = Debug;
+		};
+		1D00F5B22A0059DB003ECACF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.BetaHomeKit.Ring-ProjectUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Ring Project";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D00F57C2A0059D9003ECACF /* Build configuration list for PBXProject "Ring Project" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D00F5A82A0059DB003ECACF /* Debug */,
+				1D00F5A92A0059DB003ECACF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D00F5AA2A0059DB003ECACF /* Build configuration list for PBXNativeTarget "Ring Project" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D00F5AB2A0059DB003ECACF /* Debug */,
+				1D00F5AC2A0059DB003ECACF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D00F5AD2A0059DB003ECACF /* Build configuration list for PBXNativeTarget "Ring ProjectTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D00F5AE2A0059DB003ECACF /* Debug */,
+				1D00F5AF2A0059DB003ECACF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D00F5B02A0059DB003ECACF /* Build configuration list for PBXNativeTarget "Ring ProjectUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D00F5B12A0059DB003ECACF /* Debug */,
+				1D00F5B22A0059DB003ECACF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1D0A2EC72A0471E200CFB3E4 /* XCRemoteSwiftPackageReference "SwipeActions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aheze/SwipeActions";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1D0A2EC82A0471E200CFB3E4 /* SwipeActions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1D0A2EC72A0471E200CFB3E4 /* XCRemoteSwiftPackageReference "SwipeActions" */;
+			productName = SwipeActions;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		1D00F58F2A0059DB003ECACF /* Ring_Project.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1D00F5902A0059DB003ECACF /* Ring_Project.xcdatamodel */,
+			);
+			currentVersion = 1D00F5902A0059DB003ECACF /* Ring_Project.xcdatamodel */;
+			path = Ring_Project.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 1D00F5792A0059D9003ECACF /* Project object */;
+}
