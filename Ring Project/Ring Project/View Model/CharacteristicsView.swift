@@ -12,6 +12,7 @@ struct CharacteristicsView: View {
     @State var brightnessSlider: Float = 0
     
     var body: some View {
+        Text("Opened Characteristics...")
         List {
             Section(header: HStack {
                 Text("\(model.services.first(where: {$0.uniqueIdentifier == serviceId})?.name ?? "No Service Name Found") Characteristics")
@@ -53,9 +54,7 @@ struct CharacteristicsView: View {
                     model.setCharacteristicValue(characteristicID: model.characteristics.first(where: {$0.localizedDescription == "Brightness"})?.uniqueIdentifier, value: Int(brightnessSlider))
                 }
             }
-        }.onAppear(){
-            model.findCharacteristics(serviceId: serviceId, accessoryId: accessoryId, homeId: homeId)
-            model.readCharacteristicValues(serviceId: serviceId)
-        }
+        }.onAppear(){model.findCharacteristics(serviceId: serviceId, accessoryId: accessoryId, homeId: homeId)
+                     model.readCharacteristicValues(serviceId: serviceId)}
     }
 }

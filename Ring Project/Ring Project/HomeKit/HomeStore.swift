@@ -15,6 +15,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     
     @Published var readingData: Bool = false // USE: disabling certain parts of the app's UI until the data has been successfully read and the UI has been updated.
     
+    // TODO: Would using an array of Characteristics help?
+    
     // LightBulb Characteristics
     @Published var powerState: Bool?
     @Published var hueValue: Int?
@@ -118,7 +120,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: Characteristic not found!")
             return
         }
-       readingData = true
+        readingData = true
         for characteristic in characteristicsToRead {
             characteristic.readValue(completionHandler: {_ in
                 print("DEBUG: reading characteristic value: \(characteristic.localizedDescription)")
