@@ -84,7 +84,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     }
     
     // READ/SET CHARACTERISTICS
-    
+    // TODO: also remodel this to set this characteristics
     func setCharacteristicValue(characteristicID: UUID?, value: Any) {
         guard let characteristicToWrite = characteristics.first(where: {$0.uniqueIdentifier == characteristicID}) else {
             print("ERROR: Characteristic not found!")
@@ -95,6 +95,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         })
     }
     
+    // Reading individual Characteristic to change
+    // TODO: how would I remodel this to update a characteristic
     func readCharacteristicValue(characteristicID: UUID?){
         guard let characteristicToRead = characteristics.first(where: {$0.uniqueIdentifier == characteristicID}) else {
             print("ERROR: Characteristic not found!")
@@ -115,6 +117,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         })
     }
     
+    // Reading new initial values of Charactersistics to add
+    // TODO: maybe a dictionary with key(characteristics.localizedDescription), value(characteristics.value)
     func readCharacteristicValues(serviceId: UUID){
         guard let characteristicsToRead = services.first(where: {$0.uniqueIdentifier == serviceId})?.characteristics else {
             print("ERROR: Characteristic not found!")
