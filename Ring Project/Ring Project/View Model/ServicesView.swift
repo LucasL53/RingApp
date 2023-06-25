@@ -10,12 +10,11 @@ struct ServicesView: View {
     @State private var selectedServiceId: UUID?
     
     var body: some View {
-        VStack{
+        Section(header: HStack {
+            Text("\(model.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.name ?? "No Accessory Found") Services")
+        }){
             ScrollView(.horizontal){
-                Section(header: HStack {
-                    Text("\(model.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.name ?? "No Accessory Found") Services")
-                }){
-                    HStack{
+                    HStack(spacing: 16){
                         ForEach(model.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.services ?? [], id: \.uniqueIdentifier) { service in
                             SelectButton(isSelected:
                                             Binding(
@@ -24,18 +23,21 @@ struct ServicesView: View {
                                             )
                                             , color: .blue, text: "\(service.name)")
                             .onTapGesture {
+                                // Fix bug where if Services selected but accessory changed, serviceSelected in not reset
                                 selectedService = "\(service.name)"
                                 selectedServiceId = service.uniqueIdentifier
                             }
+                            .padding()
                         }
                     }
-                }
             }.onAppear(){
                 model.findServices(accessoryId: accessoryId, homeId: homeId)
             }
-            if let selectedServiceId = selectedServiceId {
-                CharacteristicsView(serviceId: selectedServiceId, accessoryId: accessoryId, homeId: homeId, model: model)
-            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .edgesIgnoringSafeArea(.all)
+        }
+        if let selectedServiceId = selectedServiceId {
+            CharacteristicsView(serviceId: selectedServiceId, accessoryId: accessoryId, homeId: homeId, model: model)
         }
     }
 }

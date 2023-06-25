@@ -34,11 +34,13 @@ struct AccessoriesView: View {
                     .onAppear(){
                         model.findAccessories(homeId: homeId)
                     }
-                    if let selectedAccessoryId = selectedAccessoryId {
-                        ServicesView(accessoryId: selectedAccessoryId, homeId: homeId, model: model)
-                    }
+                }
+                if let selectedAccessoryId = selectedAccessoryId {
+                    ServicesView(accessoryId: selectedAccessoryId, homeId: homeId, model: model)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .edgesIgnoringSafeArea(.all)
         }
     }
 }
