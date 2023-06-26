@@ -56,5 +56,6 @@ struct CharacteristicsView: View {
             }
         }.onAppear(){model.findCharacteristics(serviceId: serviceId, accessoryId: accessoryId, homeId: homeId)
                      model.readCharacteristicValues(serviceId: serviceId)}
+        
     }
 }

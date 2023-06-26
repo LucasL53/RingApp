@@ -26,7 +26,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     // Window Characteristics
     @Published var currentPosition: Int?
     @Published var targetPosition: Int?
-    @Published var positionState: String? // This is decreasing/stop/increasing
+    @Published var positionState: Int? // This is close = 0 | opening = 1 | closing = 2
     @Published var holdPosition: Bool?
     @Published var obstructionDetected: Bool?
     // if Window Covering
@@ -36,7 +36,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     // @Published var targetVerticalTiltAngle: Int?
     
     // Lock Mechanism
-    @Published var lockCurrentState: String? // current using string to indicate Unsecured/Secured/Jammed/Unknown
+    @Published var lockCurrentState: Int? // current using string to indicate Unsecured/Secured/Jammed/Unknown
     @Published var lockTargetState: Bool? // True/False for Secured/Unsecured respectively
     
     // Speaker
@@ -144,13 +144,13 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                     self.targetPosition = characteristic.value as? Int
                 }
                 if characteristic.localizedDescription == "Position State" {
-                    self.positionState = characteristic.value as? String
+                    self.positionState = characteristic.value as? Int
                 }
                 if characteristic.localizedDescription == "Obstruction Detected" {
                     self.obstructionDetected = characteristic.value as? Bool
                 }
                 if characteristic.localizedDescription == "Lock Current State" {
-                    self.lockCurrentState = characteristic.value as? String
+                    self.lockCurrentState = characteristic.value as? Int
                 }
                 if characteristic.localizedDescription == "Lock Target State" {
                     self.lockTargetState = characteristic.value as? Bool
