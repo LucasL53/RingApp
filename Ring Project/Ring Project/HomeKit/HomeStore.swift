@@ -104,14 +104,27 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         }
         readingData = true
         characteristicToRead.readValue(completionHandler: {_ in
-            if characteristicToRead.localizedDescription == "Power State" {
+            switch characteristicToRead.localizedDescription {
+            case "Power State":
                 self.powerState = characteristicToRead.value as? Bool
-            }
-            if characteristicToRead.localizedDescription == "Hue" {
+            case "Hue":
                 self.hueValue = characteristicToRead.value as? Int
-            }
-            if characteristicToRead.localizedDescription == "Brightness" {
+            case "Brightness":
                 self.brightnessValue = characteristicToRead.value as? Int
+            case "Current Position":
+                self.currentPosition = characteristicToRead.value as? Int
+            case "Target Position":
+                self.targetPosition = characteristicToRead.value as? Int
+            case "Position State":
+                self.positionState = characteristicToRead.value as? Int
+            case "Obstruction Detected":
+                self.obstructionDetected = characteristicToRead.value as? Bool
+            case "Lock Current State":
+                self.lockCurrentState = characteristicToRead.value as? Int
+            case "Lock Target State":
+                self.lockTargetState = characteristicToRead.value as? Bool
+            default:
+                break
             }
             self.readingData = false
         })
@@ -128,32 +141,27 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         for characteristic in characteristicsToRead {
             characteristic.readValue(completionHandler: {_ in
                 print("DEBUG: reading characteristic value: \(characteristic.localizedDescription)")
-                if characteristic.localizedDescription == "Power State" {
+                switch characteristic.localizedDescription {
+                case "Power State":
                     self.powerState = characteristic.value as? Bool
-                }
-                if characteristic.localizedDescription == "Hue" {
+                case "Hue":
                     self.hueValue = characteristic.value as? Int
-                }
-                if characteristic.localizedDescription == "Brightness" {
+                case "Brightness":
                     self.brightnessValue = characteristic.value as? Int
-                }
-                if characteristic.localizedDescription == "Current Position" {
+                case "Current Position":
                     self.currentPosition = characteristic.value as? Int
-                }
-                if characteristic.localizedDescription == "Target Position" {
+                case "Target Position":
                     self.targetPosition = characteristic.value as? Int
-                }
-                if characteristic.localizedDescription == "Position State" {
+                case "Position State":
                     self.positionState = characteristic.value as? Int
-                }
-                if characteristic.localizedDescription == "Obstruction Detected" {
+                case "Obstruction Detected":
                     self.obstructionDetected = characteristic.value as? Bool
-                }
-                if characteristic.localizedDescription == "Lock Current State" {
+                case "Lock Current State":
                     self.lockCurrentState = characteristic.value as? Int
-                }
-                if characteristic.localizedDescription == "Lock Target State" {
+                case "Lock Target State":
                     self.lockTargetState = characteristic.value as? Bool
+                default:
+                    break
                 }
                 self.readingData = false
             })

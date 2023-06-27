@@ -36,8 +36,9 @@ struct ServicesView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .edgesIgnoringSafeArea(.all)
         }
-        if let selectedServiceId = selectedServiceId {
-            CharacteristicsView(serviceId: selectedServiceId, accessoryId: accessoryId, homeId: homeId, model: model)
-        }
+        CharacteristicsButtonsView()
+//        if let selectedServiceId = selectedServiceId {
+//            CharacteristicsView(serviceId: selectedServiceId, accessoryId: accessoryId, homeId: homeId, model: model)
+//        }
     }
 }

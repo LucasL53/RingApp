@@ -37,6 +37,7 @@
 		1D2FA2B62A17FF3300D5EC12 /* ServicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2FA2B52A17FF3300D5EC12 /* ServicesView.swift */; };
 		1D2FA2B82A18002400D5EC12 /* CharacteristicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2FA2B72A18002400D5EC12 /* CharacteristicsView.swift */; };
 		1D2FA2BA2A18006F00D5EC12 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D2FA2B92A18006F00D5EC12 /* HomeView.swift */; };
+		1D49B1272A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49B1262A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift */; };
 		1DB264FB2A3FCAA200BC2FF8 /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -92,6 +93,7 @@
 		1D2FA2B52A17FF3300D5EC12 /* ServicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesView.swift; sourceTree = "<group>"; };
 		1D2FA2B72A18002400D5EC12 /* CharacteristicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicsView.swift; sourceTree = "<group>"; };
 		1D2FA2B92A18006F00D5EC12 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		1D49B1262A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicsButtonsView.swift; sourceTree = "<group>"; };
 		1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -209,6 +211,7 @@
 				1D2FA2B52A17FF3300D5EC12 /* ServicesView.swift */,
 				1D2FA2B72A18002400D5EC12 /* CharacteristicsView.swift */,
 				1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */,
+				1D49B1262A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift */,
 			);
 			path = "View Model";
 			sourceTree = "<group>";
@@ -394,6 +397,7 @@
 				1D0A2ED12A0EBE8800CFB3E4 /* DataModel.swift in Sources */,
 				1D0A2ED62A0EBEE800CFB3E4 /* Camera.swift in Sources */,
 				1D2FA2BA2A18006F00D5EC12 /* HomeView.swift in Sources */,
+				1D49B1272A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift in Sources */,
 				1D0A2EE82A0EC01400CFB3E4 /* ViewfinderView.swift in Sources */,
 				1D2FA2B82A18002400D5EC12 /* CharacteristicsView.swift in Sources */,
 				1D0A2EE02A0EBFBF00CFB3E4 /* PhotoItemView.swift in Sources */,
