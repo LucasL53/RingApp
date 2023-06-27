@@ -13,7 +13,7 @@ struct ServicesView: View {
         Section(header: HStack {
             Text("\(model.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.name ?? "No Accessory Found") Services")
         }){
-            ScrollView(.horizontal){
+            
                     HStack(spacing: 16){
                         ForEach(model.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.services ?? [], id: \.uniqueIdentifier) { service in
                             SelectButton(isSelected:
@@ -29,14 +29,14 @@ struct ServicesView: View {
                             }
                             .padding()
                         }
-                    }
-            }.onAppear(){
+                    }.onAppear(){
                 model.findServices(accessoryId: accessoryId, homeId: homeId)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .edgesIgnoringSafeArea(.all)
         }
         CharacteristicsButtonsView()
+        CameraView()
 //        if let selectedServiceId = selectedServiceId {
 //            CharacteristicsView(serviceId: selectedServiceId, accessoryId: accessoryId, homeId: homeId, model: model)
 //        }
