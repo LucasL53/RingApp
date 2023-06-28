@@ -152,7 +152,6 @@
 				1D0A2EC12A0461AC00CFB3E4 /* View Model */,
 				1D0A2EC02A04619200CFB3E4 /* Model */,
 				1D0A2ED22A0EBEBE00CFB3E4 /* Camera */,
-				1D2FA2AE2A17FAF900D5EC12 /* HomeKit */,
 				1D00F5882A0059DB003ECACF /* Assets.xcassets */,
 				1D00F5842A0059D9003ECACF /* Ring_ProjectApp.swift */,
 				1D00F58D2A0059DB003ECACF /* Persistence.swift */,
@@ -190,6 +189,7 @@
 		1D0A2EC02A04619200CFB3E4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				1D2FA2AF2A17FB1200D5EC12 /* HomeStore.swift */,
 				1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */,
 				1D0A2ED02A0EBE8800CFB3E4 /* DataModel.swift */,
 			);
@@ -235,14 +235,6 @@
 				1D0A2EE12A0EBFD400CFB3E4 /* PhotoLibrary.swift */,
 			);
 			path = Camera;
-			sourceTree = "<group>";
-		};
-		1D2FA2AE2A17FAF900D5EC12 /* HomeKit */ = {
-			isa = PBXGroup;
-			children = (
-				1D2FA2AF2A17FB1200D5EC12 /* HomeStore.swift */,
-			);
-			path = HomeKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -51,6 +51,7 @@ class Camera: NSObject {
             .filter( { !$0.isSuspended } )
     }
     
+    // TODO: Set captureDevice to Ring Camera
     private var captureDevice: AVCaptureDevice? {
         didSet {
             guard let captureDevice = captureDevice else { return }
@@ -126,6 +127,7 @@ class Camera: NSObject {
         
         guard
             let captureDevice = captureDevice,
+            // TODO: First set RING camera feed here
             let deviceInput = try? AVCaptureDeviceInput(device: captureDevice)
         else {
             logger.error("Failed to obtain video input.")

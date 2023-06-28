@@ -10,43 +10,49 @@ import SwiftUI
 
 struct CharacteristicsButtonsView: View {
     var body: some View {
-        Section(header: HStack{
-            Text("Ring Actions")
-        }){
-            HStack{
-                Spacer()
-                Button(action: {
-                    findButtonAction()
-                }) {
-                    Text("Single")
-                        .frame(width: 55, height: 10)
-                }.buttonStyle(OutlinedButtonStyle())
-                Spacer()
-                Button(action: {
-                    findButtonAction()
-                }) {
-                    Text("Double")
-                        .frame(width: 55, height: 10)
-                }.buttonStyle(OutlinedButtonStyle())
-                Spacer()
-                Button(action: {
-                    findButtonAction()
-                }) {
-                    Text("Left")
-                        .frame(width: 55, height: 10)
-                }.buttonStyle(OutlinedButtonStyle())
-                Spacer()
-                Button(action: {
-                    findButtonAction()
-                }) {
-                    Text("Right")
-                        .frame(width: 55, height: 10)
+        VStack{
+            Section(header: HStack{
+                Text("Ring Actions")
+            }){
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        findButtonAction()
+                    }) {
+                        Text("Single")
+                            .frame(width: 55, height: 10)
+                    }.buttonStyle(OutlinedButtonStyle())
+                    Spacer()
+                    Button(action: {
+                        findButtonAction()
+                    }) {
+                        Text("Double")
+                            .frame(width: 55, height: 10)
+                    }.buttonStyle(OutlinedButtonStyle())
+                    Spacer()
+                    Button(action: {
+                        findButtonAction()
+                    }) {
+                        Text("Left")
+                            .frame(width: 55, height: 10)
+                    }.buttonStyle(OutlinedButtonStyle())
+                    Spacer()
+                    Button(action: {
+                        findButtonAction()
+                    }) {
+                        Text("Right")
+                            .frame(width: 55, height: 10)
+                    }
+                    .buttonStyle(OutlinedButtonStyle())
+                    
+                    
+                    Spacer()
                 }
-                .buttonStyle(OutlinedButtonStyle())
-                
-                
-                Spacer()
             }
+            Spacer()
+            CameraView()
+                .frame(minWidth: 50, maxWidth: 100, minHeight: 50, maxHeight: 100)
+                .padding()
         }
     }
 }
