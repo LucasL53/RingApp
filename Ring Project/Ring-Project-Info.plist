@@ -4,5 +4,7 @@
 <dict>
 	<key>UIBackgroundModes</key>
 	<array/>
+	<key>kTCCServiceMediaLibrary</key>
+	<string>App will require access to control volumes and media play/pause</string>
 </dict>
 </plist>
