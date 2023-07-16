@@ -162,7 +162,9 @@ class Camera: NSObject {
         self.photoOutput = photoOutput
         self.videoOutput = videoOutput
         
-        photoOutput.isHighResolutionCaptureEnabled = true
+        let photoSettings = AVCapturePhotoSettings()
+        photoSettings.maxPhotoDimensions = CMVideoDimensions(width: 4032, height: 3024) // Adjust Dimensions accordingly
+        photoOutput.capturePhoto(with: photoSettings, delegate: self)
         photoOutput.maxPhotoQualityPrioritization = .quality
         
         updateVideoOutputConnection()
@@ -312,7 +314,8 @@ class Camera: NSObject {
             
             let isFlashAvailable = self.deviceInput?.device.isFlashAvailable ?? false
             photoSettings.flashMode = isFlashAvailable ? .auto : .off
-            photoSettings.isHighResolutionPhotoEnabled = true
+            // You can adjust the width and height based on your requirement.
+            photoSettings.maxPhotoDimensions = CMVideoDimensions(width: 4032, height: 3024)
             if let previewPhotoPixelFormatType = photoSettings.availablePreviewPhotoPixelFormatTypes.first {
                 photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPhotoPixelFormatType]
             }

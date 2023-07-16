@@ -18,7 +18,6 @@
 		1D00F5A72A0059DB003ECACF /* Ring_ProjectUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D00F5A62A0059DB003ECACF /* Ring_ProjectUITestsLaunchTests.swift */; };
 		1D0A2EBD2A045E8A00CFB3E4 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EBC2A045E8A00CFB3E4 /* CameraView.swift */; };
 		1D0A2EBF2A045E9400CFB3E4 /* ServiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */; };
-		1D0A2EC42A0461FE00CFB3E4 /* Button View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2EC32A0461FE00CFB3E4 /* Button View.swift */; };
 		1D0A2EC92A0471E200CFB3E4 /* SwipeActions in Frameworks */ = {isa = PBXBuildFile; productRef = 1D0A2EC82A0471E200CFB3E4 /* SwipeActions */; };
 		1D0A2ED12A0EBE8800CFB3E4 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2ED02A0EBE8800CFB3E4 /* DataModel.swift */; };
 		1D0A2ED42A0EBED000CFB3E4 /* CachedImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A2ED32A0EBED000CFB3E4 /* CachedImageManager.swift */; };
@@ -40,6 +39,11 @@
 		1D33AC732A55F45A00B08B39 /* AirPlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D33AC722A55F45A00B08B39 /* AirPlayView.swift */; };
 		1D33AC752A577B2300B08B39 /* RoutePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D33AC742A577B2300B08B39 /* RoutePickerView.swift */; };
 		1D49B1272A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49B1262A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift */; };
+		1DA581C72A648B5300321EF1 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581C62A648B5300321EF1 /* BluetoothManager.swift */; };
+		1DA581C92A648B7700321EF1 /* BluetoothManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581C82A648B7700321EF1 /* BluetoothManagerDelegate.swift */; };
+		1DA581CB2A648B9200321EF1 /* CameraPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581CA2A648B9200321EF1 /* CameraPeripheral.swift */; };
+		1DA581CD2A648BAC00321EF1 /* CameraPeripheralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581CC2A648BAC00321EF1 /* CameraPeripheralDelegate.swift */; };
+		1DA581D52A649EF900321EF1 /* BluetoothScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581D42A649EF900321EF1 /* BluetoothScannerView.swift */; };
 		1DB264FB2A3FCAA200BC2FF8 /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -75,7 +79,6 @@
 		1D00F5A62A0059DB003ECACF /* Ring_ProjectUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_ProjectUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1D0A2EBC2A045E8A00CFB3E4 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceModel.swift; sourceTree = "<group>"; };
-		1D0A2EC32A0461FE00CFB3E4 /* Button View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button View.swift"; sourceTree = "<group>"; };
 		1D0A2ECE2A0DB3EF00CFB3E4 /* Ring-Project-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Ring-Project-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1D0A2ECF2A0DB6E900CFB3E4 /* Ring Project.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Ring Project.entitlements"; sourceTree = "<group>"; };
 		1D0A2ED02A0EBE8800CFB3E4 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
@@ -98,6 +101,11 @@
 		1D33AC722A55F45A00B08B39 /* AirPlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirPlayView.swift; sourceTree = "<group>"; };
 		1D33AC742A577B2300B08B39 /* RoutePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutePickerView.swift; sourceTree = "<group>"; };
 		1D49B1262A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicsButtonsView.swift; sourceTree = "<group>"; };
+		1DA581C62A648B5300321EF1 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		1DA581C82A648B7700321EF1 /* BluetoothManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManagerDelegate.swift; sourceTree = "<group>"; };
+		1DA581CA2A648B9200321EF1 /* CameraPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPeripheral.swift; sourceTree = "<group>"; };
+		1DA581CC2A648BAC00321EF1 /* CameraPeripheralDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPeripheralDelegate.swift; sourceTree = "<group>"; };
+		1DA581D42A649EF900321EF1 /* BluetoothScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothScannerView.swift; sourceTree = "<group>"; };
 		1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -155,7 +163,6 @@
 				1D0A2EC22A0461D600CFB3E4 /* View Controller */,
 				1D0A2EC12A0461AC00CFB3E4 /* View Model */,
 				1D0A2EC02A04619200CFB3E4 /* Model */,
-				1D0A2ED22A0EBEBE00CFB3E4 /* Camera */,
 				1D00F5882A0059DB003ECACF /* Assets.xcassets */,
 				1D00F5842A0059D9003ECACF /* Ring_ProjectApp.swift */,
 				1D00F58D2A0059DB003ECACF /* Persistence.swift */,
@@ -193,9 +200,10 @@
 		1D0A2EC02A04619200CFB3E4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				1DA581C52A648B3800321EF1 /* Bluetooth */,
+				1D0A2ED22A0EBEBE00CFB3E4 /* Camera */,
 				1D2FA2AF2A17FB1200D5EC12 /* HomeStore.swift */,
 				1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */,
-				1D0A2ED02A0EBE8800CFB3E4 /* DataModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -203,21 +211,9 @@
 		1D0A2EC12A0461AC00CFB3E4 /* View Model */ = {
 			isa = PBXGroup;
 			children = (
-				1D0A2EC32A0461FE00CFB3E4 /* Button View.swift */,
-				1D0A2EBC2A045E8A00CFB3E4 /* CameraView.swift */,
-				1D0A2EDD2A0EBFA300CFB3E4 /* PhotoCollectionView.swift */,
-				1D0A2EDF2A0EBFBF00CFB3E4 /* PhotoItemView.swift */,
-				1D0A2EE32A0EBFE900CFB3E4 /* PhotoView.swift */,
-				1D0A2EE52A0EBFFE00CFB3E4 /* ThumbnailView.swift */,
-				1D0A2EE72A0EC01400CFB3E4 /* ViewfinderView.swift */,
-				1D2FA2B92A18006F00D5EC12 /* HomeView.swift */,
-				1D2FA2B12A17FD3E00D5EC12 /* AccessoryView.swift */,
-				1D2FA2B52A17FF3300D5EC12 /* ServicesView.swift */,
-				1D2FA2B72A18002400D5EC12 /* CharacteristicsView.swift */,
-				1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */,
-				1D49B1262A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift */,
-				1D33AC722A55F45A00B08B39 /* AirPlayView.swift */,
-				1D33AC742A577B2300B08B39 /* RoutePickerView.swift */,
+				1DA581D12A64993100321EF1 /* Appliance Connection View Models */,
+				1DA581D02A64990D00321EF1 /* BLE Camera View Models */,
+				1DA581C42A648AF700321EF1 /* Camera View Models */,
 			);
 			path = "View Model";
 			sourceTree = "<group>";
@@ -233,6 +229,7 @@
 		1D0A2ED22A0EBEBE00CFB3E4 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				1D0A2ED02A0EBE8800CFB3E4 /* DataModel.swift */,
 				1D0A2ED32A0EBED000CFB3E4 /* CachedImageManager.swift */,
 				1D0A2EDB2A0EBF7200CFB3E4 /* PhotoCollection.swift */,
 				1D0A2ED52A0EBEE800CFB3E4 /* Camera.swift */,
@@ -241,6 +238,53 @@
 				1D0A2EE12A0EBFD400CFB3E4 /* PhotoLibrary.swift */,
 			);
 			path = Camera;
+			sourceTree = "<group>";
+		};
+		1DA581C42A648AF700321EF1 /* Camera View Models */ = {
+			isa = PBXGroup;
+			children = (
+				1D0A2EBC2A045E8A00CFB3E4 /* CameraView.swift */,
+				1D0A2EDD2A0EBFA300CFB3E4 /* PhotoCollectionView.swift */,
+				1D0A2EDF2A0EBFBF00CFB3E4 /* PhotoItemView.swift */,
+				1D0A2EE32A0EBFE900CFB3E4 /* PhotoView.swift */,
+				1D0A2EE52A0EBFFE00CFB3E4 /* ThumbnailView.swift */,
+				1D0A2EE72A0EC01400CFB3E4 /* ViewfinderView.swift */,
+			);
+			path = "Camera View Models";
+			sourceTree = "<group>";
+		};
+		1DA581C52A648B3800321EF1 /* Bluetooth */ = {
+			isa = PBXGroup;
+			children = (
+				1DA581C62A648B5300321EF1 /* BluetoothManager.swift */,
+				1DA581C82A648B7700321EF1 /* BluetoothManagerDelegate.swift */,
+				1DA581CA2A648B9200321EF1 /* CameraPeripheral.swift */,
+				1DA581CC2A648BAC00321EF1 /* CameraPeripheralDelegate.swift */,
+			);
+			path = Bluetooth;
+			sourceTree = "<group>";
+		};
+		1DA581D02A64990D00321EF1 /* BLE Camera View Models */ = {
+			isa = PBXGroup;
+			children = (
+				1DA581D42A649EF900321EF1 /* BluetoothScannerView.swift */,
+			);
+			path = "BLE Camera View Models";
+			sourceTree = "<group>";
+		};
+		1DA581D12A64993100321EF1 /* Appliance Connection View Models */ = {
+			isa = PBXGroup;
+			children = (
+				1D2FA2B92A18006F00D5EC12 /* HomeView.swift */,
+				1D2FA2B12A17FD3E00D5EC12 /* AccessoryView.swift */,
+				1D2FA2B52A17FF3300D5EC12 /* ServicesView.swift */,
+				1D2FA2B72A18002400D5EC12 /* CharacteristicsView.swift */,
+				1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */,
+				1D49B1262A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift */,
+				1D33AC722A55F45A00B08B39 /* AirPlayView.swift */,
+				1D33AC742A577B2300B08B39 /* RoutePickerView.swift */,
+			);
+			path = "Appliance Connection View Models";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -383,23 +427,27 @@
 				1D0A2EDC2A0EBF7200CFB3E4 /* PhotoCollection.swift in Sources */,
 				1D00F58E2A0059DB003ECACF /* Persistence.swift in Sources */,
 				1D0A2ED42A0EBED000CFB3E4 /* CachedImageManager.swift in Sources */,
+				1DA581C92A648B7700321EF1 /* BluetoothManagerDelegate.swift in Sources */,
 				1DB264FB2A3FCAA200BC2FF8 /* SelectButton.swift in Sources */,
 				1D2FA2B22A17FD3E00D5EC12 /* AccessoryView.swift in Sources */,
 				1D2FA2B02A17FB1200D5EC12 /* HomeStore.swift in Sources */,
 				1D0A2EE22A0EBFD400CFB3E4 /* PhotoLibrary.swift in Sources */,
 				1D0A2EDE2A0EBFA300CFB3E4 /* PhotoCollectionView.swift in Sources */,
 				1D0A2EE42A0EBFE900CFB3E4 /* PhotoView.swift in Sources */,
+				1DA581C72A648B5300321EF1 /* BluetoothManager.swift in Sources */,
 				1D00F5872A0059D9003ECACF /* ContentView.swift in Sources */,
-				1D0A2EC42A0461FE00CFB3E4 /* Button View.swift in Sources */,
 				1D0A2EBF2A045E9400CFB3E4 /* ServiceModel.swift in Sources */,
 				1D0A2ED12A0EBE8800CFB3E4 /* DataModel.swift in Sources */,
 				1D0A2ED62A0EBEE800CFB3E4 /* Camera.swift in Sources */,
+				1DA581D52A649EF900321EF1 /* BluetoothScannerView.swift in Sources */,
 				1D2FA2BA2A18006F00D5EC12 /* HomeView.swift in Sources */,
 				1D33AC752A577B2300B08B39 /* RoutePickerView.swift in Sources */,
+				1DA581CB2A648B9200321EF1 /* CameraPeripheral.swift in Sources */,
 				1D49B1272A4B6C1100BEBB26 /* CharacteristicsButtonsView.swift in Sources */,
 				1D33AC732A55F45A00B08B39 /* AirPlayView.swift in Sources */,
 				1D0A2EE82A0EC01400CFB3E4 /* ViewfinderView.swift in Sources */,
 				1D2FA2B82A18002400D5EC12 /* CharacteristicsView.swift in Sources */,
+				1DA581CD2A648BAC00321EF1 /* CameraPeripheralDelegate.swift in Sources */,
 				1D0A2EE02A0EBFBF00CFB3E4 /* PhotoItemView.swift in Sources */,
 				1D00F5852A0059D9003ECACF /* Ring_ProjectApp.swift in Sources */,
 				1D0A2ED82A0EBF2800CFB3E4 /* PhotoAsset.swift in Sources */,
@@ -570,13 +618,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Ring-Project-Info.plist";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App requires Bluetooth to be always on";
 				INFOPLIST_KEY_NSCameraUsageDescription = "App requires access to you Camera";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "App requires access to your Home Appliances";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App will use photos of your appliances for better identification";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -605,13 +653,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Ring-Project-Info.plist";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App requires Bluetooth to be always on";
 				INFOPLIST_KEY_NSCameraUsageDescription = "App requires access to you Camera";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "App requires access to your Home Appliances";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App will use photos of your appliances for better identification";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (

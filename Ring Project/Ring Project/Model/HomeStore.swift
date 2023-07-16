@@ -15,8 +15,6 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     
     @Published var readingData: Bool = false // USE: disabling certain parts of the app's UI until the data has been successfully read and the UI has been updated.
     
-    // TODO: Would using an array of Characteristics help?
-    
     // LightBulb Characteristics
     @Published var powerState: Bool?
     @Published var hueValue: Int?
@@ -66,6 +64,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Accessory not found!")
             return
         }
+        print(devices)
         accessories = devices
     }
     func findServices(accessoryId: UUID, homeId: UUID){
@@ -73,13 +72,15 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Services found!")
             return
         }
+        print(accessoryServices)
         services = accessoryServices
     }
     func findCharacteristics(serviceId: UUID, accessoryId: UUID, homeId: UUID){
         guard let serviceCharacteristics = homes.first(where: {$0.uniqueIdentifier == homeId})?.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.services.first(where: {$0.uniqueIdentifier == serviceId})?.characteristics else {
-            print("ERROR: No Services found!")
+            print("ERROR: No Characteristics found!")
             return
         }
+        print(serviceCharacteristics)
         characteristics = serviceCharacteristics
     }
     

@@ -9,6 +9,11 @@ import SwiftUI
 //import HomeKit
 
 struct CharacteristicsButtonsView: View {
+    @Binding var serviceId: UUID
+    var accessoryId: UUID
+    var homeId: UUID
+    @ObservedObject var model: HomeStore
+    
     var body: some View {
         VStack{
             Section(header: HStack{
@@ -17,28 +22,28 @@ struct CharacteristicsButtonsView: View {
                 HStack{
                     Spacer()
                     Button(action: {
-                        findButtonAction()
+                        findButtonAction(action: "Single")
                     }) {
                         Text("Single")
                             .frame(width: 55, height: 10)
                     }.buttonStyle(OutlinedButtonStyle())
                     Spacer()
                     Button(action: {
-                        findButtonAction()
+                        findButtonAction(action: "Double")
                     }) {
                         Text("Double")
                             .frame(width: 55, height: 10)
                     }.buttonStyle(OutlinedButtonStyle())
                     Spacer()
                     Button(action: {
-                        findButtonAction()
+                        findButtonAction(action: "Left")
                     }) {
                         Text("Left")
                             .frame(width: 55, height: 10)
                     }.buttonStyle(OutlinedButtonStyle())
                     Spacer()
                     Button(action: {
-                        findButtonAction()
+                        findButtonAction(action: "Right")
                     }) {
                         Text("Right")
                             .frame(width: 55, height: 10)
@@ -50,15 +55,13 @@ struct CharacteristicsButtonsView: View {
                 }
             }
             Spacer()
-            CameraView()
-                .frame(minWidth: 50, maxWidth: 100, minHeight: 50, maxHeight: 100)
-                .padding()
+            CharacteristicsView(serviceId: serviceId, accessoryId: accessoryId, homeId: homeId, model: model)
         }
     }
 }
 
-func findButtonAction(){
-    print("hello world")
+func findButtonAction(action: String){
+    
 }
 
 struct OutlinedButtonStyle: ButtonStyle {
@@ -75,8 +78,8 @@ struct OutlinedButtonStyle: ButtonStyle {
 }
 
 
-struct CharacteristicsButtonsView_Previews: PreviewProvider {
-    static var previews: some View {
-            CharacteristicsButtonsView()
-    }
-}
+//struct CharacteristicsButtonsView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        CharacteristicsButtonsView(serviceId: <#UUID#>, accessoryId: <#UUID#>, homeId: <#UUID#>, model: <#HomeStore#>)
+//    }
+//}
