@@ -44,6 +44,7 @@
 		1DA581CB2A648B9200321EF1 /* CameraPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581CA2A648B9200321EF1 /* CameraPeripheral.swift */; };
 		1DA581CD2A648BAC00321EF1 /* CameraPeripheralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581CC2A648BAC00321EF1 /* CameraPeripheralDelegate.swift */; };
 		1DA581D52A649EF900321EF1 /* BluetoothScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581D42A649EF900321EF1 /* BluetoothScannerView.swift */; };
+		1DA581D82A64BC9800321EF1 /* CameraControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581D72A64BC9800321EF1 /* CameraControlView.swift */; };
 		1DB264FB2A3FCAA200BC2FF8 /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +107,7 @@
 		1DA581CA2A648B9200321EF1 /* CameraPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPeripheral.swift; sourceTree = "<group>"; };
 		1DA581CC2A648BAC00321EF1 /* CameraPeripheralDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPeripheralDelegate.swift; sourceTree = "<group>"; };
 		1DA581D42A649EF900321EF1 /* BluetoothScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothScannerView.swift; sourceTree = "<group>"; };
+		1DA581D72A64BC9800321EF1 /* CameraControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlView.swift; sourceTree = "<group>"; };
 		1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -200,10 +202,9 @@
 		1D0A2EC02A04619200CFB3E4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				1DA581D62A64A5D900321EF1 /* HomeKit */,
 				1DA581C52A648B3800321EF1 /* Bluetooth */,
 				1D0A2ED22A0EBEBE00CFB3E4 /* Camera */,
-				1D2FA2AF2A17FB1200D5EC12 /* HomeStore.swift */,
-				1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -268,6 +269,7 @@
 			isa = PBXGroup;
 			children = (
 				1DA581D42A649EF900321EF1 /* BluetoothScannerView.swift */,
+				1DA581D72A64BC9800321EF1 /* CameraControlView.swift */,
 			);
 			path = "BLE Camera View Models";
 			sourceTree = "<group>";
@@ -285,6 +287,15 @@
 				1D33AC742A577B2300B08B39 /* RoutePickerView.swift */,
 			);
 			path = "Appliance Connection View Models";
+			sourceTree = "<group>";
+		};
+		1DA581D62A64A5D900321EF1 /* HomeKit */ = {
+			isa = PBXGroup;
+			children = (
+				1D2FA2AF2A17FB1200D5EC12 /* HomeStore.swift */,
+				1D0A2EBE2A045E9400CFB3E4 /* ServiceModel.swift */,
+			);
+			path = HomeKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -452,6 +463,7 @@
 				1D00F5852A0059D9003ECACF /* Ring_ProjectApp.swift in Sources */,
 				1D0A2ED82A0EBF2800CFB3E4 /* PhotoAsset.swift in Sources */,
 				1D0A2EDA2A0EBF3B00CFB3E4 /* PhotoAssetCollection.swift in Sources */,
+				1DA581D82A64BC9800321EF1 /* CameraControlView.swift in Sources */,
 				1D2FA2B62A17FF3300D5EC12 /* ServicesView.swift in Sources */,
 				1D0A2EE62A0EBFFE00CFB3E4 /* ThumbnailView.swift in Sources */,
 				1D00F5912A0059DB003ECACF /* Ring_Project.xcdatamodeld in Sources */,

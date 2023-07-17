@@ -9,7 +9,7 @@ import UIKit
 import CoreBluetooth
 
 
-class BluetoothManager: NSObject, CBCentralManagerDelegate {
+class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
 
     //MARK: - Properties
     let centralManager   : CBCentralManager
