@@ -17,6 +17,7 @@ struct CameraControlView: View {
     @State private var isDeviceConnected = false;
     @State private var showAlert = false;
     @State private var imageData : UIImage?
+    @State private var bluetoothStatus: String = "Bluetooth Off"
     var body: some View {
         ZStack (alignment: .topLeading) {
             Image(uiImage: imageData ?? UIImage(ciImage: .black))
@@ -26,7 +27,7 @@ struct CameraControlView: View {
             Button(action: {
                 setup()
             }){
-                Text("Bluetooth")
+                Text(bluetoothStatus)
             }
             .padding(10)
             .background(Color.blue)
@@ -50,6 +51,7 @@ struct CameraControlView: View {
                         print("Error finding peripheral")
                     }
                     bluetoothManager.connect(peripheral: self.targetPeripheral!)
+                    bluetoothStatus = "Bluetooth On"
                 }
             })
         }
@@ -62,31 +64,40 @@ struct CameraControlView: View {
 
 extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate {
     func cameraPeripheralDidBecomeReady(_ aPeripheral: CameraPeripheral) {
-        <#code#>
+        aPeripheral.enableNotifications()
     }
     
     func cameraPeripheralNotSupported(_ aPeripheral: CameraPeripheral) {
-        <#code#>
+        print("Not supported Camera")
     }
     
     func cameraPeripheralDidStart(_ aPeripheral: CameraPeripheral) {
-        <#code#>
+        aPeripheral.getBleParameters()
     }
     
     func cameraPeripheral(_ aPeripheral: CameraPeripheral, failedWithError error: Error) {
-        <#code#>
+        print("failed with error")
     }
     
     func cameraPeripheral(_ aPeripheral: CameraPeripheral, didReceiveImageData someData: Data, withFps fps: Double) {
-        <#code#>
+        if let someImage = UIImage(data: someData) {
+            imageData = someImage
+        }
     }
     
     func cameraPeripheral(_ aPeripheral: CameraPeripheral, imageProgress: Float, transferRateInKbps: Double) {
-        <#code#>
+        print("loading...")
     }
     
     func cameraPeripheral(_ aPeripheral: CameraPeripheral, didUpdateParametersWithMTUSize mtuSize: UInt16, connectionInterval connInterval: Float, txPhy: PhyType, andRxPhy rxPhy: PhyType) {
-        <#code#>
+        if rxPhy == .phyLE1M && currentPhy == .phyLE2M {
+            print("2mbps not supported")
+            currentPhy = .phyLE1M
+        }
+        if rxPhy == .phyLE2M && currentPhy == .phyLE1M {
+            print("Changing back to PHY LE 1M not supported")
+            currentPhy = .phyLE2M
+        }
     }
     
     func bluetoothManager(_ aManager: BluetoothManager, didUpdateState state: CBManagerState) {
