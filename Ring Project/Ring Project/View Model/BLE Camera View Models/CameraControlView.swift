@@ -10,7 +10,7 @@ import CoreBluetooth
 
 struct CameraControlView: View {
     @ObservedObject var bluetoothManager: BluetoothManager
-    @State private var targetPeripheral: CameraPeripheral?
+    @State private var cameraPeripheral: CameraPeripheral?
     @State private var isStreaming       : Bool              = false
     @State private var currentResolution : ImageResolution   = .resolution160x120
     @State private var currentPhy        : PhyType           = .phyLE1M
@@ -45,18 +45,22 @@ struct CameraControlView: View {
     func setup() {
         if (!isDeviceConnected) {
             bluetoothManager.scanForPeripherals(withDiscoveryHandler: { (aPeripheral, RSSI) in
-                if (aPeripheral.name == "Test" && targetPeripheral == nil) {
-                    self.targetPeripheral = CameraPeripheral(withPeripheral: aPeripheral)
-                    if (self.targetPeripheral == nil) {
+                if (aPeripheral.name == "Test" && cameraPeripheral == nil) {
+                    self.cameraPeripheral = CameraPeripheral(withPeripheral: aPeripheral)
+                    if (self.cameraPeripheral == nil) {
                         print("Error finding peripheral")
+                        return
                     }
-                    bluetoothManager.connect(peripheral: self.targetPeripheral!)
+                    self.cameraPeripheral?.delegate = self
+                    bluetoothManager.connect(peripheral: self.cameraPeripheral!)
+                    self.cameraPeripheralDidBecomeReady(self.cameraPeripheral!)
+                    self.cameraPeripheral?.startStream()
                     bluetoothStatus = "Bluetooth On"
                 }
             })
         }
         else {
-            targetPeripheral?.stopStream()
+            cameraPeripheral?.stopStream()
             bluetoothManager.disconnect()
         }
     }
@@ -80,6 +84,7 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
     }
     
     func cameraPeripheral(_ aPeripheral: CameraPeripheral, didReceiveImageData someData: Data, withFps fps: Double) {
+        print("image data received")
         if let someImage = UIImage(data: someData) {
             imageData = someImage
         }
@@ -103,8 +108,8 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
     func bluetoothManager(_ aManager: BluetoothManager, didUpdateState state: CBManagerState) {
         if state != .poweredOn {
             print("Bluetooth Not On")
-            if (targetPeripheral != nil) {
-                bluetoothManager(aManager, didDisconnectPeripheral: targetPeripheral!)
+            if (cameraPeripheral != nil) {
+                bluetoothManager(aManager, didDisconnectPeripheral: cameraPeripheral!)
             }
         }
     }

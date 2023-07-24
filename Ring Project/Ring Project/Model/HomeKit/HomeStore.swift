@@ -64,7 +64,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Accessory not found!")
             return
         }
-        print(devices)
+//        print(devices)
         accessories = devices
     }
     func findServices(accessoryId: UUID, homeId: UUID){
@@ -72,7 +72,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Services found!")
             return
         }
-        print(accessoryServices)
+//        print(accessoryServices)
         services = accessoryServices
     }
     func findCharacteristics(serviceId: UUID, accessoryId: UUID, homeId: UUID){
@@ -80,7 +80,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Characteristics found!")
             return
         }
-        print(serviceCharacteristics)
+//        print(serviceCharacteristics)
         characteristics = serviceCharacteristics
     }
     

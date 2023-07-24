@@ -13,7 +13,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
 
     //MARK: - Properties
     let centralManager   : CBCentralManager
-    @Published var targetPeripheral : CameraPeripheral?
+    var targetPeripheral : CameraPeripheral?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var delegate         : BluetoothManagerDelegate?
     
