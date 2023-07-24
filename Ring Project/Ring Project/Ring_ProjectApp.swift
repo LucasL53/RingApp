@@ -13,7 +13,7 @@ struct Ring_ProjectApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(model: HomeStore())// Fix This
+            ContentView(model: HomeStore(), blemanager: BluetoothManager())// Fix This
 //                .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

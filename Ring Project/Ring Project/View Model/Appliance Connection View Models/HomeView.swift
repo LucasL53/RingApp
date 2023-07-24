@@ -12,6 +12,7 @@ struct HomeView: View {
     
     @State private var path = NavigationPath()
     @ObservedObject var model: HomeStore
+    @ObservedObject var blemanager: BluetoothManager
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -23,7 +24,7 @@ struct HomeView: View {
                                 NavigationLink(value: home){
                                     Text("\(home.name)")
                                 }.navigationDestination(for: HMHome.self){
-                                    AccessoriesView(homeId: $0.uniqueIdentifier, model: model)
+                                    AccessoriesView(homeId: $0.uniqueIdentifier, model: model, blemanager: blemanager)
                                 }
                             }
                         }

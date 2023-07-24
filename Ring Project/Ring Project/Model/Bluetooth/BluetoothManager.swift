@@ -13,9 +13,10 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
 
     //MARK: - Properties
     let centralManager   : CBCentralManager
-    var targetPeripheral : CameraPeripheral?
+    @Published var targetPeripheral : CameraPeripheral?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var delegate         : BluetoothManagerDelegate?
+    
 
     required override init() {
         centralManager = CBCentralManager()

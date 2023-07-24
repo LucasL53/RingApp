@@ -68,7 +68,7 @@ enum PhyType: UInt8 {
     }
 }
 
-class CameraPeripheral: NSObject, CBPeripheralDelegate, ObservableObject, Identifiable {
+class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
     //MARK: - Service Identifiers
     public static let imageServiceUUID            = CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA3E")
     public static let imageRXCharacteristicUUID   = CBUUID(string: "6E400002-B5A3-F393-E0A9-E50E24DCCA3E")
@@ -76,8 +76,8 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, ObservableObject, Identi
     public static let imageInfoCharacteristicUUID = CBUUID(string: "6E400004-B5A3-F393-E0A9-E50E24DCCA3E")
     
     //MARK: - Properties
-    @Published var targetPeripheral        : CBPeripheral
-    @Published var delegate                : CameraPeripheralDelegate?
+    var targetPeripheral                : CBPeripheral
+    var delegate                        : CameraPeripheralDelegate?
     private var imageInfoCharacteristic : CBCharacteristic!
     private var imageRXCharacteristic   : CBCharacteristic!
     private var imageTXCharacteristic   : CBCharacteristic!

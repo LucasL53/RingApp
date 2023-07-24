@@ -5,12 +5,14 @@ struct AccessoriesView: View {
     
     var homeId: UUID
     @ObservedObject var model: HomeStore
+    @ObservedObject var blemanager: BluetoothManager
     @State private var selectedAccessory: String?
     @State private var selectedAccessoryId: UUID?
 
     var body: some View {
         ZStack{
             ScrollView{
+                CameraControlView(bluetoothManager: blemanager)
                 Section(header: Text("My Accessories")){
                     VStack{
                         ScrollView(.horizontal){

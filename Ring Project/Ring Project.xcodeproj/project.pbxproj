@@ -45,6 +45,7 @@
 		1DA581CD2A648BAC00321EF1 /* CameraPeripheralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581CC2A648BAC00321EF1 /* CameraPeripheralDelegate.swift */; };
 		1DA581D52A649EF900321EF1 /* BluetoothScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581D42A649EF900321EF1 /* BluetoothScannerView.swift */; };
 		1DA581D82A64BC9800321EF1 /* CameraControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581D72A64BC9800321EF1 /* CameraControlView.swift */; };
+		1DA581DA2A6DE52D00321EF1 /* BluetoothController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA581D92A6DE52D00321EF1 /* BluetoothController.swift */; };
 		1DB264FB2A3FCAA200BC2FF8 /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -108,6 +109,7 @@
 		1DA581CC2A648BAC00321EF1 /* CameraPeripheralDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPeripheralDelegate.swift; sourceTree = "<group>"; };
 		1DA581D42A649EF900321EF1 /* BluetoothScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothScannerView.swift; sourceTree = "<group>"; };
 		1DA581D72A64BC9800321EF1 /* CameraControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlView.swift; sourceTree = "<group>"; };
+		1DA581D92A6DE52D00321EF1 /* BluetoothController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothController.swift; sourceTree = "<group>"; };
 		1DB264FA2A3FCAA200BC2FF8 /* SelectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -223,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				1D00F5862A0059D9003ECACF /* ContentView.swift */,
+				1DA581D92A6DE52D00321EF1 /* BluetoothController.swift */,
 			);
 			path = "View Controller";
 			sourceTree = "<group>";
@@ -365,7 +368,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					1D00F5802A0059D9003ECACF = {
 						CreatedOnToolsVersion = 14.2;
@@ -436,6 +439,7 @@
 			files = (
 				1D0A2EBD2A045E8A00CFB3E4 /* CameraView.swift in Sources */,
 				1D0A2EDC2A0EBF7200CFB3E4 /* PhotoCollection.swift in Sources */,
+				1DA581DA2A6DE52D00321EF1 /* BluetoothController.swift in Sources */,
 				1D00F58E2A0059DB003ECACF /* Persistence.swift in Sources */,
 				1D0A2ED42A0EBED000CFB3E4 /* CachedImageManager.swift in Sources */,
 				1DA581C92A648B7700321EF1 /* BluetoothManagerDelegate.swift in Sources */,
@@ -637,6 +641,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -672,6 +678,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
