@@ -70,10 +70,17 @@ enum PhyType: UInt8 {
 
 class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
     //MARK: - Service Identifiers
-    public static let imageServiceUUID            = CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA3E")
-    public static let imageRXCharacteristicUUID   = CBUUID(string: "6E400002-B5A3-F393-E0A9-E50E24DCCA3E")
-    public static let imageTXCharacteristicUUID   = CBUUID(string: "6E400003-B5A3-F393-E0A9-E50E24DCCA3E")
-    public static let imageInfoCharacteristicUUID = CBUUID(string: "6E400004-B5A3-F393-E0A9-E50E24DCCA3E")
+//    public static let imageServiceUUID            = CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA3E")
+//    public static let imageRXCharacteristicUUID   = CBUUID(string: "6E400002-B5A3-F393-E0A9-E50E24DCCA3E")
+//    public static let imageTXCharacteristicUUID   = CBUUID(string: "6E400003-B5A3-F393-E0A9-E50E24DCCA3E")
+//    public static let imageInfoCharacteristicUUID = CBUUID(string: "6E400004-B5A3-F393-E0A9-E50E24DCCA3E")
+    
+    public static let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3246970")
+    public static let cameraDataCharUUID          = CBUUID(string: "47ea1402-a0e4-554e-5282-0afcd3246970")
+    public static let controlCharUUID             = CBUUID(string: "47ea1403-a0e4-554e-5282-0afcd3246970")
+    
+    //MARK: - Banji ID
+    public static let banjiTimeSyncValue: UInt8 = 0xB1
     
     //MARK: - Properties
     var targetPeripheral                : CBPeripheral

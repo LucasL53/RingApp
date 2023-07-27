@@ -19,12 +19,13 @@ struct CameraControlView: View {
     @State private var imageData : UIImage?
     @State private var bluetoothStatus: String = "Bluetooth Off"
     var body: some View {
-        ZStack (alignment: .topLeading) {
+        VStack () {
             Image(uiImage: imageData ?? UIImage(ciImage: .black))
                 .frame(width: 100, height: 50)
                 .padding()
                 .background(.gray)
             Button(action: {
+                print("setting up camera")
                 setup()
             }){
                 Text(bluetoothStatus)
@@ -43,23 +44,20 @@ struct CameraControlView: View {
     }
     
     func setup() {
+        print("function works")
         if (!isDeviceConnected) {
-            bluetoothManager.scanForPeripherals(withDiscoveryHandler: { (aPeripheral, RSSI) in
-                if (aPeripheral.name == "Test" && cameraPeripheral == nil) {
-                    self.cameraPeripheral = CameraPeripheral(withPeripheral: aPeripheral)
-                    if (self.cameraPeripheral == nil) {
-                        print("Error finding peripheral")
-                        return
-                    }
-                    self.cameraPeripheral?.delegate = self
-                    bluetoothManager.connect(peripheral: self.cameraPeripheral!)
-                    self.cameraPeripheralDidBecomeReady(self.cameraPeripheral!)
-                    self.cameraPeripheral?.startStream()
-                    bluetoothStatus = "Bluetooth On"
-                }
-            })
+            cameraPeripheral = bluetoothManager.targetPeripheral
+            if (cameraPeripheral?.targetPeripheral.name != "banji" || cameraPeripheral == nil) {
+                print("No banji found")
+                return
+            }
+            cameraPeripheral?.delegate = self
+//            cameraPeripheralDidBecomeReady(cameraPeripheral!) // this was called in CameraPeripheral class
+            isDeviceConnected = true
         }
         else {
+            print("Device disconnecting")
+            isDeviceConnected = false
             cameraPeripheral?.stopStream()
             bluetoothManager.disconnect()
         }
@@ -68,6 +66,7 @@ struct CameraControlView: View {
 
 extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate {
     func cameraPeripheralDidBecomeReady(_ aPeripheral: CameraPeripheral) {
+        print("Enabling Notification")
         aPeripheral.enableNotifications()
     }
     
@@ -111,6 +110,22 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
             if (cameraPeripheral != nil) {
                 bluetoothManager(aManager, didDisconnectPeripheral: cameraPeripheral!)
             }
+        } else {
+            bluetoothManager.scanForPeripherals(withDiscoveryHandler: { (aPeripheral, RSSI) in
+                print("searching...")
+                if (aPeripheral.name == "banji" && cameraPeripheral == nil) {
+                    self.cameraPeripheral = CameraPeripheral(withPeripheral: aPeripheral)
+                    if (self.cameraPeripheral == nil) {
+                        print("Error finding peripheral")
+                        return
+                    }
+                    self.cameraPeripheral?.delegate = self
+                    bluetoothManager.connect(peripheral: self.cameraPeripheral!)
+                    self.cameraPeripheralDidBecomeReady(self.cameraPeripheral!)
+                    self.cameraPeripheral?.startStream()
+                    bluetoothStatus = "Bluetooth On"
+                }
+            })
         }
     }
     

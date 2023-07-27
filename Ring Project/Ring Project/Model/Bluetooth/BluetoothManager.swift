@@ -13,7 +13,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
 
     //MARK: - Properties
     let centralManager   : CBCentralManager
-    var targetPeripheral : CameraPeripheral?
+    @Published var targetPeripheral : CameraPeripheral?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var delegate         : BluetoothManagerDelegate?
     
@@ -31,8 +31,10 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
     }
 
     public func scanForPeripherals(withDiscoveryHandler aHandler: @escaping (CBPeripheral, NSNumber)->()) {
+        print("scan for peripherals ran")
         guard centralManager.isScanning == false else {
-            return
+            print("guard let passed")
+            return // Return early if already scanning
         }
 
         discoveryHandler = aHandler
@@ -88,7 +90,13 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        discoveryHandler?(peripheral, RSSI)
+        if let pname = peripheral.name {
+            print("Discovered " + pname)
+            if (pname == "banji") {
+                targetPeripheral = CameraPeripheral(withPeripheral: peripheral)
+                self.centralManager.connect(peripheral, options: nil)
+            }
+        }
     }
 }
 
