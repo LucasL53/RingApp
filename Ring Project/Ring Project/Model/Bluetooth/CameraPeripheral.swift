@@ -290,11 +290,8 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
         } else if characteristic == cameraDataCharacteristics {
             
             value.withUnsafeBytes{ (bufferRawBufferPointer) -> Void in
-                
                 let bufferPointerUInt8 = UnsafeBufferPointer<UInt8>.init(start: bufferRawBufferPointer.baseAddress!.bindMemory(to: UInt8.self, capacity: 1), count: packetLength)
-                
                 let sequenceNumberBytes : [UInt8] = [bufferRawBufferPointer[1], bufferRawBufferPointer[0]]
-                
                 let actualSequenceNumber = sequenceNumberBytes.withUnsafeBytes{$0.load(as: UInt16.self)}
                 
                 if (peripheral.identifier == self.targetPeripheral.identifier) {

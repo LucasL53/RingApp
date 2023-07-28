@@ -52,12 +52,6 @@ struct BluetoothScannerView: View {
         if isScanning {
             peripherals.removeAll()
         }
-
-        isScanning = true
-        bluetoothManager.scanForPeripherals(withDiscoveryHandler: { (aPeripheral, RSSI) in
-            let cameraPeripheral = CameraPeripheral(withPeripheral: aPeripheral)
-            peripherals.append(cameraPeripheral)
-        })
     }
 
     private func stopScan() {

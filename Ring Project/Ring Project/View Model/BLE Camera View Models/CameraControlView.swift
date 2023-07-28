@@ -111,21 +111,7 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
                 bluetoothManager(aManager, didDisconnectPeripheral: cameraPeripheral!)
             }
         } else {
-            bluetoothManager.scanForPeripherals(withDiscoveryHandler: { (aPeripheral, RSSI) in
-                print("searching...")
-                if (aPeripheral.name == "banji" && cameraPeripheral == nil) {
-                    self.cameraPeripheral = CameraPeripheral(withPeripheral: aPeripheral)
-                    if (self.cameraPeripheral == nil) {
-                        print("Error finding peripheral")
-                        return
-                    }
-                    self.cameraPeripheral?.delegate = self
-                    bluetoothManager.connect(peripheral: self.cameraPeripheral!)
-                    self.cameraPeripheralDidBecomeReady(self.cameraPeripheral!)
-                    self.cameraPeripheral?.startStream()
-                    bluetoothStatus = "Bluetooth On"
-                }
-            })
+            bluetoothManager.scanForPeripherals()
         }
     }
     

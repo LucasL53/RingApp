@@ -9,10 +9,11 @@ import UIKit
 import CoreBluetooth
 
 
-class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
+class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate , ObservableObject {
 
     //MARK: - Properties
     let centralManager   : CBCentralManager
+    var banji            : CBPeripheral!
     @Published var targetPeripheral : CameraPeripheral?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var delegate         : BluetoothManagerDelegate?
@@ -31,15 +32,13 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
         app.open(url!, options: [:], completionHandler: nil)
     }
 
-    public func scanForPeripherals(withDiscoveryHandler aHandler: @escaping (CBPeripheral, NSNumber)->()) {
+    public func scanForPeripherals() {
         print("scan for peripherals ran")
-        guard centralManager.isScanning == false else {
-            print("guard let passed")
-            return // Return early if already scanning
-        }
-
-        discoveryHandler = aHandler
-        centralManager.scanForPeripherals(withServices: [CameraPeripheral.banjiServiceUUID], options: nil)
+//        guard centralManager.isScanning == false else {
+//            print("guard let passed")
+//            return // Return early if already scanning
+//        }
+        centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
     
     public func stopScan() {
@@ -77,6 +76,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        peripheral.discoverServices(nil) // what are we looking for here
+        print("Connected with banji \(peripheral.identifier)")
         delegate?.bluetoothManager(self, didConnectPeripheral: targetPeripheral!)
     }
 
@@ -87,6 +88,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         connectionIntervalUpdated = (connectionIntervalUpdated > 0) ? (connectionIntervalUpdated - 1) : 0
+        print("Connected with banji \(peripheral.identifier)")
         delegate?.bluetoothManager(self, didDisconnectPeripheral: targetPeripheral!)
         targetPeripheral = nil
     }
@@ -95,7 +97,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
         if let pname = peripheral.name {
             print("Discovered " + pname)
             if (pname == "banji") {
-                targetPeripheral = CameraPeripheral(withPeripheral: peripheral)
+                self.banji = peripheral
+                self.targetPeripheral = CameraPeripheral(withPeripheral: self.banji)
+                self.banji.delegate = self
                 self.centralManager.connect(peripheral, options: nil)
             }
         }
