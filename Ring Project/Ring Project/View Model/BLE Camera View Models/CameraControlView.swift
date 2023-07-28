@@ -75,7 +75,7 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
     }
     
     func cameraPeripheralDidStart(_ aPeripheral: CameraPeripheral) {
-        aPeripheral.getBleParameters()
+        aPeripheral.startStream()
     }
     
     func cameraPeripheral(_ aPeripheral: CameraPeripheral, failedWithError error: Error) {
@@ -135,6 +135,7 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
     }
     
     func bluetoothManager(_ aManager: BluetoothManager, didDisconnectPeripheral aPeripheral: CameraPeripheral) {
+        print("Disconnected banji")
         isDeviceConnected = false;
         showAlert = true;
     }

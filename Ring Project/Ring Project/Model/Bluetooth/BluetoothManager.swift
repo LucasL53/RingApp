@@ -16,6 +16,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
     @Published var targetPeripheral : CameraPeripheral?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var delegate         : BluetoothManagerDelegate?
+    var connectionIntervalUpdated = 0
     
 
     required override init() {
@@ -38,7 +39,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
         }
 
         discoveryHandler = aHandler
-        centralManager.scanForPeripherals(withServices: [CameraPeripheral.imageServiceUUID], options: nil)
+        centralManager.scanForPeripherals(withServices: [CameraPeripheral.banjiServiceUUID], options: nil)
     }
     
     public func stopScan() {
@@ -85,6 +86,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, ObservableObject {
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        connectionIntervalUpdated = (connectionIntervalUpdated > 0) ? (connectionIntervalUpdated - 1) : 0
         delegate?.bluetoothManager(self, didDisconnectPeripheral: targetPeripheral!)
         targetPeripheral = nil
     }
