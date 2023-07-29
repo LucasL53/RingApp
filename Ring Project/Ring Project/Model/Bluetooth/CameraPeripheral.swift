@@ -111,6 +111,7 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
         targetPeripheral = aPeripheral
         super.init()
         targetPeripheral.delegate = self
+        delegate = CameraControlView(bluetoothManager: bluetoothManager)
     }
 
     public func basePeripheral() -> CBPeripheral {
@@ -146,8 +147,10 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
 
     public func startStream() {
 //        streamStartTime = Date().timeIntervalSince1970
+        print("startStream ran")
         framesCount = 0
         snapshotData = Data()
+        targetPeripheral.setNotifyValue(true, for: cameraDataCharacteristics)
         targetPeripheral.writeValue(ImageServiceCommand.startStreaming.data(), for: cameraControlCharacteristics, type: .withoutResponse)
     }
     
@@ -158,8 +161,38 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
         targetPeripheral.writeValue(ImageServiceCommand.startSingleCapture.data(), for: cameraControlCharacteristics, type: .withoutResponse)
     }
     
+    //MARK: - Bytes to Image
+    func createImageFromUInt8Buffer(buffer: [UInt8], width: Int, height: Int) -> UIImage? {
+        print("creating image...")
+        // Check if the buffer size matches the width and height
+        guard buffer.count == width * height else {
+            print("buffer not 100x100")
+            return nil
+        }
+        // Create a bitmap context using the buffer data
+        let colorSpace = CGColorSpaceCreateDeviceGray()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)
+        let context = CGContext(data: UnsafeMutableRawPointer(mutating: buffer),
+                                width: width,
+                                height: height,
+                                bitsPerComponent: 8,
+                                bytesPerRow: width,
+                                space: colorSpace,
+                                bitmapInfo: bitmapInfo.rawValue)
+        // Check if the context was created successfully
+        guard let cgImage = context?.makeImage() else {
+            print("I couldn't make the image")
+            return nil
+        }
+        // Create a UIImage from the CGImage
+        let image = UIImage(cgImage: cgImage)
+        print(image)
+        return image
+    }
+    
     //MARK: - Bluetooth API
     public func discoverServices() {
+        targetPeripheral.delegate = self
         targetPeripheral.discoverServices([CameraPeripheral.banjiServiceUUID])
     }
     
@@ -216,13 +249,12 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
                 
                 // how are we certain it is the right characteristic?
                 if (thisBanji == "banji") {
-                    cameraControlCharacteristics = aCharacteristic
-                    
-//                    if aCharacteristic.uuid == CameraPeripheral.cameraDataCharUUID {
-//                        cameraDataCharacteristics = aCharacteristic
-//                    } else if aCharacteristic.uuid == CameraPeripheral.controlCharUUID {
-//                        cameraControlCharacteristics = aCharacteristic
-//                    }
+                    if aCharacteristic.uuid == CameraPeripheral.controlCharUUID {
+                        cameraControlCharacteristics = aCharacteristic
+                        self.targetPeripheral.setNotifyValue(true, for: cameraControlCharacteristics)
+                    } else if aCharacteristic.uuid == CameraPeripheral.cameraDataCharUUID {
+                        cameraDataCharacteristics = aCharacteristic
+                    }
                 }
             }
             
@@ -233,7 +265,7 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
             }
             
             // Notify the delegate that the device is supported and ready
-            delegate?.cameraPeripheralDidBecomeReady(self)
+//            delegate?.cameraPeripheralDidBecomeReady(self)
         }
     }
     
@@ -289,6 +321,15 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
 //            }
         } else if characteristic == cameraDataCharacteristics {
             
+            if let dataChunk = characteristic.value {
+                snapshotData.append(dataChunk)
+                if let anImage = UIImage(data: snapshotData){
+                    delegate?.cameraPeripheral(self, didReceiveImageData: anImage, withFps: 1.0)
+                }
+            }
+            
+                
+            
             value.withUnsafeBytes{ (bufferRawBufferPointer) -> Void in
                 let bufferPointerUInt8 = UnsafeBufferPointer<UInt8>.init(start: bufferRawBufferPointer.baseAddress!.bindMemory(to: UInt8.self, capacity: 1), count: packetLength)
                 let sequenceNumberBytes : [UInt8] = [bufferRawBufferPointer[1], bufferRawBufferPointer[0]]
@@ -318,6 +359,11 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
                     for i in 14...(packetLength - 1) {
                         cameraBuffer.append(bufferPointerUInt8[i])
                         print(bufferPointerUInt8[i], terminator:" ")
+                        if (cameraBuffer.count % 10000 == 0) {
+                            let image = createImageFromUInt8Buffer(buffer: cameraBuffer, width: 100, height: 100)
+                            delegate?.cameraPeripheral(self, didReceiveImageData: image!, withFps: 1.0)
+                            print("show image")
+                        }
                     }
                     
                     print("") // ?
@@ -346,12 +392,12 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         guard error == nil else {
-            delegate?.cameraPeripheral(self, failedWithError: error!)
+//            delegate?.cameraPeripheral(self, failedWithError: error!)
             return
         }
-        if cameraDataCharacteristics.isNotifying {
+        if cameraControlCharacteristics.isNotifying {
             print("banji is streaming")
-            delegate?.cameraPeripheralDidStart(self)
+//            delegate?.cameraPeripheralDidStart(self)
         }
     }
 }

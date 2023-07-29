@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol CameraPeripheralDelegate {
     /// Called when camera has all required services and characteristics discovered.
@@ -17,7 +18,7 @@ protocol CameraPeripheralDelegate {
     /// Called when and error occured.
     func cameraPeripheral(_ aPeripheral: CameraPeripheral, failedWithError error: Error)
     /// Full image data is complete.
-    func cameraPeripheral(_ aPeripheral: CameraPeripheral, didReceiveImageData someData: Data, withFps fps: Double)
+    func cameraPeripheral(_ aPeripheral: CameraPeripheral, didReceiveImageData someData: UIImage?, withFps fps: Double)
     /// Value between 0 and 1 presenting completion in percentage.
     func cameraPeripheral(_ aPeripheral: CameraPeripheral, imageProgress: Float, transferRateInKbps: Double)
     /// Connection parameters did change.

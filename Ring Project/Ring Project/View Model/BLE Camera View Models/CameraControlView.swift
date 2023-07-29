@@ -17,13 +17,13 @@ struct CameraControlView: View {
     @State private var isDeviceConnected = false;
     @State private var showAlert = false;
     @State private var imageData : UIImage?
-    @State private var bluetoothStatus: String = "Bluetooth Off"
+    @State private var bluetoothStatus: String = "Bluetooth"
     var body: some View {
         VStack () {
             Image(uiImage: imageData ?? UIImage(ciImage: .black))
                 .frame(width: 100, height: 50)
                 .padding()
-                .background(.gray)
+//                .background(.gray)
             Button(action: {
                 print("setting up camera")
                 setup()
@@ -44,16 +44,13 @@ struct CameraControlView: View {
     }
     
     func setup() {
-        print("function works")
         if (!isDeviceConnected) {
-            cameraPeripheral = bluetoothManager.targetPeripheral
-            if (cameraPeripheral?.targetPeripheral.name != "banji" || cameraPeripheral == nil) {
-                print("No banji found")
-                return
+            isDeviceConnected = true;
+            if (cameraPeripheral == nil) {
+                bluetoothManager.scanForPeripherals()
+                self.cameraPeripheral = bluetoothManager.targetPeripheral
             }
             cameraPeripheral?.delegate = self
-//            cameraPeripheralDidBecomeReady(cameraPeripheral!) // this was called in CameraPeripheral class
-            isDeviceConnected = true
         }
         else {
             print("Device disconnecting")
@@ -82,10 +79,16 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
         print("failed with error")
     }
     
-    func cameraPeripheral(_ aPeripheral: CameraPeripheral, didReceiveImageData someData: Data, withFps fps: Double) {
+    func cameraPeripheral(_ aPeripheral: CameraPeripheral, didReceiveImageData someData: UIImage?, withFps fps: Double) {
         print("image data received")
-        if let someImage = UIImage(data: someData) {
-            imageData = someImage
+        if (someData != nil) {
+            print("I should see an image here")
+            imageData = someData
+            if (imageData != nil) {
+                print("imageData updated")
+            }
+        } else {
+            print("something wrong with image")
         }
     }
     
@@ -116,8 +119,10 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
     }
     
     func bluetoothManager(_ aManager: BluetoothManager, didConnectPeripheral aPeripheral: CameraPeripheral) {
-        isDeviceConnected = true;
+//        isDeviceConnected = true;
         showAlert = false;
+        print("bluetooth didConnectPeripheral")
+        
     }
     
     func bluetoothManager(_ aManager: BluetoothManager, didDisconnectPeripheral aPeripheral: CameraPeripheral) {

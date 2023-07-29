@@ -73,6 +73,8 @@ struct BluetoothScannerView: View {
         selectedPeripheral = aPeripheral
         showCameraControl = true
     }
+    
+    
 }
 
 extension BluetoothScannerView: BluetoothManagerDelegate {
@@ -114,7 +116,7 @@ extension BluetoothScannerView: CameraPeripheralDelegate {
         //NOOP
     }
     
-    func cameraPeripheral(_ aPeripheral: CameraPeripheral, didReceiveImageData someData: Data, withFps fps: Double) {
+    func cameraPeripheral(_ aPeripheral: CameraPeripheral, didReceiveImageData someData: UIImage?, withFps fps: Double) {
         //NOOP
     }
     
