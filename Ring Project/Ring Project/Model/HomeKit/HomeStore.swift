@@ -170,6 +170,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     }
     
     // MARK: - Characteristics Functionality
+    
+    // Light characteristics control
     func controlLight(accessoryIdentifier: UUID, control: Int) {
         if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
             if let lightbulbService = accessory.services.first(where: { $0.serviceType == HMServiceTypeLightbulb }) {
@@ -198,6 +200,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         }
     }
     
+    // Smart lock characteristics control
     func controlDoorLock(accessoryIdentifier: UUID, control: Int) {
         if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
             if let lockMechanismService = accessory.services.first(where: { $0.serviceType == HMServiceTypeDoor }) {
@@ -212,6 +215,16 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                 }
             }
         }
+    }
+    
+    // Smart blinds characteristics control
+    func controlBlinds(accessoryIdentifier: UUID, control: Int) {
+        
+    }
+    
+    // Speaker characteristics control
+    func controlVolume() {
+        
     }
 
 }
