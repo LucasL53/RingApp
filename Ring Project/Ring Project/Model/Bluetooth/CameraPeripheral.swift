@@ -163,32 +163,40 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
     
     //MARK: - Bytes to Image
     func createImageFromUInt8Buffer(buffer: [UInt8], width: Int, height: Int) -> UIImage? {
-        print("creating image...")
         // Check if the buffer size matches the width and height
-        guard buffer.count == width * height else {
-            print("buffer not 100x100")
-            return nil
-        }
+        // guard buffer.count == width * height else { return nil }
+
+        // Create a mutable copy of the buffer
+        var mutableBuffer = buffer
+
         // Create a bitmap context using the buffer data
         let colorSpace = CGColorSpaceCreateDeviceGray()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)
-        let context = CGContext(data: UnsafeMutableRawPointer(mutating: buffer),
-                                width: width,
-                                height: height,
-                                bitsPerComponent: 8,
-                                bytesPerRow: width,
-                                space: colorSpace,
-                                bitmapInfo: bitmapInfo.rawValue)
-        // Check if the context was created successfully
-        guard let cgImage = context?.makeImage() else {
-            print("I couldn't make the image")
-            return nil
+        
+        var image: UIImage? = nil
+        
+        mutableBuffer.withUnsafeMutableBytes { mutableBytes in
+            if let baseAddress = mutableBytes.baseAddress,
+                let context = CGContext(data: baseAddress,
+                                        width: width,
+                                        height: height,
+                                        bitsPerComponent: 8,
+                                        bytesPerRow: width,
+                                        space: colorSpace,
+                                        bitmapInfo: bitmapInfo.rawValue) {
+                // Check if the context was created successfully
+                if let cgImage = context.makeImage() {
+                    // Create a UIImage from the CGImage
+                    image = UIImage(cgImage: cgImage)
+                }
+            }
         }
-        // Create a UIImage from the CGImage
-        let image = UIImage(cgImage: cgImage)
-        print(image)
+
         return image
     }
+
+
+
     
     //MARK: - Bluetooth API
     public func discoverServices() {
@@ -277,6 +285,7 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
         
         guard let value = characteristic.value else { return }
         let packetLength = Int(value.count)
+        print("Packet Length: ", packetLength)
         
         if characteristic == cameraControlCharacteristics {
             let dataPointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
@@ -321,19 +330,17 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
 //            }
         } else if characteristic == cameraDataCharacteristics {
             
-            if let dataChunk = characteristic.value {
-                snapshotData.append(dataChunk)
-                if let anImage = UIImage(data: snapshotData){
-                    delegate?.cameraPeripheral(self, didReceiveImageData: anImage, withFps: 1.0)
-                }
-            }
-            
-                
+//            if let dataChunk = characteristic.value {
+//                snapshotData.append(dataChunk)
+//                if let anImage = UIImage(data: snapshotData){
+//                    delegate?.cameraPeripheral(self, didReceiveImageData: anImage, withFps: 1.0)
+//                }
+//            }
             
             value.withUnsafeBytes{ (bufferRawBufferPointer) -> Void in
                 let bufferPointerUInt8 = UnsafeBufferPointer<UInt8>.init(start: bufferRawBufferPointer.baseAddress!.bindMemory(to: UInt8.self, capacity: 1), count: packetLength)
-                let sequenceNumberBytes : [UInt8] = [bufferRawBufferPointer[1], bufferRawBufferPointer[0]]
-                let actualSequenceNumber = sequenceNumberBytes.withUnsafeBytes{$0.load(as: UInt16.self)}
+//                let sequenceNumberBytes : [UInt8] = [bufferRawBufferPointer[1], bufferRawBufferPointer[0]]
+//                let actualSequenceNumber = sequenceNumberBytes.withUnsafeBytes{$0.load(as: UInt16.self)}
                 
                 if (peripheral.identifier == self.targetPeripheral.identifier) {
                     
@@ -395,9 +402,11 @@ class CameraPeripheral: NSObject, CBPeripheralDelegate, Identifiable {
 //            delegate?.cameraPeripheral(self, failedWithError: error!)
             return
         }
-        if cameraControlCharacteristics.isNotifying {
-            print("banji is streaming")
+        if cameraControlCharacteristics.isNotifying && !cameraDataCharacteristics.isNotifying{
+            print("banji is ready for stream")
 //            delegate?.cameraPeripheralDidStart(self)
+        } else if cameraControlCharacteristics.isNotifying && cameraDataCharacteristics.isNotifying {
+            print("banji is streaming")
         }
     }
 }

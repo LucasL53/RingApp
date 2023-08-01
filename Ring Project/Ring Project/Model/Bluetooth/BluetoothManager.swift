@@ -34,10 +34,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     public func scanForPeripherals() {
         print("scan for peripherals ran")
-//        guard centralManager.isScanning == false else {
-//            print("guard let passed")
-//            return // Return early if already scanning
-//        }
+        guard centralManager.isScanning == false else {
+            return // Return early if already scanning
+        }
         centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
     

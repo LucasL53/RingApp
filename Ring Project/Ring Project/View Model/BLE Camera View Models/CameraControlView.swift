@@ -45,7 +45,6 @@ struct CameraControlView: View {
     
     func setup() {
         if (!isDeviceConnected) {
-            isDeviceConnected = true;
             if (cameraPeripheral == nil) {
                 bluetoothManager.scanForPeripherals()
                 self.cameraPeripheral = bluetoothManager.targetPeripheral
@@ -119,10 +118,8 @@ extension CameraControlView: BluetoothManagerDelegate, CameraPeripheralDelegate 
     }
     
     func bluetoothManager(_ aManager: BluetoothManager, didConnectPeripheral aPeripheral: CameraPeripheral) {
-//        isDeviceConnected = true;
+        isDeviceConnected = true;
         showAlert = false;
-        print("bluetooth didConnectPeripheral")
-        
     }
     
     func bluetoothManager(_ aManager: BluetoothManager, didDisconnectPeripheral aPeripheral: CameraPeripheral) {

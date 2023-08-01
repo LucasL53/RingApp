@@ -34,7 +34,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     // @Published var targetVerticalTiltAngle: Int?
     
     // Lock Mechanism
-    @Published var lockCurrentState: Int? // current using string to indicate Unsecured/Secured/Jammed/Unknown
+    @Published var lockCurrentState: HMCharacteristicValueLockMechanismState? // current using string to indicate Unsecured/Secured/Jammed/Unknown
     @Published var lockTargetState: Bool? // True/False for Secured/Unsecured respectively
     
     // Speaker
@@ -121,7 +121,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             case "Obstruction Detected":
                 self.obstructionDetected = characteristicToRead.value as? Bool
             case "Lock Current State":
-                self.lockCurrentState = characteristicToRead.value as? Int
+                self.lockCurrentState = characteristicToRead.value as? HMCharacteristicValueLockMechanismState
             case "Lock Target State":
                 self.lockTargetState = characteristicToRead.value as? Bool
             default:
@@ -158,7 +158,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                 case "Obstruction Detected":
                     self.obstructionDetected = characteristic.value as? Bool
                 case "Lock Current State":
-                    self.lockCurrentState = characteristic.value as? Int
+                    self.lockCurrentState = characteristic.value as? HMCharacteristicValueLockMechanismState
                 case "Lock Target State":
                     self.lockTargetState = characteristic.value as? Bool
                 default:
@@ -168,4 +168,50 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             })
         }
     }
+    
+    // MARK: - Characteristics Functionality
+    func controlLight(accessoryIdentifier: UUID, control: Int) {
+        if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
+            if let lightbulbService = accessory.services.first(where: { $0.serviceType == HMServiceTypeLightbulb }) {
+                // Power control = -1
+                // Brightness control = positive value of brightness
+                if (control == -1) {
+                    if let powerCharacteristic = lightbulbService.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypePowerState }) {
+                        powerCharacteristic.writeValue(!(self.powerState ?? true), completionHandler: { error in
+                            if let error = error {
+                                print("Failed to change light power state: \(error)")
+                            }
+                        })
+                    }
+                } else if (control >= 0 && control <= 100) {
+                    if let brightnessCharacteristic = lightbulbService.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypeBrightness }) {
+                        brightnessCharacteristic.writeValue(control, completionHandler: { error in
+                            if let error = error {
+                                print("Failed to change light brightness: \(error)")
+                            }
+                        })
+                    }
+                } else {
+                    print("control value does not fall within the range")
+                }
+            }
+        }
+    }
+    
+    func controlDoorLock(accessoryIdentifier: UUID, control: Int) {
+        if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
+            if let lockMechanismService = accessory.services.first(where: { $0.serviceType == HMServiceTypeDoor }) {
+                if let lockStateCharacteristic = lockMechanismService.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypeTargetLockMechanismState }) {
+                    // expecting gyro control: right being lock and left being unlock
+                    let lockState: HMCharacteristicValueLockMechanismState = (control > 0) ? .secured : .unsecured
+                    lockStateCharacteristic.writeValue(lockState, completionHandler: { error in
+                        if let error = error {
+                            print("Failed to change lock state: \(error)")
+                        }
+                    })
+                }
+            }
+        }
+    }
+
 }
