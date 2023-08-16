@@ -17,6 +17,8 @@
 		1D4945252A88708200D2DACE /* ControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4945242A88708200D2DACE /* ControlView.swift */; };
 		1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4945262A8870E700D2DACE /* SelectButton.swift */; };
 		1D4945292A88711B00D2DACE /* RoutePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4945282A88711B00D2DACE /* RoutePickerView.swift */; };
+		1D94E3892A8C93E000B7C625 /* TestModel.mlmodelc in Resources */ = {isa = PBXBuildFile; fileRef = 1D94E3872A8C93E000B7C625 /* TestModel.mlmodelc */; };
+		1D94E38A2A8C93E000B7C625 /* TestModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3882A8C93E000B7C625 /* TestModel.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		1D4945262A8870E700D2DACE /* SelectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
 		1D4945282A88711B00D2DACE /* RoutePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutePickerView.swift; sourceTree = "<group>"; };
 		1D49452B2A88720200D2DACE /* Ring-Camera-Control.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Ring-Camera-Control.entitlements"; sourceTree = "<group>"; };
+		1D94E3872A8C93E000B7C625 /* TestModel.mlmodelc */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TestModel.mlmodelc; sourceTree = "<group>"; };
+		1D94E3882A8C93E000B7C625 /* TestModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = TestModel.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +100,7 @@
 		1D4945192A885D1400D2DACE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				1D94E38B2A8C941300B7C625 /* CoreML */,
 				1D49451A2A885D2200D2DACE /* HomeStore.swift */,
 				1D49451E2A885DF100D2DACE /* BluetoothManager.swift */,
 			);
@@ -109,6 +114,15 @@
 				1D4945282A88711B00D2DACE /* RoutePickerView.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		1D94E38B2A8C941300B7C625 /* CoreML */ = {
+			isa = PBXGroup;
+			children = (
+				1D94E3882A8C93E000B7C625 /* TestModel.mlmodel */,
+				1D94E3872A8C93E000B7C625 /* TestModel.mlmodelc */,
+			);
+			path = CoreML;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -169,6 +183,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D94E3892A8C93E000B7C625 /* TestModel.mlmodelc in Resources */,
 				1D4945122A885CDF00D2DACE /* Preview Assets.xcassets in Resources */,
 				1D49450F2A885CDF00D2DACE /* Assets.xcassets in Resources */,
 			);
@@ -188,6 +203,7 @@
 				1D4945212A886F5C00D2DACE /* HomeView.swift in Sources */,
 				1D4945252A88708200D2DACE /* ControlView.swift in Sources */,
 				1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */,
+				1D94E38A2A8C93E000B7C625 /* TestModel.mlmodel in Sources */,
 				1D49450B2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
