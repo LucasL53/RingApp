@@ -11,6 +11,7 @@ import UIKit
 import SwiftUI
 import CoreBluetooth
 import CoreML
+import CoreVideo
 
 //MARK: - Service Identifiers
 let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3246970")
@@ -60,7 +61,7 @@ enum ImageResolution: UInt8 {
 class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, ObservableObject {
 
     //MARK: - Properties
-    var mlModel          : TestModel!
+    var mlModel          : MLHandler
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
     
@@ -83,24 +84,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     //MARK: - Init
     required override init() {
         centralManager = CBCentralManager()
+        mlModel = MLHandler()
         super.init()
         centralManager.delegate = self
-    }
-    
-    //MARK: - CoreML
-    func initializeModel(image: CVPixelBuffer) -> TestModelOutput? {
-        do {
-            let configuration = MLModelConfiguration()
-            let model = try TestModel(configuration: configuration)
-            
-            // Continue using 'model' here
-            let prediction = try model.prediction(image: image)
-            
-            return prediction
-        } catch {
-            print("Error initializing model: \(error)")
-            return nil
-        }
     }
     
     //MARK: - Bluetooth Functionalities
@@ -271,6 +257,38 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 //        return pixelBuffer
 //    }
 
+    func resize(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
+        var maybePixelBuffer: CVPixelBuffer?
+        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, nil, &maybePixelBuffer)
+        guard let resizedPixelBuffer = maybePixelBuffer else { return nil }
+
+        CVPixelBufferLockBaseAddress(resizedPixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+        let resizedData = CVPixelBufferGetBaseAddress(resizedPixelBuffer)
+
+        guard let context = CGContext(
+            data: resizedData,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: CVPixelBufferGetBytesPerRow(resizedPixelBuffer),
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue
+        ) else { return nil }
+
+        let rect = CGRect(x: 0, y: 0, width: width, height: height)
+        context.clear(rect)
+
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let ciContext = CIContext(options: nil)
+        guard let cgImage = ciContext.createCGImage(ciImage, from: rect) else { return nil }
+
+        context.draw(cgImage, in: rect)
+
+        CVPixelBufferUnlockBaseAddress(resizedPixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+
+        return resizedPixelBuffer
+    }
+
     
     func updateImage(image: Image) {
         self.thisImage = image
@@ -384,18 +402,21 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                     self.updateImage(image: image)
                                 }
                                 if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
-                                    let prediction = self.initializeModel(image: cvpixelbuffer)
-                                    print("prediction is \(prediction!)")
+                                    if let resized = resize(pixelBuffer: cvpixelbuffer, width: 96, height: 96) {
+                                        let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
+                                        
+                                        mlModel.predict(image: resized)
+                                        
+                                        let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
+                                        let timeElapsed = endTime - startTime
+                                        print("Time taken for prediction: \(timeElapsed) seconds")
+                                    }
                                 } else {
                                     print("error creating cvpixelbuffer")
                                 }
                             } else {
                                 print("error creating image from buffer")
                             }
-//                            if let cvpixelbuffer = createPixelBufferFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
-//                                let prediction = initializeModel(input: cvpixelbuffer)
-//                                print("prediction is: \(prediction)")
-//                            }
                         }
                     }
                 }
