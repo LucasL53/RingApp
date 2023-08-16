@@ -10,6 +10,8 @@
 import UIKit
 import SwiftUI
 import CoreBluetooth
+import CoreML
+import CoreVideo
 
 //MARK: - Service Identifiers
 let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3246970")
@@ -59,6 +61,7 @@ enum ImageResolution: UInt8 {
 class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, ObservableObject {
 
     //MARK: - Properties
+    var mlModel          : MLHandler
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
     
@@ -77,16 +80,16 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     //MARK: - Banji Camera Buffer
     var cameraBuffer : [UInt8] = []
-
+    
     //MARK: - Init
     required override init() {
         centralManager = CBCentralManager()
+        mlModel = MLHandler()
         super.init()
         centralManager.delegate = self
     }
     
     //MARK: - Bluetooth Functionalities
-    
     public func enable() {
         let url = URL(string: UIApplication.openSettingsURLString) //for bluetooth setting
         let app = UIApplication.shared
@@ -209,6 +212,84 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         return image
     }
     
+    func createGrayScalePixelBuffer(image: UIImage, width: Int, height: Int) -> CVPixelBuffer? {
+        let ciImage = CIImage(image: image)
+        let filter = CIFilter(name: "CIColorControls")!
+        filter.setValue(ciImage, forKey: kCIInputImageKey)
+        filter.setValue(0, forKey: kCIInputSaturationKey) // Set saturation to 0 to get grayscale
+
+        guard let outputImage = filter.outputImage else { return nil }
+
+        let context = CIContext()
+        let pixelBufferOptions: [String: Any] = [kCVPixelBufferCGImageCompatibilityKey as String: true,
+                                                 kCVPixelBufferCGBitmapContextCompatibilityKey as String: true]
+
+        var pixelBuffer: CVPixelBuffer? = nil
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_OneComponent8, pixelBufferOptions as CFDictionary, &pixelBuffer)
+        guard status == kCVReturnSuccess, let finalPixelBuffer = pixelBuffer else {
+            return nil
+        }
+
+        let rect = CGRect(x: 0, y: 0, width: width, height: height)
+        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceGray())
+
+        return finalPixelBuffer
+    }
+    
+//    func createPixelBufferFromUInt8Buffer(buffer: [UInt8], width: Int, height: Int) -> CVPixelBuffer? {
+//        // Check if the buffer size matches the width and height
+//        guard buffer.count == width * height else { return nil }
+//        
+//        var pixelBuffer: CVPixelBuffer?
+//        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_OneComponent8, nil, &pixelBuffer)
+//        
+//        guard status == kCVReturnSuccess else {
+//            return nil
+//        }
+//        
+//        CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+//        let pixelData = CVPixelBufferGetBaseAddress(pixelBuffer!)
+//        
+//        memcpy(pixelData, buffer, buffer.count)
+//        
+//        CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+//
+//        return pixelBuffer
+//    }
+
+    func resize(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
+        var maybePixelBuffer: CVPixelBuffer?
+        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, nil, &maybePixelBuffer)
+        guard let resizedPixelBuffer = maybePixelBuffer else { return nil }
+
+        CVPixelBufferLockBaseAddress(resizedPixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+        let resizedData = CVPixelBufferGetBaseAddress(resizedPixelBuffer)
+
+        guard let context = CGContext(
+            data: resizedData,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: CVPixelBufferGetBytesPerRow(resizedPixelBuffer),
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue
+        ) else { return nil }
+
+        let rect = CGRect(x: 0, y: 0, width: width, height: height)
+        context.clear(rect)
+
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let ciContext = CIContext(options: nil)
+        guard let cgImage = ciContext.createCGImage(ciImage, from: rect) else { return nil }
+
+        context.draw(cgImage, in: rect)
+
+        CVPixelBufferUnlockBaseAddress(resizedPixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+
+        return resizedPixelBuffer
+    }
+
+    
     func updateImage(image: Image) {
         self.thisImage = image
     }
@@ -275,7 +356,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 }
             }
         } else if characteristic == cameraDataCharacteristics {
-            
             value.withUnsafeBytes{ (bufferRawBufferPointer) -> Void in
                 let bufferPointerUInt8 = UnsafeBufferPointer<UInt8>.init(start: bufferRawBufferPointer.baseAddress!.bindMemory(to: UInt8.self, capacity: 1), count: packetLength)
                 let sequenceNumberBytes : [UInt8] = [bufferRawBufferPointer[1], bufferRawBufferPointer[0]]
@@ -321,7 +401,19 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 DispatchQueue.main.async {
                                     self.updateImage(image: image)
                                 }
-                                print("image received")
+                                if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
+                                    if let resized = resize(pixelBuffer: cvpixelbuffer, width: 96, height: 96) {
+                                        let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
+                                        
+                                        mlModel.predict(image: resized)
+                                        
+                                        let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
+                                        let timeElapsed = endTime - startTime
+                                        print("Time taken for prediction: \(timeElapsed) seconds")
+                                    }
+                                } else {
+                                    print("error creating cvpixelbuffer")
+                                }
                             } else {
                                 print("error creating image from buffer")
                             }

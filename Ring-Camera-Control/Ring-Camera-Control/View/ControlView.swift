@@ -27,17 +27,19 @@ struct ControlView: View {
             }
             Spacer()
             
-            Group {
-                if let image = blemanager.thisImage {
-                    Spacer()
+            if let image = blemanager.thisImage {
                     image
-                        .frame(width: 100, height: 50)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 300, height: 300)
                         .padding()
-                    Spacer()
                 } else {
                     Image(systemName: "photo.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 100)
+                        .padding()
                 }
-            }
             
             Spacer()
             
