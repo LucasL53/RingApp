@@ -23,6 +23,7 @@ struct CharacteristicsView: View {
                     Spacer()
                     Button(action: {
                         model.controlAccessory(accessoryIdentifier: accessoryId, control: -1)
+                        model.readCharacteristicValues(serviceId: serviceId)
                     }) {
                         Text("Single")
                             .frame(width: 55, height: 10)
@@ -30,6 +31,7 @@ struct CharacteristicsView: View {
                     Spacer()
                     Button(action: {
                         model.controlAccessory(accessoryIdentifier: accessoryId, control: 1)
+                        model.readCharacteristicValues(serviceId: serviceId)
                     }) {
                         Text("Double")
                             .frame(width: 55, height: 10)
@@ -37,6 +39,7 @@ struct CharacteristicsView: View {
                     Spacer()
                     Button(action: {
                         model.controlAccessory(accessoryIdentifier: accessoryId, control: 50)
+                        model.readCharacteristicValues(serviceId: serviceId)
                     }) {
                         Text("Left")
                             .frame(width: 55, height: 10)
@@ -44,6 +47,7 @@ struct CharacteristicsView: View {
                     Spacer()
                     Button(action: {
                         model.controlAccessory(accessoryIdentifier: accessoryId, control: -50)
+                        model.readCharacteristicValues(serviceId: serviceId)
                     }) {
                         Text("Right")
                             .frame(width: 55, height: 10)
