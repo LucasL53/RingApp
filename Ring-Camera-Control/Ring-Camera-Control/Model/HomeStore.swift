@@ -272,10 +272,13 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                 }
             }
             // Lock Services
-            if let lockMechanismService = accessory.services.first(where: { $0.serviceType == HMServiceTypeDoor }) {
-                if let lockStateCharacteristic = lockMechanismService.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypeTargetLockMechanismState }) {
-                    // expecting gyro control: right being lock and left being unlock
-                    let lockState: HMCharacteristicValueLockMechanismState = (control > 0) ? .secured : .unsecured
+            if let lockMechanismService = accessory.services.first(where: { $0.serviceType == HMServiceTypeLockMechanism }) {
+                print("Lock Service Found")
+                if let lockStateCharacteristic = lockMechanismService.characteristics.first(where: { $0.localizedDescription == "Lock Mechanism Target State" }) {
+                    print("Changing Lock state")
+                    // single click to lock / double to unlock
+                    let lockStateValue: Int = (control > 0) ? HMCharacteristicValueLockMechanismState.secured.rawValue : HMCharacteristicValueLockMechanismState.unsecured.rawValue
+                    let lockState = NSNumber(value: lockStateValue)
                     lockStateCharacteristic.writeValue(lockState, completionHandler: { error in
                         if let error = error {
                             print("Failed to change lock state: \(error)")
