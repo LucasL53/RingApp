@@ -1,7 +1,8 @@
 //
 //  ControlView.swift
 //  Ring-Camera-Control
-//
+//  ControlView has the main accessories of the selected Home
+//  And a routerpicker to connect to Airplay2 fo TV/HomePod
 //  Created by Yunseo Lee on 8/12/23.
 //
 
@@ -9,11 +10,12 @@ import SwiftUI
 import HomeKit
 
 struct ControlView: View {
-    var homeId: UUID
+    @State var homeId: UUID
     @ObservedObject var model: HomeStore
     @StateObject var blemanager = BluetoothManager()
     @State private var selectedAccessory: String?
     @State private var selectedAccessoryId: UUID?
+    @State private var spotify: Bool = false
 
     var body: some View {
         VStack{
@@ -61,14 +63,19 @@ struct ControlView: View {
                                     }
                                     .padding()
                                 }
-                                RoutePickerView()
+                                RoutePickerView(selectedAccessoryId: $selectedAccessoryId, selectedAccessory: $selectedAccessory, spotify: $spotify)
                                     .frame(width: 100, height: 50) // adjust as needed
                                     .background(Color.blue)
                                     .clipShape(Circle())
                                     .padding()
-                                
                             }
                         }.onAppear(){model.findAccessories(homeId: homeId)}
+                        if selectedAccessoryId != nil {
+                            ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
+                        }
+                        if selectedAccessoryId == nil && spotify {
+                            SpotifyWebView()
+                        }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .edgesIgnoringSafeArea(.all)

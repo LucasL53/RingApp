@@ -20,6 +20,13 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     private var manager: HMHomeManager!
     
     @Published var readingData: Bool = false // USE: disabling certain parts of the app's UI until the data has been successfully read and the UI has been updated.
+    // Accessory Information
+    var identify: String?
+    var manufacturer: String?
+    var modelName: String?
+    var name: String?
+    var serialNum: String?
+    var FirmwareVer: String?
     
     // LightBulb Characteristics
     @Published var powerState: Bool?
@@ -52,7 +59,6 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         load()
     }
     
-    // manager will update the @Published array of homes,
     func load() {
         if manager == nil {
             manager = .init()
@@ -77,7 +83,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Services found!")
             return
         }
-//        print(accessoryServices)
+        print(accessoryServices)
         services = accessoryServices
     }
     func findCharacteristics(serviceId: UUID, accessoryId: UUID, homeId: UUID){
@@ -89,20 +95,37 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         characteristics = serviceCharacteristics
     }
     
-    // READ/SET CHARACTERISTICS
-    // TODO: also remodel this to set this characteristics
-    func setCharacteristicValue(characteristicID: UUID?, value: Any) {
-        guard let characteristicToWrite = characteristics.first(where: {$0.uniqueIdentifier == characteristicID}) else {
-            print("ERROR: Characteristic not found!")
-            return
+    func characteristicValue(for characteristic: HMCharacteristic) -> Any? {
+        switch characteristic.localizedDescription {
+        case "Power State":
+            return powerState
+        case "Hue":
+            return hueValue
+        case "Brightness":
+            return brightnessValue
+        case "Current Position":
+            return currentPosition
+        case "Target Position":
+            return targetPosition
+        case "Position State":
+            return positionState
+        case "Obstruction Detected":
+            return obstructionDetected
+        case "Lock Current State":
+            return lockCurrentState
+        case "Lock Target State":
+            return lockTargetState
+        case "Mute":
+            return mute
+        case "Volume":
+            return volume
+        default:
+            return nil
         }
-        characteristicToWrite.writeValue(value, completionHandler: {_ in
-            self.readCharacteristicValue(characteristicID: characteristicToWrite.uniqueIdentifier)
-        })
     }
+
     
     // Reading individual Characteristic to change
-    // TODO: how would I remodel this to update a characteristic
     func readCharacteristicValue(characteristicID: UUID?){
         guard let characteristicToRead = characteristics.first(where: {$0.uniqueIdentifier == characteristicID}) else {
             print("ERROR: Characteristic not found!")
@@ -129,6 +152,20 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                 self.lockCurrentState = characteristicToRead.value as? HMCharacteristicValueLockMechanismState
             case "Lock Target State":
                 self.lockTargetState = characteristicToRead.value as? Bool
+            case "Mute":
+                self.mute = characteristicToRead.value as? Bool
+            case "Volume":
+                self.volume = characteristicToRead.value as? Int
+            case "Identify":
+                self.identify = characteristicToRead.value as? String
+            case "Manufacturer":
+                self.manufacturer = characteristicToRead.value as? String
+            case "Model":
+                self.modelName = characteristicToRead.value as? String
+            case "Serial Number":
+                self.serialNum = characteristicToRead.value as? String
+            case "Firmware Version":
+                self.FirmwareVer = characteristicToRead.value as? String
             default:
                 break
             }
@@ -136,8 +173,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         })
     }
     
-    // Reading new initial values of Charactersistics to add
-    // TODO: maybe a dictionary with key(characteristics.localizedDescription), value(characteristics.value)
+    // Reading new initial values of Charactersistics
     func readCharacteristicValues(serviceId: UUID){
         guard let characteristicsToRead = services.first(where: {$0.uniqueIdentifier == serviceId})?.characteristics else {
             print("ERROR: Characteristic not found!")
@@ -166,6 +202,20 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                     self.lockCurrentState = characteristic.value as? HMCharacteristicValueLockMechanismState
                 case "Lock Target State":
                     self.lockTargetState = characteristic.value as? Bool
+                case "Mute":
+                    self.mute = characteristic.value as? Bool
+                case "Volume":
+                    self.volume = characteristic.value as? Int
+                case "Identify":
+                    self.identify = characteristic.value as? String
+                case "Manufacturer":
+                    self.manufacturer = characteristic.value as? String
+                case "Model":
+                    self.modelName = characteristic.value as? String
+                case "Serial Number":
+                    self.serialNum = characteristic.value as? String
+                case "Firmware Version":
+                    self.FirmwareVer = characteristic.value as? String
                 default:
                     break
                 }
@@ -176,7 +226,19 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     
     // MARK: - Characteristics Functionality
     
-    // Light characteristics control
+    // READ/SET CHARACTERISTICS
+    func setCharacteristicValue(characteristicID: UUID?, value: Any) {
+        guard let characteristicToWrite = characteristics.first(where: {$0.uniqueIdentifier == characteristicID}) else {
+            print("ERROR: Characteristic not found!")
+            return
+        }
+        // Changes the value of the characteristics and update the variable
+        characteristicToWrite.writeValue(value, completionHandler: {_ in
+            self.readCharacteristicValue(characteristicID: characteristicToWrite.uniqueIdentifier)
+        })
+    }
+    
+    // More speicific control with type check on write value
     func controlAccessory(accessoryIdentifier: UUID, control: Int) {
         if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
             // Light Services
@@ -227,12 +289,23 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                     })
                 }
             }
+            // Speaker Services
+            if let speakerServices = accessory.services.first(where: { $0.serviceType == HMServiceTypeSpeaker }) {
+                if let volumeCharacteristics = speakerServices.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypeVolume }) {
+                    volumeCharacteristics.writeValue(control, completionHandler: { error in
+                        if let error = error {
+                            print("Failed to change speaker volume: \(error)")
+                        }
+                    })
+                }
+                if let muteCharacteristics = speakerServices.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypeMute }) {
+                    muteCharacteristics.writeValue(!(self.mute ?? false), completionHandler: { error in
+                        if let error = error {
+                            print("Failed to change mute state: \(error)")
+                        }
+                    })
+                }
+            }
         }
     }
-    
-    // Speaker characteristics control
-    func controlVolume() {
-        
-    }
-
 }
