@@ -43,7 +43,7 @@ struct ServicesView: View {
                 .edgesIgnoringSafeArea(.all)
             }
             if accessoryId != nil {
-                CharacteristicsView(serviceId: $selectedServiceId, accessoryId: accessoryId!, homeId: homeId, model: model)
+                CharacteristicsView(serviceId: $selectedServiceId, accessoryId: accessoryId!, homeId: $homeId, model: model)
             }
         }
     }

@@ -70,6 +70,9 @@ struct ControlView: View {
                                     .padding()
                             }
                         }.onAppear(){model.findAccessories(homeId: homeId)}
+                        .onChange(of: homeId, perform: { newValue in
+                                model.findAccessories(homeId: newValue)
+                        })
                         if selectedAccessoryId != nil {
                             ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
                         }

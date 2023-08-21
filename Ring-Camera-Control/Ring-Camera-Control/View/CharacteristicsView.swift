@@ -11,7 +11,7 @@ import SwiftUI
 struct CharacteristicsView: View {
     @Binding var serviceId: UUID
     var accessoryId: UUID
-    var homeId: UUID
+    @Binding var homeId: UUID
     @ObservedObject var model: HomeStore
     
     var body: some View {
@@ -30,7 +30,7 @@ struct CharacteristicsView: View {
                     }.buttonStyle(OutlinedButtonStyle())
                     Spacer()
                     Button(action: {
-                        model.controlAccessory(accessoryIdentifier: accessoryId, control: 1)
+                        model.controlAccessory(accessoryIdentifier: accessoryId, control: 100)
                         model.readCharacteristicValues(serviceId: serviceId)
                     }) {
                         Text("Double")
@@ -46,7 +46,7 @@ struct CharacteristicsView: View {
                     }.buttonStyle(OutlinedButtonStyle())
                     Spacer()
                     Button(action: {
-                        model.controlAccessory(accessoryIdentifier: accessoryId, control: -50)
+                        model.controlAccessory(accessoryIdentifier: accessoryId, control: 0)
                         model.readCharacteristicValues(serviceId: serviceId)
                     }) {
                         Text("Right")

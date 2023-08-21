@@ -28,6 +28,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     var serialNum: String?
     var FirmwareVer: String?
     
+    @Published var currName: String?
+    
     // LightBulb Characteristics
     @Published var powerState: Bool?
     @Published var hueValue: Int?
@@ -148,9 +150,9 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                 self.positionState = characteristicToRead.value as? Int
             case "Obstruction Detected":
                 self.obstructionDetected = characteristicToRead.value as? Bool
-            case "Lock Current State":
+            case "Lock Mechanism Current State":
                 self.lockCurrentState = characteristicToRead.value as? HMCharacteristicValueLockMechanismState
-            case "Lock Target State":
+            case "Lock Mechanism Target State":
                 self.lockTargetState = characteristicToRead.value as? Bool
             case "Mute":
                 self.mute = characteristicToRead.value as? Bool
@@ -166,6 +168,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                 self.serialNum = characteristicToRead.value as? String
             case "Firmware Version":
                 self.FirmwareVer = characteristicToRead.value as? String
+            case "Name":
+                self.currName = characteristicToRead.value as? String
             default:
                 break
             }
@@ -198,9 +202,9 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                     self.positionState = characteristic.value as? Int
                 case "Obstruction Detected":
                     self.obstructionDetected = characteristic.value as? Bool
-                case "Lock Current State":
+                case "Lock Mechanism Current State":
                     self.lockCurrentState = characteristic.value as? HMCharacteristicValueLockMechanismState
-                case "Lock Target State":
+                case "Lock Mechanism Target State":
                     self.lockTargetState = characteristic.value as? Bool
                 case "Mute":
                     self.mute = characteristic.value as? Bool
@@ -216,6 +220,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                     self.serialNum = characteristic.value as? String
                 case "Firmware Version":
                     self.FirmwareVer = characteristic.value as? String
+                case "Name":
+                    self.currName = characteristic.value as? String
                 default:
                     break
                 }
