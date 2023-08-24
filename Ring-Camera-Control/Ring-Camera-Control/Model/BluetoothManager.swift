@@ -77,6 +77,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var currentImageSize        : Int          = 0
     private var transferRate            : Double       = 0
     private var framesCount             : Int          = 0
+    private var prevTimestamp           : Int          = Int(1000)
 
     //MARK: - Banji Camera Buffer
     var cameraBuffer : [UInt8] = []
@@ -363,7 +364,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 
                 if (peripheral.identifier == self.banji.identifier) {
                     
-                    
                     // Nominal behavior
                     // Packet format
 
@@ -383,41 +383,50 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
                     // We should have 2 image buffers on the phone side. One for the current image being shown, and the other is receiving the next image. When the second buffer is filled, we should either swap, or update the image being shown to the second buffer. The next image that starts streaming should then get received in the original image, and so on.
                     
-                    let imgWidth = 240
-                    let imgHeight = 239
-                    
-                    if (bufferPointerUInt8[1] == 1) {
-//                        let date = Date()
-//                        let milliseconds = Int(date.timeIntervalSince1970 * 1000)
-//                        print(milliseconds)
+                    var imgWidth = 162
+//                        var imgHeight = 119
+                    let statusByte = bufferPointerUInt8[1]
+                    let startOfFrame = (statusByte & 1) == 1
+                    let buttonPressed = ((statusByte >> 1) & 1) == 1
+                    if (startOfFrame) {
+                        let date = Date()
+                        let interval = Int(date.timeIntervalSince1970 * 1000) - self.prevTimestamp
+                        prevTimestamp = Int(date.timeIntervalSince1970 * 1000)
+                        
+                        var imgHeight = self.cameraBuffer.count / imgWidth
+                        
+                        var extraSampleCount = cameraBuffer.count % imgWidth
+                        cameraBuffer.removeLast(extraSampleCount)
+                        
+                        if let uiImage = createImageFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
+                            let image = Image(uiImage: uiImage)
+                            DispatchQueue.main.async {
+                                self.updateImage(image: image)
+                            }
+                            if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
+                                if let resized = resize(pixelBuffer: cvpixelbuffer, width: 162, height: 119) {
+                                    let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
+                                    
+                                    mlModel.predict(image: resized)
+                                    
+                                    let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
+                                    let timeElapsed = endTime - startTime
+                                    print("Time taken for prediction: \(timeElapsed) seconds")
+                                }
+                                
+                                print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + "fps: " + String(Float(1 / (Float(interval)/Float(1000)) )))
+                                
+                            } else {
+                                print("error creating cvpixelbuffer")
+                            }
+                        } else {
+                            print("error creating image from buffer")
+                        }
                         cameraBuffer.removeAll()
-                    }
-                    
+                    } // startOfFrame end
+                
                     for i in 14...(packetLength - 1) {
                         cameraBuffer.append(bufferPointerUInt8[i])
-                        if (cameraBuffer.count % (imgWidth*imgHeight) == 0) {
-                            if let uiImage = createImageFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
-                                let image = Image(uiImage: uiImage)
-                                DispatchQueue.main.async {
-                                    self.updateImage(image: image)
-                                }
-                                if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
-                                    if let resized = resize(pixelBuffer: cvpixelbuffer, width: 96, height: 96) {
-                                        let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
-                                        
-                                        mlModel.predict(image: resized)
-                                        
-                                        let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
-                                        let timeElapsed = endTime - startTime
-                                        print("Time taken for prediction: \(timeElapsed) seconds")
-                                    }
-                                } else {
-                                    print("error creating cvpixelbuffer")
-                                }
-                            } else {
-                                print("error creating image from buffer")
-                            }
-                        }
                     }
                 }
             }
