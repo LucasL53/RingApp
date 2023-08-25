@@ -78,9 +78,37 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var transferRate            : Double       = 0
     private var framesCount             : Int          = 0
     private var prevTimestamp           : Int          = Int(1000)
+    
+    struct accelTilt {
+        static var x: Double = 0.0
+        static var y: Double = 0.0
+        static var z: Double = 0.0
+    }
+            
+    struct gyroTilt {
+        static var x: Double = 0.0
+        static var y: Double = 0.0
+        static var z: Double = 0.0
+    }
+            
+    struct fusedTilt {
+        static var alpha: Double = 0.02
+        static var x: Double = 0.0
+        static var y: Double = 0.0
+        static var z: Double = 0.0
+    }
 
     //MARK: - Banji Camera Buffer
     var cameraBuffer : [UInt8] = []
+    
+    //MARK: - IMU Buffers
+    var accelXBuffer: [Float] = []
+    var accelYBuffer: [Float] = []
+    var accelZBuffer: [Float] = []
+    var gyroXBuffer: [Float] = []
+    var gyroYBuffer: [Float] = []
+    var gyroZBuffer: [Float] = []
+    let GRAVITY_EARTH: Double = 9.80665
     
     //MARK: - Init
     required override init() {
@@ -335,6 +363,22 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         }
     }
     
+    func lsbToMps2(_ val: Int16, _ gRange: Double, _ bitWidth: UInt8) -> Double {
+        let power = 2.0
+        
+        let halfScale = Double(pow(Double(power), Double(bitWidth))) / 2.0
+        
+        return (Double(GRAVITY_EARTH) * Double(val) * gRange) / halfScale
+    }
+    
+    func lsbToDps(_ val: Int16, _ dps: Double, _ bitWidth: UInt8) -> Double {
+        let power = 2.0
+        
+        let halfScale = Double(pow(Double(power), Double(bitWidth))) / 2.0
+        
+        return (dps / halfScale) * Double(val)
+    }
+    
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard error == nil else {
             return
@@ -425,6 +469,47 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         cameraBuffer.removeAll()
                     } // startOfFrame end
                 
+                    var accelX = (Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2])
+                    var accelY = (Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4])
+                    var accelZ = (Int16(bufferPointerUInt8[7]) << 8) | Int16(bufferPointerUInt8[6])
+                    var gyroX  = (Int16(bufferPointerUInt8[9])  << 8) | Int16(bufferPointerUInt8[8])
+                    var gyroY  = (Int16(bufferPointerUInt8[11]) << 8) | Int16(bufferPointerUInt8[10])
+                    var gyroZ  = (Int16(bufferPointerUInt8[13]) << 8) | Int16(bufferPointerUInt8[12])
+                                      
+                    var accelX_float = lsbToMps2(accelX, 2, 16)
+                    var accelY_float = lsbToMps2(accelY, 2, 16)
+                    var accelZ_float = lsbToMps2(accelZ, 2, 16)
+                                       
+                    var gyroX_float = lsbToDps(gyroX, 2000, 16)
+                    var gyroY_float = lsbToDps(gyroY, 2000, 16)
+                    var gyroZ_float = lsbToDps(gyroZ, 2000, 16)
+
+                    accelXBuffer.append(Float(accelX_float))
+                    accelYBuffer.append(Float(accelY_float))
+                    accelZBuffer.append(Float(accelZ_float))
+                    gyroXBuffer.append(Float(gyroX_float))
+                    gyroYBuffer.append(Float(gyroY_float))
+                    gyroZBuffer.append(Float(gyroZ_float))
+                                       
+                    accelTilt.x = atan(accelX_float / sqrt(pow(accelY_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
+                    accelTilt.y = atan(accelY_float / sqrt(pow(accelX_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
+                    accelTilt.z = atan(sqrt(pow(accelX_float,2) + pow(accelY_float,2)) / accelZ_float) * 180 / Double.pi
+                      
+                    gyroTilt.x += gyroX_float
+                    gyroTilt.y += gyroY_float
+                    gyroTilt.z += gyroZ_float
+                                        
+                    fusedTilt.x = (1 - fusedTilt.alpha) * (fusedTilt.x + gyroX_float) + (fusedTilt.alpha) * (accelTilt.x)
+                    fusedTilt.y = (1 - fusedTilt.alpha) * (fusedTilt.y + gyroY_float) + (fusedTilt.alpha) * (accelTilt.y)
+                                             
+                    let aTilt = sqrt(pow(accelTilt.x, 2) + pow(accelTilt.y, 2))
+                    let gTilt = sqrt(pow(gyroTilt.x, 2) + pow(gyroTilt.y, 2))
+                    let fTilt = sqrt(pow(fusedTilt.x, 2) + pow(fusedTilt.y, 2))
+                            
+                    //let outputString = String(format: "Accel X Accel Y Accel Z Gyro X Gyro Y Gyro Z\n%.2f %.2f %.2f %.2f %.2f %.2f", accelX_float, accelY_float,accelZ_float, gyroX_float, gyroY_float, gyroZ_float)
+                    let outputString = String(format: "aTile gTilt fTilt\n%.2f %.2f %.2f %.2f %.2f %.2f", aTilt, gTilt,fTilt, accelTilt.x,accelTilt.y, accelTilt.z)
+                    print(outputString)
+                    
                     for i in 14...(packetLength - 1) {
                         cameraBuffer.append(bufferPointerUInt8[i])
                     }
