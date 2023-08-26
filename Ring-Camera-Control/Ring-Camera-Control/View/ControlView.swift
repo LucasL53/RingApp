@@ -49,12 +49,6 @@ struct ControlView: View {
                         .onChange(of: homeId, perform: { newValue in
                                 model.findAccessories(homeId: newValue)
                         })
-                        if selectedAccessoryId != nil {
-                            ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
-                        }
-                        if selectedAccessoryId == nil && spotify {
-                            SpotifyWebView()
-                        }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .edgesIgnoringSafeArea(.all)
@@ -81,6 +75,15 @@ struct ControlView: View {
                     blemanager.scanForPeripherals()
                 }){
                     Text("Scan for Banji")
+                }
+                
+                Spacer()
+                
+                if selectedAccessoryId != nil {
+                    ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
+                }
+                if selectedAccessoryId == nil && spotify {
+                    SpotifyWebView()
                 }
             }
         }
