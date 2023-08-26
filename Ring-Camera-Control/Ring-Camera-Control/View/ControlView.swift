@@ -26,7 +26,6 @@ struct ControlView: View {
 //    @State private var selectedAccessory: String?
     @State private var selectedAccessoryId: UUID? = UUID(uuidString: "1A7337DD-577D-510E-8E50-5E91C5B8BE34")
     @State private var spotify: Bool = false
-//    @State private var selectedClass: exampleClass = .lights
 
     var body: some View {
         VStack{
@@ -39,6 +38,7 @@ struct ControlView: View {
                     Button(action: {
                         print("setting up camera")
                         blemanager.scanForPeripherals()
+                        blemanager.setHomeStore(homeStore: model)
                     }) {
                         Text("Scan for Banji")
                     }
@@ -62,6 +62,7 @@ struct ControlView: View {
                     }
                 }
                 Spacer()
+
                 Section(header: Text("Live View")
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     ZStack {

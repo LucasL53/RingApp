@@ -18,6 +18,7 @@ let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3
 let cameraDataCharUUID          = CBUUID(string: "47ea1402-a0e4-554e-5282-0afcd3246970")
 let controlCharUUID             = CBUUID(string: "47ea1403-a0e4-554e-5282-0afcd3246970")
 
+
 enum ImageServiceCommand: UInt8 {
     case noCommand          = 0x00
     case startSingleCapture = 0x01
@@ -62,6 +63,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     //MARK: - Properties
     var mlModel          : MLHandler
+    @ObservedObject var homeModel : HomeStore
+    
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
     
@@ -78,6 +81,12 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var transferRate            : Double       = 0
     private var framesCount             : Int          = 0
     private var prevTimestamp           : Int          = Int(1000)
+    private var classifiedDevice        : Int          = 0
+    private var lastActionTimeMs        : Int          = 0
+    private let date = Date()
+    
+    // This must align with MLHandler
+    private let identifiers = ["69D467F4-2959-55C0-8DD3-C83B89A84FD2", "Blinds", "9CF6BB71-C066-5C6E-924E-994BCA7041E2", "Speaker", "TV"]
     
     struct accelTilt {
         static var x: Double = 0.0
@@ -114,8 +123,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     required override init() {
         centralManager = CBCentralManager()
         mlModel = MLHandler()
+        self.homeModel = HomeStore()
         super.init()
         centralManager.delegate = self
+    }
+    
+    public func setHomeStore(homeStore: HomeStore) {
+        self.homeModel = homeStore
+        print("Updated Home Store in BLE Manager")
     }
     
     //MARK: - Bluetooth Functionalities
@@ -124,7 +139,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         let app = UIApplication.shared
         app.open(url!, options: [:], completionHandler: nil)
     }
-
+    
     public func scanForPeripherals() {
         print("scan for peripherals ran")
         guard centralManager.isScanning == false else {
@@ -426,12 +441,10 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     // We should have 2 image buffers on the phone side. One for the current image being shown, and the other is receiving the next image. When the second buffer is filled, we should either swap, or update the image being shown to the second buffer. The next image that starts streaming should then get received in the original image, and so on.
                     
                     var imgWidth = 162
-//                        var imgHeight = 119
                     let statusByte = bufferPointerUInt8[1]
                     let startOfFrame = (statusByte & 1) == 1
                     let buttonPressed = ((statusByte >> 1) & 1) == 1
                     if (startOfFrame) {
-                        let date = Date()
                         let interval = Int(date.timeIntervalSince1970 * 1000) - self.prevTimestamp
                         prevTimestamp = Int(date.timeIntervalSince1970 * 1000)
                         
@@ -446,17 +459,17 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 self.updateImage(image: image)
                             }
                             if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
-                                if let resized = resize(pixelBuffer: cvpixelbuffer, width: 162, height: 119) {
+                                if let resized = resize(pixelBuffer: cvpixelbuffer, width: 160, height: 128) {
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
                                     
-                                    mlModel.predict(image: resized)
+                                    classifiedDevice = mlModel.predict(image: resized)
                                     
                                     let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
                                     let timeElapsed = endTime - startTime
-                                    print("Time taken for prediction: \(timeElapsed) seconds")
+                                    print("prediction_time_ms: \(1000*timeElapsed)")
                                 }
                                 
-                                print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + "fps: " + String(Float(1 / (Float(interval)/Float(1000)) )))
+                                print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / (Float(interval)/Float(1000)) )))
                                 
                             } else {
                                 print("error creating cvpixelbuffer")
@@ -466,6 +479,36 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         }
                         cameraBuffer.removeAll()
                     } // startOfFrame end
+                    
+                    if (buttonPressed) {
+                        let currentTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
+//                        print ("currentTimeMs:" + String(currentTimeMs) + " lastActionTimeMs:" + String(self.lastActionTimeMs))
+                        if (currentTimeMs - self.lastActionTimeMs > 500) {
+                            // 500ms debounce
+                            self.lastActionTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
+                            
+                            // Lights
+                            if (classifiedDevice == 0) {
+                                print("Controlling lights!")
+                                let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
+                                if let unwrappedUUID = optionalUUID {
+                                    homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
+                                } else {
+                                    // Handle the case where optionalUUID is nil
+                                    print("Failed to unwrap UUID")
+                                }
+                            } else if (classifiedDevice == 2) {
+                                print("Controlling Lock!")
+                                let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
+                                if let unwrappedUUID = optionalUUID {
+                                    homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
+                                } else {
+                                    // Handle the case where optionalUUID is nil
+                                    print("Failed to unwrap UUID")
+                                }
+                            }
+                        }
+                    }
                 
                     var accelX = (Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2])
                     var accelY = (Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4])
@@ -506,7 +549,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                             
                     //let outputString = String(format: "Accel X Accel Y Accel Z Gyro X Gyro Y Gyro Z\n%.2f %.2f %.2f %.2f %.2f %.2f", accelX_float, accelY_float,accelZ_float, gyroX_float, gyroY_float, gyroZ_float)
                     let outputString = String(format: "aTile gTilt fTilt\n%.2f %.2f %.2f %.2f %.2f %.2f", aTilt, gTilt,fTilt, accelTilt.x,accelTilt.y, accelTilt.z)
-                    print(outputString)
+                    // print(outputString)
                     
                     for i in 14...(packetLength - 1) {
                         cameraBuffer.append(bufferPointerUInt8[i])
