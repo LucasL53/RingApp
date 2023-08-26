@@ -16,7 +16,7 @@ struct ControlView: View {
     @State private var selectedAccessory: String?
     @State private var selectedAccessoryId: UUID?
     @State private var spotify: Bool = false
-
+    
     var body: some View {
         VStack{
             Spacer()
@@ -72,6 +72,7 @@ struct ControlView: View {
                 Spacer()
                 Button(action: {
                     print("setting up camera")
+                    blemanager.setHomeStore(homeStore: model)
                     blemanager.scanForPeripherals()
                 }){
                     Text("Scan for Banji")

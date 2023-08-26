@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 094F5FD72A9986FB007EFAC9 /* best.mlmodel */; };
+		09B0AAF62A9FFFCA00A43C9C /* best160x128.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */; };
+		09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */; };
 		1D49450B2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */; };
 		1D49450D2A885CDD00D2DACE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450C2A885CDD00D2DACE /* ContentView.swift */; };
 		1D49450F2A885CDF00D2DACE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D49450E2A885CDF00D2DACE /* Assets.xcassets */; };
@@ -27,6 +30,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		094F5FD72A9986FB007EFAC9 /* best.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best.mlmodel; sourceTree = "<group>"; };
+		09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best160x128.mlmodel; sourceTree = "<group>"; };
+		09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best96x96.mlmodel; sourceTree = "<group>"; };
 		1D4945072A885CDD00D2DACE /* Ring-Camera-Control.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ring-Camera-Control.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_Camera_ControlApp.swift; sourceTree = "<group>"; };
 		1D49450C2A885CDD00D2DACE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -135,6 +141,9 @@
 		1D94E38B2A8C941300B7C625 /* CoreML */ = {
 			isa = PBXGroup;
 			children = (
+				09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */,
+				09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */,
+				094F5FD72A9986FB007EFAC9 /* best.mlmodel */,
 				1D94E3882A8C93E000B7C625 /* TestModel.mlmodel */,
 			);
 			path = CoreML;
@@ -211,6 +220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D4945292A88711B00D2DACE /* RoutePickerView.swift in Sources */,
+				09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */,
 				1D94E38D2A8D92A900B7C625 /* MLHandler.swift in Sources */,
 				1D49450D2A885CDD00D2DACE /* ContentView.swift in Sources */,
 				1D49451B2A885D2200D2DACE /* HomeStore.swift in Sources */,
@@ -218,10 +228,12 @@
 				1D94E3952A936D2200B7C625 /* SpotifyWebView.swift in Sources */,
 				1D94E38F2A933BD900B7C625 /* ServicesView.swift in Sources */,
 				1D49451F2A885DF100D2DACE /* BluetoothManager.swift in Sources */,
+				09B0AAF62A9FFFCA00A43C9C /* best160x128.mlmodel in Sources */,
 				1D4945212A886F5C00D2DACE /* HomeView.swift in Sources */,
 				1D94E3912A933D2E00B7C625 /* CharacteristicsView.swift in Sources */,
 				1D4945252A88708200D2DACE /* ControlView.swift in Sources */,
 				1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */,
+				094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */,
 				1D94E3932A93401F00B7C625 /* OutlinedButtonStyle.swift in Sources */,
 				1D94E38A2A8C93E000B7C625 /* TestModel.mlmodel in Sources */,
 				1D49450B2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift in Sources */,
@@ -359,7 +371,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				DEVELOPMENT_TEAM = S69EHXYN33;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App will require Bluetooth to always be on";
@@ -375,7 +387,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -392,7 +404,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				DEVELOPMENT_TEAM = S69EHXYN33;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App will require Bluetooth to always be on";
@@ -408,7 +420,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

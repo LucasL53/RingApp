@@ -13,7 +13,7 @@ struct ContentView: View {
         HomeView(model: homeModel)
     }
 }
-
-#Preview {
-    HomeView(model: HomeStore())
-}
+//
+//#Preview {
+//    HomeView(model: HomeStore())
+//}

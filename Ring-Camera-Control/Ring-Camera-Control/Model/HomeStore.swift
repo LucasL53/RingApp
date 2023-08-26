@@ -29,6 +29,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     var name: String?
     var serialNum: String?
     var FirmwareVer: String?
+    var lightsOn = false
+    var doorLocked = true
     
     @Published var currName: String?
     
@@ -81,7 +83,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Accessory not found!")
             return
         }
-//        print(devices)
+        print(devices)
         accessories = devices
     }
     func findServices(accessoryId: UUID, homeId: UUID){
@@ -191,6 +193,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         for characteristic in characteristicsToRead {
             characteristic.readValue(completionHandler: {_ in
                 print("DEBUG: reading characteristic value: \(characteristic.localizedDescription)")
+                print("DEBUG: \(String(describing: characteristic.value))")
                 switch characteristic.localizedDescription {
                 case "Power State":
                     self.powerState = characteristic.value as? Bool
@@ -246,6 +249,60 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         characteristicToWrite.writeValue(value, completionHandler: {_ in
             self.readCharacteristicValue(characteristicID: characteristicToWrite.uniqueIdentifier)
         })
+    }
+    
+    func toggleAccessory(accessoryIdentifier: UUID) {
+        if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
+            // Light Services
+            if let lightbulbService = accessory.services.first(where: { $0.serviceType == HMServiceTypeLightbulb }) {
+                // Power control = -1
+                // Brightness control = positive value of brightness
+                
+                if let brightnessCharacteristic = lightbulbService.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypeBrightness }) {
+                    
+                    brightnessCharacteristic.readValue(completionHandler: { error in
+                        if let error = error {
+                            print("Failed to read brightness: \(error)")
+                        }
+                    })
+                    
+                    self.brightnessValue = brightnessCharacteristic.value as? Int
+                    let targetBrightness = (self.brightnessValue! > 0) ? 0 : 100
+                    
+                    brightnessCharacteristic.writeValue(targetBrightness, completionHandler: { error in
+                        if let error = error {
+                            print("Failed to change light brightness: \(error)")
+                        }
+                    })
+                }
+            }
+            // END LIGHT SERVICES
+            
+            if let lockMechanismService = accessory.services.first(where: { $0.serviceType == HMServiceTypeLockMechanism }) {
+                print("Lock Service Found")
+                if let lockStateCharacteristic = lockMechanismService.characteristics.first(where: { $0.localizedDescription == "Lock Mechanism Target State" }) {
+                    print("Changing Lock state")
+                    
+                    lockStateCharacteristic.readValue(completionHandler: { error in
+                        if let error = error {
+                            print("Failed to read lock state: \(error)")
+                        }
+                    })
+                    
+                    var currentLockState = lockStateCharacteristic.value as! Int
+                    var targetLockState = (currentLockState == 1) ? HMCharacteristicValueLockMechanismState.unsecured.rawValue : HMCharacteristicValueLockMechanismState.secured.rawValue
+                 
+                    lockStateCharacteristic.writeValue(targetLockState, completionHandler: { error in
+                        if let error = error {
+                            print("Failed to change lock state: \(error)")
+                        }
+                    })
+                }
+            }
+            // END LOCK SERVICES
+            
+            // rest of toggles here
+        }
     }
     
     // More speicific control with type check on write value
