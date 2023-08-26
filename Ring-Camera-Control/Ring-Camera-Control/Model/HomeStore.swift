@@ -19,6 +19,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     @Published var characteristics: [HMCharacteristic] = []
     private var manager: HMHomeManager!
     
+    @Published var areHomesLoaded: Bool = false
+    
     @Published var readingData: Bool = false // USE: disabling certain parts of the app's UI until the data has been successfully read and the UI has been updated.
     // Accessory Information
     var identify: String?
@@ -70,6 +72,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
 
     func homeManagerDidUpdateHomes(_ manager: HMHomeManager) {
         self.homes = self.manager.homes
+        self.areHomesLoaded = true 
+        print(self.homes)
     }
     
     func findAccessories(homeId: UUID) {
@@ -85,7 +89,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Services found!")
             return
         }
-        print(accessoryServices)
+//        print(accessoryServices)
         services = accessoryServices
     }
     func findCharacteristics(serviceId: UUID, accessoryId: UUID, homeId: UUID){

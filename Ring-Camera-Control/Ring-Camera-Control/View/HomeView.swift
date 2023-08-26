@@ -12,12 +12,12 @@ struct HomeView: View {
     
     @State private var selectedHomeId: UUID?
     @ObservedObject var model: HomeStore
-    @State var header = "Select Home"
+    @State var header: String?
     
     var body: some View {
         VStack {
             // Menu as the sticky header
-            Menu(header) {
+            Menu(header ?? "Select Home") {
                 ForEach(model.homes, id: \.uniqueIdentifier) { home in
                     Button(action: {
                         selectedHomeId = home.uniqueIdentifier
@@ -37,6 +37,17 @@ struct HomeView: View {
                 if let homeId = selectedHomeId,
                    let _ = model.homes.first(where: { $0.uniqueIdentifier == homeId }) {
                     ControlView(homeId: homeId, model: model)
+                }
+            }
+        }
+        .onChange(of: model.areHomesLoaded) { areLoaded in
+            if areLoaded {
+                if let primaryHome = model.homes.first(where: { $0.isPrimary }) {
+                    selectedHomeId = primaryHome.uniqueIdentifier
+                    header = primaryHome.name
+                } else if let firstHome = model.homes.first {
+                    selectedHomeId = firstHome.uniqueIdentifier
+                    header = firstHome.name
                 }
             }
         }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SelectButton: View {
+    @Environment(\.colorScheme) var colorScheme
     @Binding var isSelected: String
     @State var color: Color
     @State var text: String
@@ -18,7 +19,7 @@ struct SelectButton: View {
                 .frame(width: 100, height: 50)
                 .foregroundColor(isSelected == text ? color : .gray)
             Text(text)
-                .foregroundColor(.white)
+                .foregroundColor(colorScheme == .dark ? .white : .black)
             
         }
     }

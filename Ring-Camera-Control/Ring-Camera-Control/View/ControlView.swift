@@ -21,30 +21,6 @@ struct ControlView: View {
         VStack{
             Spacer()
             
-            Button(action: {
-                print("setting up camera")
-                blemanager.scanForPeripherals()
-            }){
-                Text(blemanager.bluetoothStateString)
-            }
-            Spacer()
-            
-            if let image = blemanager.thisImage {
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 300, height: 300)
-                        .padding()
-                } else {
-                    Image(systemName: "photo.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200, height: 100)
-                        .padding()
-                }
-            
-            Spacer()
-            
             ScrollView {
                 Section(header: Text("My Accessories")){
                     VStack{
@@ -82,6 +58,29 @@ struct ControlView: View {
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .edgesIgnoringSafeArea(.all)
+                }
+                Spacer()
+                
+                if let image = blemanager.thisImage {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 300, height: 300)
+                        .padding()
+                } else {
+                    Image(systemName: "photo.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 100)
+                        .padding()
+                }
+                
+                Spacer()
+                Button(action: {
+                    print("setting up camera")
+                    blemanager.scanForPeripherals()
+                }){
+                    Text("Scan for Banji")
                 }
             }
         }
