@@ -10,7 +10,7 @@ import SwiftUI
 import HomeKit
 
 struct ControlView: View {
-    @State var homeId: UUID
+    @Binding var homeId: UUID?
     @ObservedObject var model: HomeStore
     @StateObject var blemanager = BluetoothManager()
     @State private var selectedAccessory: String?
@@ -45,8 +45,8 @@ struct ControlView: View {
                                     .clipShape(Circle())
                                     .padding()
                             }
-                        }.onAppear(){model.findAccessories(homeId: homeId)}
-                        .onChange(of: homeId, perform: { newValue in
+                        }.onAppear(){model.findAccessories(homeId: homeId!)}
+                        .onChange(of: homeId!, perform: { newValue in
                                 model.findAccessories(homeId: newValue)
                         })
                     }

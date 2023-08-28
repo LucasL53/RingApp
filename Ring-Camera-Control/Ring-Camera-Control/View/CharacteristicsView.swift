@@ -11,7 +11,7 @@ import SwiftUI
 struct CharacteristicsView: View {
     @Binding var serviceId: UUID
     var accessoryId: UUID
-    @Binding var homeId: UUID
+    @Binding var homeId: UUID?
     @ObservedObject var model: HomeStore
     
     var body: some View {

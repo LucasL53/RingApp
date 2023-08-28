@@ -101,6 +101,10 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         characteristics = serviceCharacteristics
     }
     
+    func selectActiveService(accessoryId: UUID, homeId: UUID) {
+        
+    }
+    
     func characteristicValue(for characteristic: HMCharacteristic) -> Any? {
         switch characteristic.localizedDescription {
         case "Power State":

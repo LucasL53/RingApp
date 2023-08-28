@@ -22,6 +22,7 @@ struct HomeView: View {
                     Button(action: {
                         selectedHomeId = home.uniqueIdentifier
                         header = "\(home.name)"
+                        print("changed")
                     }) {
                         Text("\(home.name)")
                     }
@@ -34,9 +35,9 @@ struct HomeView: View {
             
             // Rest of the content
             ScrollView {
-                if let homeId = selectedHomeId,
-                   let _ = model.homes.first(where: { $0.uniqueIdentifier == homeId }) {
-                    ControlView(homeId: homeId, model: model)
+                if selectedHomeId != nil,
+                    let _ = model.homes.first(where: { $0.uniqueIdentifier == selectedHomeId }) {
+                    ControlView(homeId: $selectedHomeId, model: model)
                 }
             }
         }
@@ -45,9 +46,7 @@ struct HomeView: View {
                 if let primaryHome = model.homes.first(where: { $0.isPrimary }) {
                     selectedHomeId = primaryHome.uniqueIdentifier
                     header = primaryHome.name
-                } else if let firstHome = model.homes.first {
-                    selectedHomeId = firstHome.uniqueIdentifier
-                    header = firstHome.name
+                    model.areHomesLoaded = false
                 }
             }
         }
