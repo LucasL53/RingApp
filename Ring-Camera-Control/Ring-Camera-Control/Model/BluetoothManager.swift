@@ -66,7 +66,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     var banji            : CBPeripheral!
     
     @Published var thisImage : Image?
-    @Published var bluetoothStateString: String = "On Bluetooth"
+    @Published var prediction: UUID?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var connectionIntervalUpdated = 0
     
@@ -127,7 +127,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     public func scanForPeripherals() {
         print("scan for peripherals ran")
-        bluetoothStateString = "Off Bluetooth"
         guard centralManager.isScanning == false else {
             return // Return early if already scanning
         }
@@ -138,7 +137,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         guard centralManager.isScanning else {
             return
         }
-        bluetoothStateString = "On Bluetooth"
         centralManager.stopScan()
         discoveryHandler = nil
     }

@@ -22,6 +22,7 @@ struct HomeView: View {
                     Button(action: {
                         selectedHomeId = home.uniqueIdentifier
                         header = "\(home.name)"
+                        model.findAccessories(homeId: selectedHomeId!)
                         print("changed")
                     }) {
                         Text("\(home.name)")
@@ -34,11 +35,9 @@ struct HomeView: View {
             Spacer()
             
             // Rest of the content
-            ScrollView {
-                if selectedHomeId != nil,
-                    let _ = model.homes.first(where: { $0.uniqueIdentifier == selectedHomeId }) {
-                    ControlView(homeId: $selectedHomeId, model: model)
-                }
+            if selectedHomeId != nil,
+                let _ = model.homes.first(where: { $0.uniqueIdentifier == selectedHomeId }) {
+                ControlView(homeId: $selectedHomeId, model: model)
             }
         }
         .onChange(of: model.areHomesLoaded) { areLoaded in

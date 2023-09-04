@@ -11,7 +11,8 @@ class MLHandler {
     private var model: TestModel! // Implicitly unwrapped optional
     
     // Labels mapping from class indices to names
-    private let labels = ["Light-bulb", "Window-blind", "smart lock", "speaker", "tv"]
+    private let labels: [String] = ["1A7337DD-577D-510E-8E50-5E91C5B8BE34", "", "30BD4212-DC94-5DE2-922B-98EFF465E326", "", ""]
+//    [.lights, .blinds, .lock, .speaker, .tv]
 
     // Initialization of the model
     init() {
@@ -24,7 +25,7 @@ class MLHandler {
     }
     
     // Function to predict from an image
-    func predict(image: CVPixelBuffer) {
+    func predict(image: CVPixelBuffer) -> UUID? {
         do {
             let prediction = try model.prediction(image: image)
             
@@ -37,6 +38,7 @@ class MLHandler {
 
             // Print the prediction
             print("Prediction: \(maxLabel)")
+            return UUID(uuidString: maxLabel)
 
             // Optionally, print all probabilities with corresponding labels
 //            for i in 0..<labels.count {
@@ -45,6 +47,7 @@ class MLHandler {
 //            }
         } catch {
             print("Error making prediction: \(error)")
+            return nil
         }
     }
 }

@@ -9,74 +9,75 @@
 import SwiftUI
 import HomeKit
 
+enum exampleClass: String, CaseIterable, Identifiable {
+    case lights = "Lights"
+    case speaker = "Speaker"
+    case lock = "Smart Lock"
+    case tv = "TV"
+    case blinds = "Blinds"
+
+    var id: exampleClass { self }
+}
+
 struct ControlView: View {
     @Binding var homeId: UUID?
     @ObservedObject var model: HomeStore
     @StateObject var blemanager = BluetoothManager()
-    @State private var selectedAccessory: String?
-    @State private var selectedAccessoryId: UUID?
+//    @State private var selectedAccessory: String?
+    @State private var selectedAccessoryId: UUID? = UUID(uuidString: "1A7337DD-577D-510E-8E50-5E91C5B8BE34")
     @State private var spotify: Bool = false
+//    @State private var selectedClass: exampleClass = .lights
 
     var body: some View {
         VStack{
-            Spacer()
-            
             ScrollView {
-                Section(header: Text("My Accessories")){
-                    VStack{
-                        ScrollView(.horizontal){
-                            HStack(spacing: 16){
-                                ForEach(model.accessories, id: \.uniqueIdentifier) { accessory in
-                                    SelectButton(isSelected:
-                                                    Binding(
-                                                        get: { self.selectedAccessory ?? "none" },
-                                                        set: { self.selectedAccessory = $0}
-                                                    )
-                                                 , color: .blue, text: "\(accessory.name)")
-                                    .onTapGesture {
-                                        selectedAccessory = "\(accessory.name)"
-                                        selectedAccessoryId = accessory.uniqueIdentifier
-                                    }
-                                    .padding()
-                                }
-                                RoutePickerView(selectedAccessoryId: $selectedAccessoryId, selectedAccessory: $selectedAccessory, spotify: $spotify)
-                                    .frame(width: 100, height: 50) // adjust as needed
-                                    .background(Color.blue)
-                                    .clipShape(Circle())
-                                    .padding()
-                            }
-                        }.onAppear(){model.findAccessories(homeId: homeId!)}
-                        .onChange(of: homeId!, perform: { newValue in
-                                model.findAccessories(homeId: newValue)
-                        })
+                Section(header: Text("My Banji")
+                    .bold()
+                    .font(.title) // Increase the font size
+                    .frame(maxWidth: .infinity, alignment: .leading)) {
+                    Spacer()
+                    Button(action: {
+                        print("setting up camera")
+                        blemanager.scanForPeripherals()
+                    }) {
+                        Text("Scan for Banji")
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .edgesIgnoringSafeArea(.all)
+                    .frame(maxWidth: .infinity) // This keeps the button centered
+                    .padding()
                 }
                 Spacer()
                 
-                if let image = blemanager.thisImage {
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 300, height: 300)
-                        .padding()
-                } else {
-                    Image(systemName: "photo.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200, height: 100)
-                        .padding()
+                Section(header: Text("My Smart Home Device")
+                    .frame(maxWidth: .infinity, alignment: .leading)) {
+                    Picker("My Smart Home Device", selection: $selectedAccessoryId){
+                        ForEach(exampleClass.allCases) { category in
+                             Text(category.rawValue).tag(category)
+                       }
+                    }
+                    .pickerStyle(.segmented)
+                    .onReceive(blemanager.$prediction) { newPrediction in
+                        if let newPrediction = newPrediction {
+                            selectedAccessoryId = newPrediction
+                        }
+                    }
                 }
-                
                 Spacer()
-                Button(action: {
-                    print("setting up camera")
-                    blemanager.scanForPeripherals()
-                }){
-                    Text("Scan for Banji")
+                Section(header: Text("Live View")
+                    .frame(maxWidth: .infinity, alignment: .leading)) {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.gray)
+                            .frame(height: 160)
+                        
+                        // Foreground image if available
+                        if let image = blemanager.thisImage {
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 300, height: 300)
+                        }
+                    }
                 }
-                
                 Spacer()
                 
                 if selectedAccessoryId != nil {

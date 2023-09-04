@@ -24,6 +24,7 @@
 		1D94E3932A93401F00B7C625 /* OutlinedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3922A93401F00B7C625 /* OutlinedButtonStyle.swift */; };
 		1D94E3952A936D2200B7C625 /* SpotifyWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3942A936D2200B7C625 /* SpotifyWebView.swift */; };
 		1D94E3972A936DD200B7C625 /* SpotifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3962A936DD200B7C625 /* SpotifyController.swift */; };
+		1D94E3992A9E0AB400B7C625 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,8 @@
 		1D94E3922A93401F00B7C625 /* OutlinedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlinedButtonStyle.swift; sourceTree = "<group>"; };
 		1D94E3942A936D2200B7C625 /* SpotifyWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyWebView.swift; sourceTree = "<group>"; };
 		1D94E3962A936DD200B7C625 /* SpotifyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyController.swift; sourceTree = "<group>"; };
+		1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
+		1D94E39A2A9E0BEA00B7C625 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +81,7 @@
 		1D4945092A885CDD00D2DACE /* Ring-Camera-Control */ = {
 			isa = PBXGroup;
 			children = (
+				1D94E39A2A9E0BEA00B7C625 /* Info.plist */,
 				1D49452B2A88720200D2DACE /* Ring-Camera-Control.entitlements */,
 				1D4945192A885D1400D2DACE /* Model */,
 				1D4945182A885D0500D2DACE /* View */,
@@ -118,6 +122,7 @@
 				1D49451E2A885DF100D2DACE /* BluetoothManager.swift */,
 				1D94E38C2A8D92A900B7C625 /* MLHandler.swift */,
 				1D94E3962A936DD200B7C625 /* SpotifyController.swift */,
+				1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -220,6 +225,7 @@
 				1D49451F2A885DF100D2DACE /* BluetoothManager.swift in Sources */,
 				1D4945212A886F5C00D2DACE /* HomeView.swift in Sources */,
 				1D94E3912A933D2E00B7C625 /* CharacteristicsView.swift in Sources */,
+				1D94E3992A9E0AB400B7C625 /* MusicPlayer.swift in Sources */,
 				1D4945252A88708200D2DACE /* ControlView.swift in Sources */,
 				1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */,
 				1D94E3932A93401F00B7C625 /* OutlinedButtonStyle.swift in Sources */,
@@ -362,6 +368,8 @@
 				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Ring-Camera-Control/Info.plist";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "App will require media access for Music and Video";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App will require Bluetooth to always be on";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "App will require access to your HomeKit";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -395,6 +403,8 @@
 				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Ring-Camera-Control/Info.plist";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "App will require media access for Music and Video";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App will require Bluetooth to always be on";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "App will require access to your HomeKit";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MusicKit
 
 struct ContentView: View {
     @ObservedObject var homeModel = HomeStore()
