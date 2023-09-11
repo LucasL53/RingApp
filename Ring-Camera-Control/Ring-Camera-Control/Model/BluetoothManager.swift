@@ -80,9 +80,10 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var currentImageSize        : Int          = 0
     private var transferRate            : Double       = 0
     private var framesCount             : Int          = 0
-    private var prevTimestamp           : Int          = Int(1000)
+    private var prevTimestamp           : Double       = 0.0
     private var classifiedDevice        : Int          = 0
     private var lastActionTimeMs        : Int          = 0
+    private var prevButtonPressed       : Bool         = false
     private let date = Date()
     
     // This must align with MLHandler
@@ -194,12 +195,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if let pname = peripheral.name {
-            print("Discovered " + pname)
-            if (pname == "banji") {
-                self.banji = peripheral
-                self.banji.delegate = self
-                self.centralManager.connect(peripheral, options: nil)
-                stopScan()
+            if (pname != "LG" && pname != "M108FP4") {
+                print("Discovered " + pname)
+                if (pname == "banji") {
+                    self.banji = peripheral
+                    self.banji.delegate = self
+                    self.centralManager.connect(peripheral, options: nil)
+                    stopScan()
+                }
             }
         }
     }
@@ -446,9 +449,10 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     let statusByte = bufferPointerUInt8[1]
                     let startOfFrame = (statusByte & 1) == 1
                     let buttonPressed = ((statusByte >> 1) & 1) == 1
+                    let imuValid = ((statusByte >> 2) & 1) == 1
                     if (startOfFrame) {
-                        let interval = Int(date.timeIntervalSince1970 * 1000) - self.prevTimestamp
-                        prevTimestamp = Int(date.timeIntervalSince1970 * 1000)
+                        let interval = CFAbsoluteTimeGetCurrent() - self.prevTimestamp
+                        prevTimestamp = CFAbsoluteTimeGetCurrent()
                         
                         var imgHeight = self.cameraBuffer.count / imgWidth
                         
@@ -471,7 +475,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                     print("prediction_time_ms: \(1000*timeElapsed)")
                                 }
                                 
-                                print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / (Float(interval)/Float(1000)) )))
+                                print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
                                 
                             } else {
                                 print("error creating cvpixelbuffer")
@@ -482,7 +486,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         cameraBuffer.removeAll()
                     } // startOfFrame end
                     
-                    if (buttonPressed) {
+                    if (buttonPressed && (prevButtonPressed == false)) {
                         let currentTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
 //                        print ("currentTimeMs:" + String(currentTimeMs) + " lastActionTimeMs:" + String(self.lastActionTimeMs))
                         if (currentTimeMs - self.lastActionTimeMs > 500) {
@@ -550,8 +554,15 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     let fTilt = sqrt(pow(fusedTilt.x, 2) + pow(fusedTilt.y, 2))
                             
                     //let outputString = String(format: "Accel X Accel Y Accel Z Gyro X Gyro Y Gyro Z\n%.2f %.2f %.2f %.2f %.2f %.2f", accelX_float, accelY_float,accelZ_float, gyroX_float, gyroY_float, gyroZ_float)
-                    let outputString = String(format: "aTile gTilt fTilt\n%.2f %.2f %.2f %.2f %.2f %.2f", aTilt, gTilt,fTilt, accelTilt.x,accelTilt.y, accelTilt.z)
-                    // print(outputString)
+                    
+                    if (buttonPressed && imuValid) {
+                        var outputString = String(format: "a_x:%.2f a_y:%.2f a_z:%.2f | g_x:%.2f g_y:%.2f g_z%.2f", accelX_float, accelY_float, accelZ_float,gyroX_float, gyroY_float, gyroZ_float)
+                        print(outputString)
+                        outputString = String(format: "aTilt:%.2f gTilt:%.2f fTilt:%.2f | atilt_x:%.2f atilt_y:%.2f atilt_z:%.2f", aTilt, gTilt,fTilt, accelTilt.x,accelTilt.y, accelTilt.z)
+                        print(outputString)
+                    }
+                    
+                    prevButtonPressed = buttonPressed
                     
                     for i in 14...(packetLength - 1) {
                         cameraBuffer.append(bufferPointerUInt8[i])

@@ -39,12 +39,13 @@ class MLHandler {
 
             
             // Optionally, print all probabilities with corresponding labels
-//            for i in 0..<labels.count {
-//                let probability = outputArray[i].floatValue
-//                print("\(labels[i]): \(probability)")
-//            }
+            for i in 0..<labels.count {
+                let probability = outputArray[i].floatValue
+                print("\(labels[i]): \(probability)")
+            }
             // Print the prediction
             print("Prediction: \(maxLabel)\n")
+            
             return maxIndex
 //            return identifiers[maxIndex]
         } catch {
