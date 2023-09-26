@@ -7,7 +7,7 @@
 import SwiftUI
 import MusicKit
 
-struct MusicPlayer: View {
+struct AppleMusicPlayer: View {
     @State private var isPlaying = false
     
     var body: some View {
