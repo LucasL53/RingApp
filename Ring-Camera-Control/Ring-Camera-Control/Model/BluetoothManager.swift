@@ -12,6 +12,7 @@ import SwiftUI
 import CoreBluetooth
 import CoreML
 import CoreVideo
+import MediaPlayer
 
 //MARK: - Service Identifiers
 let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3246970")
@@ -54,6 +55,17 @@ enum ImageResolution: UInt8 {
                 return "1024x768"
             case .resolution1600x1200:
                 return "1600x1200"
+        }
+    }
+}
+
+extension MPVolumeView {
+    static func setVolume(_ volume: Float) -> Void {
+        let volumeView = MPVolumeView()
+        let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider
+
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
+            slider?.value = volume
         }
     }
 }
