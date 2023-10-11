@@ -6,6 +6,32 @@
 //
 import SwiftUI
 import MusicKit
+import MediaPlayer
+
+extension MPVolumeView {
+    static func setVolume(_ volume: Float) -> Void {
+        let volumeView = MPVolumeView()
+        let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider
+
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
+            slider?.value = volume
+        }
+    }
+}
+
+class MusicPlayerModel: ObservableObject {
+    
+    static let shared = MusicPlayerModel()
+    
+    var musicPlayer = MPMusicPlayerController.applicationMusicPlayer
+    
+    @Published var currentSong: MPMediaItem?
+    @Published var isPlayerViewPresented = false
+    
+    @Published var playlist = [MPMediaItemCollection]()
+    @Published var librarySongs = [MPMediaItem]()
+    
+}
 
 struct AppleMusicPlayer: View {
     @State private var isPlaying = false
@@ -60,3 +86,4 @@ struct AppleMusicPlayer: View {
         }
     }
 }
+
