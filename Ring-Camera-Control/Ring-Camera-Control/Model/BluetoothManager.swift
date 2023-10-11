@@ -119,6 +119,22 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     var gyroYBuffer: [Float] = []
     var gyroZBuffer: [Float] = []
     let GRAVITY_EARTH: Double = 9.80665
+    let GRAVITY_REFERENCE_VECTOR: [Double] = [0.0,0.0,9.80665] // Vector representing gravity vector on earth (x,y,z)
+        
+    var rotationMatrix3D: [[Double]] = Array(repeating: Array(repeating: 0, count: 3), count: 3)
+
+    // Initial Tilt on first button press
+    var accelX_init: Double = 0.0
+    var accelY_init: Double = 0.0
+    var accelZ_init: Double = 0.0
+    
+    var tiltX_init: Double = 0.0
+    var tiltY_init: Double = 0.0
+    var tiltZ_init: Double = 0.0
+    
+    var tiltXBuffer: [Double] = []
+    var tiltYBuffer: [Double] = []
+    var tiltZBuffer: [Double] = []
     
     //MARK: - Init
     required override init() {
@@ -485,8 +501,21 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     } // startOfFrame end
                     
                     if (buttonPressed && (prevButtonPressed == false)) {
+                            
+                        // Get initial accelerometer vectors
+                        accelX_init = lsbToMps2((Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2]),2,16)
+                        accelY_init = lsbToMps2((Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4]),2,16)
+                        accelZ_init = lsbToMps2((Int16(bufferPointerUInt8[7]) << 8) | Int16(bufferPointerUInt8[6]),2,16)
+                        
+                        // Build Accel vector
+                        let accelVector_init = [accelX_init, accelY_init, accelZ_init]
+
+                        // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
+                        rotationMatrix3D = rotationMatrix(fromVector: accelVector_init, toVector: GRAVITY_REFERENCE_VECTOR)
+                        var rotatedVector = applyRotationMatrix(matrix: rotationMatrix3D, toVector: accelVector_init)
+
                         let currentTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
-//                        print ("currentTimeMs:" + String(currentTimeMs) + " lastActionTimeMs:" + String(self.lastActionTimeMs))
+                        print ("currentTimeMs:" + String(currentTimeMs) + " lastActionTimeMs:" + String(self.lastActionTimeMs))
                         if (currentTimeMs - self.lastActionTimeMs > 500) {
                             // 500ms debounce
                             self.lastActionTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
@@ -513,52 +542,58 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                             }
                         }
                     }
-                
-                    var accelX = (Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2])
-                    var accelY = (Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4])
-                    var accelZ = (Int16(bufferPointerUInt8[7]) << 8) | Int16(bufferPointerUInt8[6])
-                    var gyroX  = (Int16(bufferPointerUInt8[9])  << 8) | Int16(bufferPointerUInt8[8])
-                    var gyroY  = (Int16(bufferPointerUInt8[11]) << 8) | Int16(bufferPointerUInt8[10])
-                    var gyroZ  = (Int16(bufferPointerUInt8[13]) << 8) | Int16(bufferPointerUInt8[12])
-                                      
-                    var accelX_float = lsbToMps2(accelX, 2, 16)
-                    var accelY_float = lsbToMps2(accelY, 2, 16)
-                    var accelZ_float = lsbToMps2(accelZ, 2, 16)
-                                       
-                    var gyroX_float = lsbToDps(gyroX, 2000, 16)
-                    var gyroY_float = lsbToDps(gyroY, 2000, 16)
-                    var gyroZ_float = lsbToDps(gyroZ, 2000, 16)
+                    
+                    var gyroX  = lsbToDps((Int16(bufferPointerUInt8[9])  << 8) | Int16(bufferPointerUInt8[8]), 2000, 16)
+                    var gyroY  = lsbToDps((Int16(bufferPointerUInt8[11]) << 8) | Int16(bufferPointerUInt8[10]), 2000, 16)
+                    var gyroZ  = lsbToDps((Int16(bufferPointerUInt8[13]) << 8) | Int16(bufferPointerUInt8[12]), 2000, 16)
+                    var accelX_float = lsbToMps2((Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2]), 2, 16)
+                    var accelY_float = lsbToMps2((Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4]), 2, 16)
+                    var accelZ_float = lsbToMps2((Int16(bufferPointerUInt8[7]) << 8) | Int16(bufferPointerUInt8[6]), 2, 16)
+                    
+                    // Build Accel Vector
+                    let accelerometerReadings: [Double] = [accelX_float, accelY_float, accelZ_float]  // Replace with your actual readings
+                    
+                    // Rotate only about y axis
+                    //let rotatedAccelerometerReadings = applyRotationMatrix(matrix: rotationMatrix_Y_Axis, toVector: accelerometerReadings)
+                    
+                    // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
+                    var rotatedVector = applyRotationMatrix(matrix: rotationMatrix3D, toVector: accelerometerReadings)
 
-                    accelXBuffer.append(Float(accelX_float))
-                    accelYBuffer.append(Float(accelY_float))
-                    accelZBuffer.append(Float(accelZ_float))
-                    gyroXBuffer.append(Float(gyroX_float))
-                    gyroYBuffer.append(Float(gyroY_float))
-                    gyroZBuffer.append(Float(gyroZ_float))
-                                       
+                    accelX_float = rotatedVector[0]
+                    accelY_float = rotatedVector[1]
+                    accelZ_float = rotatedVector[2]
+                    
                     accelTilt.x = atan(accelX_float / sqrt(pow(accelY_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
                     accelTilt.y = atan(accelY_float / sqrt(pow(accelX_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
                     accelTilt.z = atan(sqrt(pow(accelX_float,2) + pow(accelY_float,2)) / accelZ_float) * 180 / Double.pi
-                      
-                    gyroTilt.x += gyroX_float
-                    gyroTilt.y += gyroY_float
-                    gyroTilt.z += gyroZ_float
-                                        
-                    fusedTilt.x = (1 - fusedTilt.alpha) * (fusedTilt.x + gyroX_float) + (fusedTilt.alpha) * (accelTilt.x)
-                    fusedTilt.y = (1 - fusedTilt.alpha) * (fusedTilt.y + gyroY_float) + (fusedTilt.alpha) * (accelTilt.y)
-                                             
+                    gyroTilt.x += gyroX
+                    gyroTilt.y += gyroY
+                    gyroTilt.z += gyroZ
+                    
+
+                    
+                    accelXBuffer.append(Float(accelX_float))
+                    accelYBuffer.append(Float(accelY_float))
+                    accelZBuffer.append(Float(accelZ_float))
+//                    gyroXBuffer.append(Float(gyroX_float))
+//                    gyroYBuffer.append(Float(gyroY_float))
+//                    gyroZBuffer.append(Float(gyroZ_float))
+//                    tiltXBuffer.append(accelTilt.x)
+//                    tiltYBuffer.append(accelTilt.y)
+//                    tiltZBuffer.append(accelTilt.z)
+
                     let aTilt = sqrt(pow(accelTilt.x, 2) + pow(accelTilt.y, 2))
-                    let gTilt = sqrt(pow(gyroTilt.x, 2) + pow(gyroTilt.y, 2))
-                    let fTilt = sqrt(pow(fusedTilt.x, 2) + pow(fusedTilt.y, 2))
-                            
-                    //let outputString = String(format: "Accel X Accel Y Accel Z Gyro X Gyro Y Gyro Z\n%.2f %.2f %.2f %.2f %.2f %.2f", accelX_float, accelY_float,accelZ_float, gyroX_float, gyroY_float, gyroZ_float)
+//                    fusedTilt.x = (1 - fusedTilt.alpha) * (fusedTilt.x + gyroX) + (fusedTilt.alpha) * (accelTilt.x)
+//                    fusedTilt.y = (1 - fusedTilt.alpha) * (fusedTilt.y + gyroY) + (fusedTilt.alpha) * (accelTilt.y)
+//                    let gTilt = sqrt(pow(gyroTilt.x, 2) + pow(gyroTilt.y, 2))
+//                    let fTilt = sqrt(pow(fusedTilt.x, 2) + pow(fusedTilt.y, 2))
+                    
                     
                     if (buttonPressed && imuValid) {
-                        var outputString = String(format: "a_x:%.2f a_y:%.2f a_z:%.2f | g_x:%.2f g_y:%.2f g_z%.2f", accelX_float, accelY_float, accelZ_float,gyroX_float, gyroY_float, gyroZ_float)
-                        print(outputString)
-                        outputString = String(format: "aTilt:%.2f gTilt:%.2f fTilt:%.2f | atilt_x:%.2f atilt_y:%.2f atilt_z:%.2f", aTilt, gTilt,fTilt, accelTilt.x,accelTilt.y, accelTilt.z)
-                        print(outputString)
+                        var outputString1 = String(format: "%.2f %.2f %.2f, %.2f", aTilt, accelTilt.x, accelTilt.y,accelTilt.z)
+                        print(outputString1)
                     }
+                    
                     
                     prevButtonPressed = buttonPressed
                     
@@ -580,4 +615,83 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             print("banji is streaming")
         }
     }
+    
+    // Apply the rotation using the rotation matrix
+    public func applyRotationMatrix(matrix: [[Double]], toVector vector: [Double]) -> [Double] {
+        
+       
+        var rotatedVector: [Double] = [0, 0, 0]
+        
+        for i in 0..<3 {
+            for j in 0..<3 {
+                rotatedVector[i] += matrix[i][j] * vector[j]
+            }
+        }
+        
+        return rotatedVector
+    }
+    
+    // Function to calculate the cross product of two vectors
+    func crossProduct(_ a: [Double], _ b: [Double]) -> [Double] {
+        return [
+            a[1] * b[2] - a[2] * b[1],
+            a[2] * b[0] - a[0] * b[2],
+            a[0] * b[1] - a[1] * b[0]
+        ]
+    }
+
+    // Function to calculate the dot product of two vectors
+    func dotProduct(_ a: [Double], _ b: [Double]) -> Double {
+        return zip(a, b).map(*).reduce(0, +)
+    }
+
+    // Function to normalize a vector
+    func normalize(_ vector: [Double]) -> [Double] {
+        let magnitude = sqrt(dotProduct(vector, vector))
+        return vector.map { $0 / magnitude }
+    }
+
+    // Function to calculate the rotation matrix to rotate vector a onto vector b
+    func rotationMatrix(fromVector a: [Double], toVector b: [Double]) -> [[Double]] {
+        // Normalize vectors
+        let aNormalized = normalize(a)
+        let bNormalized = normalize(b)
+        
+        // Calculate the axis of rotation (cross product of a and b)
+        let axis = crossProduct(aNormalized, bNormalized)
+        
+        // Calculate the angle of rotation (dot product of a and b)
+        let angle = acos(dotProduct(aNormalized, bNormalized))
+        
+        // Check if the vectors are already aligned
+//        if angle.isNaN {
+//            return nil // Vectors are already aligned
+//        }
+        
+        // Create the rotation matrix
+        let c = 1 - cos(angle)
+        let s = sin(angle)
+        let x = axis[0]
+        let y = axis[1]
+        let z = axis[2]
+        
+        let rotationMatrix: [[Double]] = [
+            [cos(angle) + x * x * c, x * y * c - z * s, x * z * c + y * s],
+            [y * x * c + z * s, cos(angle) + y * y * c, y * z * c - x * s],
+            [z * x * c - y * s, z * y * c + x * s, cos(angle) + z * z * c]
+        ]
+        
+        return rotationMatrix
+    }
+
+    func printMatrix(matrix: [[Double]]) {
+        for i in 0..<matrix.count {
+            for j in 0..<matrix[i].count {
+                print(matrix[i][j], terminator: "\t")
+            }
+            print()
+        }
+    }
+
+
 }
