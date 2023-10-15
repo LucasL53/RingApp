@@ -75,7 +75,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     func homeManagerDidUpdateHomes(_ manager: HMHomeManager) {
         self.homes = self.manager.homes
         self.areHomesLoaded = true 
-        print(self.homes)
+//        print(self.homes)
     }
     
     func findAccessories(homeId: UUID) {
@@ -102,6 +102,12 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
 //        print(serviceCharacteristics)
         characteristics = serviceCharacteristics
     }
+    
+//    func selectActiveService(accessoryId: UUID, homeId: UUID) {
+//        if let thisAccessory = accessories.first(where: { $0.uniqueIdentifier == accessoryId }) {
+//            
+//        }
+//    }
     
     func characteristicValue(for characteristic: HMCharacteristic) -> Any? {
         switch characteristic.localizedDescription {

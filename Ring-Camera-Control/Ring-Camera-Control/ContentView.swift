@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MusicKit
 
 struct ContentView: View {
     @ObservedObject var homeModel = HomeStore()
@@ -13,7 +14,4 @@ struct ContentView: View {
         HomeView(model: homeModel)
     }
 }
-//
-//#Preview {
-//    HomeView(model: HomeStore())
-//}
+

@@ -11,7 +11,7 @@ import HomeKit
 
 struct ServicesView: View {
     @Binding var accessoryId: UUID?
-    @Binding var homeId: UUID
+    @Binding var homeId: UUID?
     
     @ObservedObject var model: HomeStore
     @State private var selectedService: String = "none"
@@ -32,11 +32,11 @@ struct ServicesView: View {
                         .padding()
                     }
                 }.onAppear(){
-                    model.findServices(accessoryId: accessoryId!, homeId: homeId)
+                    model.findServices(accessoryId: accessoryId!, homeId: homeId!)
                 }
                 .onChange(of: accessoryId) { newValue in
                     if let newAccessoryId = newValue {
-                        model.findServices(accessoryId: newAccessoryId, homeId: homeId)
+                        model.findServices(accessoryId: newAccessoryId, homeId: homeId!)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

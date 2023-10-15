@@ -68,8 +68,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
     
+    @Published var banjiStatus : String = "disconnected"
     @Published var thisImage : Image?
-    @Published var bluetoothStateString: String = "On Bluetooth"
+    @Published var prediction: UUID?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var connectionIntervalUpdated = 0
     
@@ -143,18 +144,18 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     
     public func scanForPeripherals() {
         print("scan for peripherals ran")
-        bluetoothStateString = "Off Bluetooth"
+        self.banjiStatus = "scanning"
         guard centralManager.isScanning == false else {
             return // Return early if already scanning
         }
         centralManager.scanForPeripherals(withServices: nil, options: nil)
+        
     }
     
     public func stopScan() {
         guard centralManager.isScanning else {
             return
         }
-        bluetoothStateString = "On Bluetooth"
         centralManager.stopScan()
         discoveryHandler = nil
     }
@@ -176,6 +177,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if(central.state == .poweredOn) {
             print("BLE powered on")
+            self.banjiStatus = "connected"
         } else {
             print("ERROR on BLE")
         }
@@ -191,6 +193,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         connectionIntervalUpdated = (connectionIntervalUpdated > 0) ? (connectionIntervalUpdated - 1) : 0
         print("Disconnected with banji \(peripheral.identifier)")
+        self.banjiStatus = "disconnected"
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -286,19 +289,19 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 //    func createPixelBufferFromUInt8Buffer(buffer: [UInt8], width: Int, height: Int) -> CVPixelBuffer? {
 //        // Check if the buffer size matches the width and height
 //        guard buffer.count == width * height else { return nil }
-//        
+//
 //        var pixelBuffer: CVPixelBuffer?
 //        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_OneComponent8, nil, &pixelBuffer)
-//        
+//
 //        guard status == kCVReturnSuccess else {
 //            return nil
 //        }
-//        
+//
 //        CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
 //        let pixelData = CVPixelBufferGetBaseAddress(pixelBuffer!)
-//        
+//
 //        memcpy(pixelData, buffer, buffer.count)
-//        
+//
 //        CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
 //
 //        return pixelBuffer

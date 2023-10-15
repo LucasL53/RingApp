@@ -6,14 +6,45 @@
 //
 
 import SwiftUI
+import StoreKit
+import MediaPlayer
 
 @main
 struct Ring_Camera_ControlApp: App {
+    
+    @Environment(\.scenePhase) var scenePhase
+    
     @StateObject var homeModel: HomeStore = HomeStore()
     @StateObject var bleManager: BluetoothManager = BluetoothManager()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onChange(of: scenePhase, perform: { value in
+                    if value == .active {
+                        updateSongs()
+                    }
+                })
+        }
+    }
+    
+    func updateSongs() {
+        SKCloudServiceController.requestAuthorization{ status in
+            if status == .authorized {
+                print("skcloud service good:)")
+                let songsQuery = MPMediaQuery.songs()
+                if let songs = songsQuery.items {
+                    let desc = NSSortDescriptor(key: MPMediaItemPropertyLastPlayedDate, ascending: false)
+                    let sortedSongs = NSArray(array: songs).sortedArray(using: [desc])
+
+                    MusicPlayerModel.shared.librarySongs = sortedSongs as! [MPMediaItem]
+                }
+
+                let playlistQuery = MPMediaQuery.playlists()
+                if let playlists = playlistQuery.collections {
+                    MusicPlayerModel.shared.playlist = playlists
+                }
+            }
         }
     }
 }
