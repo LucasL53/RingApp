@@ -65,6 +65,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
     
+    @Published var banjiStatus : String = "disconnected"
     @Published var thisImage : Image?
     @Published var prediction: UUID?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
@@ -127,6 +128,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     public func scanForPeripherals() {
         print("scan for peripherals ran")
+        self.banjiStatus = "Scanning"
         guard centralManager.isScanning == false else {
             return // Return early if already scanning
         }
@@ -158,6 +160,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if(central.state == .poweredOn) {
             print("BLE powered on")
+            self.banjiStatus = "connected"
         } else {
             print("ERROR on BLE")
         }
@@ -173,6 +176,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         connectionIntervalUpdated = (connectionIntervalUpdated > 0) ? (connectionIntervalUpdated - 1) : 0
         print("Disconnected with banji \(peripheral.identifier)")
+        self.banjiStatus = "disconnected"
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {

@@ -31,17 +31,13 @@ struct ControlView: View {
     var body: some View {
         VStack{
             ScrollView {
-                Section(header: Text("My Banji")
+                Section(header: Text("My Banji:")
                     .bold()
                     .font(.title) // Increase the font size
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     Spacer()
-                    Button(action: {
-                        print("setting up camera")
-                        blemanager.scanForPeripherals()
-                    }) {
-                        Text("Scan for Banji")
-                    }
+                        
+                    Text("banji " + blemanager.banjiStatus)
                     .frame(maxWidth: .infinity) // This keeps the button centered
                     .padding()
                 }
@@ -87,6 +83,8 @@ struct ControlView: View {
                     SpotifyWebView()
                 }
             }
+        }.onChange(of: blemanager.banjiStatus) {newValue in 
+            blemanager.scanForPeripherals()
         }
     }
 }
