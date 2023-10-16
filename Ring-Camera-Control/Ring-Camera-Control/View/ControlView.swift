@@ -41,7 +41,16 @@ struct ControlView: View {
                     .padding()
                 }
                 Spacer()
+                HStack{
+                    RouterPicker()
+                        .frame(width: 100, height: 50) // adjust as needed
+                        .background(Color.blue)
+                        .clipShape(Circle())
+                        .padding()
+                    AppleMusicPlayer()
+                }
                 
+                Spacer()
                 Section(header: Text("My Smart Home Device")
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     Picker("My Smart Home Device", selection: $selectedAccessoryId){
