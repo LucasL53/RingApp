@@ -122,6 +122,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     let GRAVITY_REFERENCE_VECTOR: [Double] = [0.0,0.0,9.80665] // Vector representing gravity vector on earth (x,y,z)
         
     var rotationMatrix3D: [[Double]] = Array(repeating: Array(repeating: 0, count: 3), count: 3)
+    
+    var IMU_SAMPLE_PERIOD = 0.02 // 50 Hz sample rate
 
     // Initial Tilt on first button press
     var accelX_init: Double = 0.0
@@ -135,6 +137,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     var tiltXBuffer: [Double] = []
     var tiltYBuffer: [Double] = []
     var tiltZBuffer: [Double] = []
+    
+    // Global variable for initial position
+    var ringDisplacement = (x: 0.0, y: 0.0, z: 0.0)
     
     //MARK: - Init
     required override init() {
@@ -210,7 +215,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if let pname = peripheral.name {
             if (pname != "LG" && pname != "M108FP4") {
-                print("Discovered " + pname)
+                //print("Discovered " + pname)
                 if (pname == "banji") {
                     self.banji = peripheral
                     self.banji.delegate = self
@@ -501,7 +506,12 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     } // startOfFrame end
                     
                     if (buttonPressed && (prevButtonPressed == false)) {
-                            
+                        
+                        // Set initial ring displacement to 0
+                        ringDisplacement.x = 0
+                        ringDisplacement.y = 0
+                        ringDisplacement.z = 0
+                        
                         // Get initial accelerometer vectors
                         accelX_init = lsbToMps2((Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2]),2,16)
                         accelY_init = lsbToMps2((Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4]),2,16)
@@ -563,13 +573,20 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     accelY_float = rotatedVector[1]
                     accelZ_float = rotatedVector[2]
                     
+                    // Calculate Displacement
+                    var displacement = calculateDisplacement(accelerationX: accelX_float, accelerationY: accelY_float, accelerationZ: accelZ_float)
+                    
+                    ringDisplacement.x += displacement[0]
+                    ringDisplacement.y += displacement[1]
+                    ringDisplacement.z += displacement[2]
+                    
+                    
                     accelTilt.x = atan(accelX_float / sqrt(pow(accelY_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
                     accelTilt.y = atan(accelY_float / sqrt(pow(accelX_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
                     accelTilt.z = atan(sqrt(pow(accelX_float,2) + pow(accelY_float,2)) / accelZ_float) * 180 / Double.pi
                     gyroTilt.x += gyroX
                     gyroTilt.y += gyroY
                     gyroTilt.z += gyroZ
-                    
 
                     
                     accelXBuffer.append(Float(accelX_float))
@@ -590,8 +607,16 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     
                     
                     if (buttonPressed && imuValid) {
-                        var outputString1 = String(format: "%.2f %.2f %.2f, %.2f", aTilt, accelTilt.x, accelTilt.y,accelTilt.z)
-                        print(outputString1)
+                        //var outputString1 = String(format: "%.2f %.2f %.2f, %.2f", aTilt, accelTilt.x, accelTilt.y,accelTilt.z)
+                        //print(outputString1)
+                        
+                        var outputString2 = String(format: "%.2f %.2f %.2f, %.2f", ringDisplacement.x, ringDisplacement.y, ringDisplacement.z )
+                        print(outputString2)
+
+                        if(classifiedDevice == 3){
+                            // Speaker
+                            //MPVolumeView.setVolume(accelTilt.x)
+                        }
                     }
                     
                     
@@ -682,6 +707,24 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         ]
         
         return rotationMatrix
+    }
+    
+    func calculateDisplacement(accelerationX: Double, accelerationY: Double, accelerationZ: Double) -> [Double] {
+        // Initialize variables for velocity and position
+        var velocity = (x: 0.0, y: 0.0, z: 0.0)
+        var position = (x: 0.0, y: 0.0, z: 0.0)
+            
+        // Integrate acceleration to get velocity
+        velocity.x += accelerationX * IMU_SAMPLE_PERIOD
+        velocity.y += accelerationY * IMU_SAMPLE_PERIOD
+        velocity.z += accelerationZ * IMU_SAMPLE_PERIOD
+            
+        // Integrate velocity to get position
+        position.x += velocity.x * IMU_SAMPLE_PERIOD
+        position.y += velocity.y * IMU_SAMPLE_PERIOD
+        position.z += velocity.z * IMU_SAMPLE_PERIOD
+            
+        return [position.x, position.y, position.z]
     }
 
     func printMatrix(matrix: [[Double]]) {
