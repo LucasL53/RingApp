@@ -74,8 +74,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
 
     func homeManagerDidUpdateHomes(_ manager: HMHomeManager) {
         self.homes = self.manager.homes
-        self.areHomesLoaded = true 
-//        print(self.homes)
+        self.areHomesLoaded = true
     }
     
     func findAccessories(homeId: UUID) {
@@ -295,8 +294,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                         }
                     })
                     
-                    var currentLockState = lockStateCharacteristic.value as! Int
-                    var targetLockState = (currentLockState == 1) ? HMCharacteristicValueLockMechanismState.unsecured.rawValue : HMCharacteristicValueLockMechanismState.secured.rawValue
+                    let currentLockState = lockStateCharacteristic.value as! Int
+                    let targetLockState = (currentLockState == 1) ? HMCharacteristicValueLockMechanismState.unsecured.rawValue : HMCharacteristicValueLockMechanismState.secured.rawValue
                  
                     lockStateCharacteristic.writeValue(targetLockState, completionHandler: { error in
                         if let error = error {

@@ -448,7 +448,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
                     // We should have 2 image buffers on the phone side. One for the current image being shown, and the other is receiving the next image. When the second buffer is filled, we should either swap, or update the image being shown to the second buffer. The next image that starts streaming should then get received in the original image, and so on.
                     
-                    var imgWidth = 162
+                    let imgWidth = 162
                     let statusByte = bufferPointerUInt8[1]
                     let startOfFrame = (statusByte & 1) == 1
                     let buttonPressed = ((statusByte >> 1) & 1) == 1
@@ -457,7 +457,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         let interval = CFAbsoluteTimeGetCurrent() - self.prevTimestamp
                         prevTimestamp = CFAbsoluteTimeGetCurrent()
                         
-                        var imgHeight = self.cameraBuffer.count / imgWidth
+                        let imgHeight = self.cameraBuffer.count / imgWidth
                         
                         var extraSampleCount = cameraBuffer.count % imgWidth
                         cameraBuffer.removeLast(extraSampleCount)

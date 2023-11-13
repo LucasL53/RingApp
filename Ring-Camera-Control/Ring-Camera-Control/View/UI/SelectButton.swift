@@ -18,6 +18,7 @@ struct SelectButton: View {
             Capsule()
                 .frame(width: 100, height: 50)
                 .foregroundColor(isSelected == text ? color : .gray)
+                .accessibilityAddTraits(.isToggle)
             Text(text)
                 .foregroundColor(colorScheme == .dark ? .white : .black)
             
