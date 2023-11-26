@@ -10,6 +10,8 @@
 		094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 094F5FD72A9986FB007EFAC9 /* best.mlmodel */; };
 		09B0AAF62A9FFFCA00A43C9C /* best160x128.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */; };
 		09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */; };
+		1D158CF52B1014890017810F /* AccessorySetupCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF42B1014890017810F /* AccessorySetupCard.swift */; };
+		1D158CF82B1017E50017810F /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF72B1017E50017810F /* ScanView.swift */; };
 		1D49450B2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */; };
 		1D49450D2A885CDD00D2DACE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450C2A885CDD00D2DACE /* ContentView.swift */; };
 		1D49450F2A885CDF00D2DACE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D49450E2A885CDF00D2DACE /* Assets.xcassets */; };
@@ -37,6 +39,8 @@
 		094F5FD72A9986FB007EFAC9 /* best.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best.mlmodel; sourceTree = "<group>"; };
 		09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best160x128.mlmodel; sourceTree = "<group>"; };
 		09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best96x96.mlmodel; sourceTree = "<group>"; };
+		1D158CF42B1014890017810F /* AccessorySetupCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessorySetupCard.swift; sourceTree = "<group>"; };
+		1D158CF72B1017E50017810F /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		1D279E422AC0B27E00E251C7 /* Ring-Camera-Control-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ring-Camera-Control-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D4945072A885CDD00D2DACE /* Ring-Camera-Control.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ring-Camera-Control.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_Camera_ControlApp.swift; sourceTree = "<group>"; };
@@ -75,6 +79,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1D158CF62B1017B90017810F /* SetUpUI */ = {
+			isa = PBXGroup;
+			children = (
+				1DA25EAD2B004CAF00217A1E /* SetUpView.swift */,
+				1D158CF42B1014890017810F /* AccessorySetupCard.swift */,
+				1D158CF72B1017E50017810F /* ScanView.swift */,
+			);
+			path = SetUpUI;
+			sourceTree = "<group>";
+		};
 		1D4944FE2A885CDD00D2DACE = {
 			isa = PBXGroup;
 			children = (
@@ -118,13 +132,13 @@
 		1D4945182A885D0500D2DACE /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1D158CF62B1017B90017810F /* SetUpUI */,
 				1D49452A2A88712C00D2DACE /* UI */,
 				1D4945202A886F5C00D2DACE /* HomeView.swift */,
 				1D4945242A88708200D2DACE /* ControlView.swift */,
 				1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */,
 				1D94E38E2A933BD900B7C625 /* ServicesView.swift */,
 				1D94E3902A933D2E00B7C625 /* CharacteristicsView.swift */,
-				1DA25EAD2B004CAF00217A1E /* SetUpView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -236,6 +250,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D158CF52B1014890017810F /* AccessorySetupCard.swift in Sources */,
 				1D727F452ADCA188003D0A27 /* MusicModel.swift in Sources */,
 				1D4945292A88711B00D2DACE /* RoutePickerView.swift in Sources */,
 				09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */,
@@ -252,6 +267,7 @@
 				1D94E3912A933D2E00B7C625 /* CharacteristicsView.swift in Sources */,
 				1D94E3992A9E0AB400B7C625 /* MusicPlayer.swift in Sources */,
 				1D4945252A88708200D2DACE /* ControlView.swift in Sources */,
+				1D158CF82B1017E50017810F /* ScanView.swift in Sources */,
 				1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */,
 				094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */,
 				1D94E3932A93401F00B7C625 /* OutlinedButtonStyle.swift in Sources */,

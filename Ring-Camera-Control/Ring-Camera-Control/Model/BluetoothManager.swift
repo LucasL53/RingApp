@@ -68,11 +68,13 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
     
+    
     @Published var banjiStatus : String = "disconnected"
     @Published var thisImage : Image?
     @Published var prediction: UUID?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var connectionIntervalUpdated = 0
+    var scanStatus  :  Bool = false
     
     private var cameraDataCharacteristics   : CBCharacteristic!
     private var cameraControlCharacteristics: CBCharacteristic!
@@ -366,7 +368,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         if let characteristics = service.characteristics {
             // Assign references
             for aCharacteristic in characteristics {
-//                print(aCharacteristic)
                 if (thisBanji == "banji") {
                     if aCharacteristic.uuid == controlCharUUID {
                         cameraControlCharacteristics = aCharacteristic
@@ -407,7 +408,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         
         guard let value = characteristic.value else { return }
         let packetLength = Int(value.count)
-//        print("Packet Length: ", packetLength)
         
         if characteristic == cameraControlCharacteristics {
             let dataPointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
@@ -447,6 +447,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     // Byte 1 is going to be 8 bit of flags. In the future I can set a bit that says that it’s the end of the image or the start of the image.
 
                     // We should have 2 image buffers on the phone side. One for the current image being shown, and the other is receiving the next image. When the second buffer is filled, we should either swap, or update the image being shown to the second buffer. The next image that starts streaming should then get received in the original image, and so on.
+                    
                     
                     let imgWidth = 162
                     let statusByte = bufferPointerUInt8[1]

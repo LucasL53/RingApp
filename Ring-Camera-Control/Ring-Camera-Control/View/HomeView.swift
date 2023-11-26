@@ -11,15 +11,16 @@ import SwiftData
 
 struct HomeView: View {
     
+    @State var showCreate = false
     @State private var selectedHomeId: UUID?
-    @ObservedObject var model: HomeStore
     @State var header: String?
+    
+    @ObservedObject var model: HomeStore
     
     @Query var embeddings: [HomeEmbeddings]
     
     var body: some View {
         VStack {
-            // Menu as the sticky header
             Menu(header ?? "Select Home") {
                 ForEach(model.homes, id: \.uniqueIdentifier) { home in
                     Button(action: {
@@ -34,6 +35,22 @@ struct HomeView: View {
             }
             .padding()
             .background(Color(UIColor.systemBackground))
+            .toolbar {
+                ToolbarItem {
+                    Button(action: {
+                        showCreate.toggle()
+                    }, label: {
+                        Label("Scan Accessories", systemImage: "plus")
+                    })
+                }
+            }
+            .sheet(isPresented: $showCreate,
+                   content: {
+                NavigationStack{
+                    SetUpView(home: embeddings.first(where: { $0.home == header })!)
+                }
+                .presentationDetents([.large])
+            })
             
             Spacer()
             
@@ -55,6 +72,7 @@ struct HomeView: View {
         }
     }
     
+    // Populate all the accessory information needed for AccessoryEmbedding of selectedHome.
     func initializeAccessories() {
         if let embedding = embeddings.first(where: {$0.home == header}) {
             for accessory in model.accessories {
