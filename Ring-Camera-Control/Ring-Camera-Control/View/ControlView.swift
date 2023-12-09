@@ -12,7 +12,7 @@ import HomeKit
 enum exampleClass: String, CaseIterable, Identifiable {
     case lights = "Lights"
     case speaker = "Speaker"
-    case lock = "Smart Lock"
+    case lock = "Lock"
     case tv = "TV"
     case blinds = "Blinds"
 
@@ -47,7 +47,7 @@ struct ControlView: View {
                 }
                 Spacer()
                 
-                Section(header: Text("My Smart Home Device")
+                Section(header: Text("Smart Home Devices")
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     Picker("My Smart Home Device", selection: $selectedAccessoryId){
                         ForEach(exampleClass.allCases) { category in
@@ -68,18 +68,28 @@ struct ControlView: View {
                     ZStack {
                         Rectangle()
                             .fill(Color.gray)
-                            .frame(height: 160)
+                            .frame(width: 324, height: 238)
                         
                         // Foreground image if available
                         if let image = blemanager.thisImage {
                             image
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 300, height: 300)
+                                .frame(width: 324, height: 238)
                         }
                     }
                 }
-                Spacer()
+                Spacer(minLength: 30)
+                
+                Button(action: {
+                    blemanager.savePicture()
+                }) {
+                    Text("Save Picture")
+                        .frame(width: 110, height: 10)
+                }
+                .buttonStyle(OutlinedButtonStyle())
+                Spacer(minLength: 30)
+                
                 
                 if selectedAccessoryId != nil {
                     ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
