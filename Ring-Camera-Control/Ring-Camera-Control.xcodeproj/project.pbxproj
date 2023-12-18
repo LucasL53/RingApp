@@ -22,6 +22,9 @@
 		1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4945262A8870E700D2DACE /* SelectButton.swift */; };
 		1D4945292A88711B00D2DACE /* RoutePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4945282A88711B00D2DACE /* RoutePickerView.swift */; };
 		1D51EA152AC0C137002D3878 /* SpotifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D51EA142AC0C137002D3878 /* SpotifyiOS.framework */; };
+		1D727F452ADCA188003D0A27 /* MusicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D727F442ADCA188003D0A27 /* MusicModel.swift */; };
+		1D727F472ADCA7D7003D0A27 /* RouterPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D727F462ADCA7D7003D0A27 /* RouterPicker.swift */; };
+		1D727F4E2ADDF717003D0A27 /* TVModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D727F4D2ADDF717003D0A27 /* TVModel.swift */; };
 		1D94E38A2A8C93E000B7C625 /* TestModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3882A8C93E000B7C625 /* TestModel.mlmodel */; settings = {ATTRIBUTES = (project_codegen, ); }; };
 		1D94E38D2A8D92A900B7C625 /* MLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E38C2A8D92A900B7C625 /* MLHandler.swift */; };
 		1D94E38F2A933BD900B7C625 /* ServicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E38E2A933BD900B7C625 /* ServicesView.swift */; };
@@ -51,6 +54,9 @@
 		1D4945282A88711B00D2DACE /* RoutePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutePickerView.swift; sourceTree = "<group>"; };
 		1D49452B2A88720200D2DACE /* Ring-Camera-Control.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Ring-Camera-Control.entitlements"; sourceTree = "<group>"; };
 		1D51EA142AC0C137002D3878 /* SpotifyiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyiOS.framework; path = "../../../../../Downloads/ios-sdk-1.2.4/SpotifyiOS.framework"; sourceTree = "<group>"; };
+		1D727F442ADCA188003D0A27 /* MusicModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicModel.swift; sourceTree = "<group>"; };
+		1D727F462ADCA7D7003D0A27 /* RouterPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterPicker.swift; sourceTree = "<group>"; };
+		1D727F4D2ADDF717003D0A27 /* TVModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVModel.swift; sourceTree = "<group>"; };
 		1D94E3882A8C93E000B7C625 /* TestModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = TestModel.mlmodel; sourceTree = "<group>"; };
 		1D94E38C2A8D92A900B7C625 /* MLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLHandler.swift; sourceTree = "<group>"; };
 		1D94E38E2A933BD900B7C625 /* ServicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesView.swift; sourceTree = "<group>"; };
@@ -121,6 +127,7 @@
 				1D49452A2A88712C00D2DACE /* UI */,
 				1D4945202A886F5C00D2DACE /* HomeView.swift */,
 				1D4945242A88708200D2DACE /* ControlView.swift */,
+				1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */,
 				1D94E38E2A933BD900B7C625 /* ServicesView.swift */,
 				1D94E3902A933D2E00B7C625 /* CharacteristicsView.swift */,
 				1D94E3942A936D2200B7C625 /* SpotifyWebView.swift */,
@@ -136,8 +143,10 @@
 				1D49451E2A885DF100D2DACE /* BluetoothManager.swift */,
 				1D94E38C2A8D92A900B7C625 /* MLHandler.swift */,
 				1D94E3962A936DD200B7C625 /* SpotifyController.swift */,
-				1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */,
+				1D727F442ADCA188003D0A27 /* MusicModel.swift */,
 				1D279E452AC0B86300E251C7 /* Spotify.swift */,
+				1D727F462ADCA7D7003D0A27 /* RouterPicker.swift */,
+				1D727F4D2ADDF717003D0A27 /* TVModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -234,12 +243,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D727F452ADCA188003D0A27 /* MusicModel.swift in Sources */,
 				1D4945292A88711B00D2DACE /* RoutePickerView.swift in Sources */,
 				09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */,
 				1D94E38D2A8D92A900B7C625 /* MLHandler.swift in Sources */,
 				1D49450D2A885CDD00D2DACE /* ContentView.swift in Sources */,
 				1D279E462AC0B86300E251C7 /* Spotify.swift in Sources */,
 				1D49451B2A885D2200D2DACE /* HomeStore.swift in Sources */,
+				1D727F4E2ADDF717003D0A27 /* TVModel.swift in Sources */,
 				1D94E3972A936DD200B7C625 /* SpotifyController.swift in Sources */,
 				1D94E3952A936D2200B7C625 /* SpotifyWebView.swift in Sources */,
 				1D94E38F2A933BD900B7C625 /* ServicesView.swift in Sources */,
@@ -253,6 +264,7 @@
 				094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */,
 				1D94E3932A93401F00B7C625 /* OutlinedButtonStyle.swift in Sources */,
 				1D94E38A2A8C93E000B7C625 /* TestModel.mlmodel in Sources */,
+				1D727F472ADCA7D7003D0A27 /* RouterPicker.swift in Sources */,
 				1D49450B2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -389,7 +401,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = S69EHXYN33;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -415,9 +427,8 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 1.0;
-
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control2";
 				OTHER_LDFLAGS = "-Objc";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Ring-Camera-Control/Ring-Camera-Control-Bridging-Header.h";
@@ -437,7 +448,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = S69EHXYN33;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -463,8 +474,8 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control2";
 				OTHER_LDFLAGS = "-Objc";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Ring-Camera-Control/Ring-Camera-Control-Bridging-Header.h";

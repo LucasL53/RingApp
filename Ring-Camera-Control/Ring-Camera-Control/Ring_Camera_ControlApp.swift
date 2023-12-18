@@ -37,12 +37,12 @@ struct Ring_Camera_ControlApp: App {
                     let desc = NSSortDescriptor(key: MPMediaItemPropertyLastPlayedDate, ascending: false)
                     let sortedSongs = NSArray(array: songs).sortedArray(using: [desc])
 
-                    MusicPlayerModel.shared.librarySongs = sortedSongs as! [MPMediaItem]
+                    MusicModel.shared.librarySongs = sortedSongs as! [MPMediaItem]
                 }
 
                 let playlistQuery = MPMediaQuery.playlists()
                 if let playlists = playlistQuery.collections {
-                    MusicPlayerModel.shared.playlist = playlists
+                    MusicModel.shared.playlist = playlists
                 }
             }
         }
