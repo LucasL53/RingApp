@@ -409,7 +409,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				DEVELOPMENT_TEAM = S69EHXYN33;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -420,6 +420,7 @@
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "App will require media access for Music and Video";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App will require Bluetooth to always be on";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "App will require access to your HomeKit";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save photos for data collection";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -456,7 +457,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				DEVELOPMENT_TEAM = S69EHXYN33;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -467,6 +468,7 @@
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "App will require media access for Music and Video";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App will require Bluetooth to always be on";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "App will require access to your HomeKit";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save photos for data collection";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -54,7 +54,7 @@ struct CharacteristicsView: View {
                             model.readCharacteristicValues(serviceId: serviceId)
                         }) {
                             Text("Right")
-                                .frame(width: 55, height: 10)
+                                .frame(width: 50, height: 10)
                         }
                         .buttonStyle(OutlinedButtonStyle())
                         .accessibilityLabel("Right")
