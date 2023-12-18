@@ -13,7 +13,6 @@ class MLHandler {
     
     // Labels mapping from class indices to names
     private let labels = ["lights", "blinds", "lock", "speaker", "tv"]
-    
 
     // Initialization of the model
     init() {
@@ -37,7 +36,6 @@ class MLHandler {
             let maxIndex = outputArray.argmax()
             let maxLabel = labels[maxIndex]
 
-            
             // Optionally, print all probabilities with corresponding labels
             for i in 0..<labels.count {
                 let probability = outputArray[i].floatValue

@@ -274,7 +274,6 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                     
                     self.brightnessValue = brightnessCharacteristic.value as? Int
                     let targetBrightness = (self.brightnessValue! > 0) ? 0 : 100
-                    
                     brightnessCharacteristic.writeValue(targetBrightness, completionHandler: { error in
                         if let error = error {
                             print("Failed to change light brightness: \(error)")

@@ -85,6 +85,10 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var classifiedDevice        : Int          = 0
     private var lastActionTimeMs        : Int          = 0
     private var prevButtonPressed       : Bool         = false
+
+    private var saveImageFlag           : Bool         = false
+    private var buttonPressedFlag       : Bool         = false
+    private var controlDeviceFlag       : Bool         = false
     private let date = Date()
     
     // This must align with MLHandler
@@ -428,12 +432,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 let actualSequenceNumber = sequenceNumberBytes.withUnsafeBytes{$0.load(as: UInt16.self)}
                 
                 if (peripheral.identifier == self.banji.identifier) {
-                    
-                    // Nominal behavior
-                    // Packet format
-
                     // 0: Sequence Number
-                    // 1: Status (IMU Valid: 1, Camera Valid:1)
+                    // 1: Status (0: Start of Frame, 1: buttonPressed, 2: imuValid)
                     // 2-3: Accel X
                     // 4-5: Accel Y
                     // 6-7: Accel Z
@@ -441,18 +441,12 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     // 10-11: Gyro Y
                     // 12-13: Gyro Z
                     // 14-xxx: Camera
-
-                    // This is going to be our packet format — since we’re not streaming the IMU yet, we start at 14 and just print. This is where we should drop this into an image.
-
-                    // Byte 1 is going to be 8 bit of flags. In the future I can set a bit that says that it’s the end of the image or the start of the image.
-
-                    // We should have 2 image buffers on the phone side. One for the current image being shown, and the other is receiving the next image. When the second buffer is filled, we should either swap, or update the image being shown to the second buffer. The next image that starts streaming should then get received in the original image, and so on.
-                    
                     var imgWidth = 162
                     let statusByte = bufferPointerUInt8[1]
                     let startOfFrame = (statusByte & 1) == 1
                     let buttonPressed = ((statusByte >> 1) & 1) == 1
                     let imuValid = ((statusByte >> 2) & 1) == 1
+
                     if (startOfFrame) {
                         let interval = CFAbsoluteTimeGetCurrent() - self.prevTimestamp
                         prevTimestamp = CFAbsoluteTimeGetCurrent()
@@ -463,19 +457,32 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         cameraBuffer.removeLast(extraSampleCount)
                         
                         if let uiImage = createImageFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
+                            if (saveImageFlag || buttonPressedFlag) {
+                                // Save image on either iOS UI button press or ring hardware button press
+                                print("Saving image to photo library")
+                                UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+                                saveImageFlag = false
+                            }
+                            
                             let image = Image(uiImage: uiImage)
                             DispatchQueue.main.async {
                                 self.updateImage(image: image)
                             }
+                            
                             if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
                                 if let resized = resize(pixelBuffer: cvpixelbuffer, width: 160, height: 128) {
-                                    let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
-                                    
+
+//                                    let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
                                     classifiedDevice = mlModel.predict(image: resized)
+//                                    let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
+//                                    let timeElapsed = endTime - startTime
+//                                    print("prediction_time_ms: \(1000*timeElapsed)")
                                     
-                                    let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
-                                    let timeElapsed = endTime - startTime
-                                    print("prediction_time_ms: \(1000*timeElapsed)")
+                                    if (buttonPressedFlag) {
+                                        print("Arming controlDeviceFlag")
+                                        controlDeviceFlag = true
+                                    }
+
                                 }
                                 
                                 print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
@@ -489,35 +496,44 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         cameraBuffer.removeAll()
                     } // startOfFrame end
                     
+                    if (controlDeviceFlag) {
+                        // Lights
+                        if (classifiedDevice == 0) {
+                            print("Controlling lights!")
+                            let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
+                            if let unwrappedUUID = optionalUUID {
+                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
+                            } else {
+                                // Handle the case where optionalUUID is nil
+                                print("Failed to unwrap UUID")
+                            }
+                        } else if (classifiedDevice == 2) {
+                            print("Controlling Lock!")
+                            let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
+                            if let unwrappedUUID = optionalUUID {
+                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
+                            } else {
+                                // Handle the case where optionalUUID is nil
+                                print("Failed to unwrap UUID")
+                            }
+                        }
+                    } // deviceControl end
+                    
                     if (buttonPressed && (prevButtonPressed == false)) {
                         let currentTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
-//                        print ("currentTimeMs:" + String(currentTimeMs) + " lastActionTimeMs:" + String(self.lastActionTimeMs))
                         if (currentTimeMs - self.lastActionTimeMs > 500) {
                             // 500ms debounce
                             self.lastActionTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
-                            
-                            // Lights
-                            if (classifiedDevice == 0) {
-                                print("Controlling lights!")
-                                let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
-                                if let unwrappedUUID = optionalUUID {
-                                    homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
-                                } else {
-                                    // Handle the case where optionalUUID is nil
-                                    print("Failed to unwrap UUID")
-                                }
-                            } else if (classifiedDevice == 2) {
-                                print("Controlling Lock!")
-                                let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
-                                if let unwrappedUUID = optionalUUID {
-                                    homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
-                                } else {
-                                    // Handle the case where optionalUUID is nil
-                                    print("Failed to unwrap UUID")
-                                }
-                            }
+                            print("Button down")
+                            buttonPressedFlag = true
                         }
                     }
+                    
+                    if ((buttonPressed == false) && (controlDeviceFlag == true)) {
+                        buttonPressedFlag = false
+                        controlDeviceFlag = false
+                    }
+
                 
                     var accelX = (Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2])
                     var accelY = (Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4])
@@ -555,9 +571,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     let aTilt = sqrt(pow(accelTilt.x, 2) + pow(accelTilt.y, 2))
                     let gTilt = sqrt(pow(gyroTilt.x, 2) + pow(gyroTilt.y, 2))
                     let fTilt = sqrt(pow(fusedTilt.x, 2) + pow(fusedTilt.y, 2))
-                            
-                    //let outputString = String(format: "Accel X Accel Y Accel Z Gyro X Gyro Y Gyro Z\n%.2f %.2f %.2f %.2f %.2f %.2f", accelX_float, accelY_float,accelZ_float, gyroX_float, gyroY_float, gyroZ_float)
-                    
+
                     if (buttonPressed && imuValid) {
                         var outputString = String(format: "a_x:%.2f a_y:%.2f a_z:%.2f | g_x:%.2f g_y:%.2f g_z%.2f", accelX_float, accelY_float, accelZ_float,gyroX_float, gyroY_float, gyroZ_float)
                         print(outputString)
@@ -573,6 +587,12 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 }
             }
         }
+    }
+    
+    public func savePicture()
+    {
+        print("Saving next picture")
+        saveImageFlag = true
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {

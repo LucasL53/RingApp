@@ -14,4 +14,3 @@ struct ContentView: View {
         HomeView(model: homeModel)
     }
 }
-
