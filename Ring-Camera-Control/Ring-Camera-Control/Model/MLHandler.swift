@@ -120,33 +120,33 @@ class MLHandler {
         sceneSim /= Double(q.count)
     }
     
-    func computeSim(q: [[[Double]]], database: [String: [String: [[Double]]]], patchLen: Int = 4) -> [String: [String: [String: Double]]] {
-        let s = 8 - (patchLen / 2)
-        let e = 8 + Int(ceil(Double(patchLen) / 2.0))
-        var sims = [String: [String: [String: Double]]]()
-
-        for (obj, vecs) in database {
-            sims[obj] = [String: [String: Double]]()
-            for (img, emb) in vecs {
-                // Object similarity using center patchLen x patchLen patch embeddings
-                let _q = q[s..<e].map { $0[s..<e].flatMap { $0 } }.mean()
-                let _emb = emb[s..<e].map { $0[s..<e].flatMap { $0 } }.mean()
-                let objSim = cosineSimilarity(_q, _emb)
-
-                // Scene similarity using image embeddings
-                let reshapedQ = q.reshaped() // Define reshaped() to reshape and permute the array
-                let reshapedEmb = emb.reshaped()
-                let sceneSim = reshapedQ.enumerated().reduce(0.0) { (acc, arg) in
-                    let (_, pe) = arg
-                    return acc + cosineSimilarity(pe, reshapedEmb).max()
-                } / Double(reshapedQ.count)
-
-                sims[obj]?[img] = ["obj": objSim, "scene": sceneSim]
-            }
-        }
-
-        return sims
-    }
+//    func computeSim(q: [[[Double]]], database: [String: [String: [[Double]]]], patchLen: Int = 4) -> [String: [String: [String: Double]]] {
+//        let s = 8 - (patchLen / 2)
+//        let e = 8 + Int(ceil(Double(patchLen) / 2.0))
+//        var sims = [String: [String: [String: Double]]]()
+//
+//        for (obj, vecs) in database {
+//            sims[obj] = [String: [String: Double]]()
+//            for (img, emb) in vecs {
+//                // Object similarity using center patchLen x patchLen patch embeddings
+//                let _q = q[s..<e].map { $0[s..<e].flatMap { $0 } }.mean()
+//                let _emb = emb[s..<e].map { $0[s..<e].flatMap { $0 } }.mean()
+//                let objSim = cosineSimilarity(_q, _emb)
+//
+//                // Scene similarity using image embeddings
+//                let reshapedQ = q.reshaped() // Define reshaped() to reshape and permute the array
+//                let reshapedEmb = emb.reshaped()
+//                let sceneSim = reshapedQ.enumerated().reduce(0.0) { (acc, arg) in
+//                    let (_, pe) = arg
+//                    return acc + cosineSimilarity(pe, reshapedEmb).max()
+//                } / Double(reshapedQ.count)
+//
+//                sims[obj]?[img] = ["obj": objSim, "scene": sceneSim]
+//            }
+//        }
+//
+//        return sims
+//    }
     
     func inference() {
         var results: [[String: Any]] = []
@@ -192,11 +192,6 @@ extension Array where Element == Double {
     }
 }
 
-extension Array {
-    func reshaped() -> [[[Double]]] {
-        // Implement reshaping logic similar to Python's view, permute, and reshape methods
-    }
-}
 
 extension MLMultiArray {
     func argmax() -> Int {

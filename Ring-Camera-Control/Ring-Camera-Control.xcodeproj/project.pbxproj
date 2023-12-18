@@ -409,7 +409,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = S69EHXYN33;
+				DEVELOPMENT_TEAM = LRRJYFN6NB;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -437,7 +437,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-Objc";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp.Ring-Camera-Control";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Ring-Camera-Control/Ring-Camera-Control-Bridging-Header.h";
@@ -457,7 +457,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = S69EHXYN33;
+				DEVELOPMENT_TEAM = LRRJYFN6NB;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -485,7 +485,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-Objc";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp.Ring-Camera-Control";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Ring-Camera-Control/Ring-Camera-Control-Bridging-Header.h";
