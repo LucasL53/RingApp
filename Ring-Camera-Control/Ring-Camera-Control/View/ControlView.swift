@@ -46,9 +46,9 @@ struct ControlView: View {
                     RouterPicker()
                         .frame(width: 100, height: 50) // adjust as needed
                         .background(Color.blue)
-                        .clipShape(Circle())
+                        .clipShape(RoundedRectangle(cornerRadius: 25.0))
                         .padding()
-                    AppleMusicPlayer()
+//                    AppleMusicPlayer()
                 }
                 
                 Spacer()
@@ -74,7 +74,8 @@ struct ControlView: View {
                     ZStack {
                         Rectangle()
                             .fill(Color.gray)
-                            .frame(width: 324, height: 238)
+                            .frame(height: 160)
+                            .accessibilityLabel("Live Video Feed \(blemanager.banjiStatus)")
                         
                         // Foreground image if available
                         if let image = blemanager.thisImage {
@@ -101,10 +102,10 @@ struct ControlView: View {
                     ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
                 }
                 if selectedAccessoryId == nil && spotify {
-                    SpotifyWebView()
+//                    SpotifyWebView()
                 }
             }
-        }.onChange(of: blemanager.banjiStatus) {newValue in 
+        }.onChange(of: blemanager.banjiStatus) {
             blemanager.scanForPeripherals()
         }
     }

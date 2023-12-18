@@ -68,11 +68,13 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
     
+    
     @Published var banjiStatus : String = "disconnected"
     @Published var thisImage : Image?
     @Published var prediction: UUID?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var connectionIntervalUpdated = 0
+    var scanStatus  :  Bool = false
     
     private var cameraDataCharacteristics   : CBCharacteristic!
     private var cameraControlCharacteristics: CBCharacteristic!
@@ -290,6 +292,26 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         return finalPixelBuffer
     }
     
+    func convertBufferTo2DArray(buffer: [UInt8], width: Int, height: Int) -> [[UInt8]] {
+        var array2D = [[UInt8]](repeating: [UInt8](repeating: 0, count: width), count: height)
+        for y in 0..<height {
+            for x in 0..<width {
+                array2D[y][x] = buffer[y * width + x]
+            }
+        }
+        return array2D
+    }
+
+    func convertBufferTo2DArrayDouble(buffer: [UInt8], width: Int, height: Int) -> [[Double]] {
+        var array2D = [[Double]](repeating: [Double](repeating: 0, count: width), count: height)
+        for y in 0..<height {
+            for x in 0..<width {
+                array2D[y][x] = Double(buffer[y * width + x])
+            }
+        }
+        return array2D
+    }
+    
 //    func createPixelBufferFromUInt8Buffer(buffer: [UInt8], width: Int, height: Int) -> CVPixelBuffer? {
 //        // Check if the buffer size matches the width and height
 //        guard buffer.count == width * height else { return nil }
@@ -370,7 +392,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         if let characteristics = service.characteristics {
             // Assign references
             for aCharacteristic in characteristics {
-//                print(aCharacteristic)
                 if (thisBanji == "banji") {
                     if aCharacteristic.uuid == controlCharUUID {
                         cameraControlCharacteristics = aCharacteristic
@@ -411,7 +432,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         
         guard let value = characteristic.value else { return }
         let packetLength = Int(value.count)
-//        print("Packet Length: ", packetLength)
         
         if characteristic == cameraControlCharacteristics {
             let dataPointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
@@ -441,7 +461,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     // 10-11: Gyro Y
                     // 12-13: Gyro Z
                     // 14-xxx: Camera
+
                     var imgWidth = 162
+
                     let statusByte = bufferPointerUInt8[1]
                     let startOfFrame = (statusByte & 1) == 1
                     let buttonPressed = ((statusByte >> 1) & 1) == 1
@@ -451,7 +473,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         let interval = CFAbsoluteTimeGetCurrent() - self.prevTimestamp
                         prevTimestamp = CFAbsoluteTimeGetCurrent()
                         
-                        var imgHeight = self.cameraBuffer.count / imgWidth
+                        let imgHeight = self.cameraBuffer.count / imgWidth
                         
                         var extraSampleCount = cameraBuffer.count % imgWidth
                         cameraBuffer.removeLast(extraSampleCount)
@@ -463,7 +485,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                                 saveImageFlag = false
                             }
-                            
                             let image = Image(uiImage: uiImage)
                             DispatchQueue.main.async {
                                 self.updateImage(image: image)

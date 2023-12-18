@@ -25,18 +25,19 @@ struct ServicesView: View {
                 HStack(spacing: 16){
                     ForEach(model.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.services ?? [], id: \.uniqueIdentifier) { service in
                         SelectButton(isSelected: $selectedService, color: .blue, text: "\(service.humanReadableType)")
-                        .onTapGesture {
-                            selectedService = "\(service.humanReadableType)"
-                            selectedServiceId = service.uniqueIdentifier
-                        }
-                        .padding()
+                            .accessibilityLabel("\(service.humanReadableType)")
+                            .onTapGesture {
+                                selectedService = "\(service.humanReadableType)"
+                                selectedServiceId = service.uniqueIdentifier
+                            }
+                            .padding()
                     }
                 }.onAppear(){
                     model.findServices(accessoryId: accessoryId!, homeId: homeId!)
                 }
-                .onChange(of: accessoryId) { newValue in
-                    if let newAccessoryId = newValue {
-                        model.findServices(accessoryId: newAccessoryId, homeId: homeId!)
+                .onChange(of: accessoryId) {
+                    if accessoryId != nil {
+                        model.findServices(accessoryId: accessoryId!, homeId: homeId!)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

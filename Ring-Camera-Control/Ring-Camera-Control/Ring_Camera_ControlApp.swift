@@ -25,7 +25,7 @@ struct Ring_Camera_ControlApp: App {
                         updateSongs()
                     }
                 })
-        }
+        }.modelContainer(for: HomeEmbeddings.self)
     }
     
     func updateSongs() {

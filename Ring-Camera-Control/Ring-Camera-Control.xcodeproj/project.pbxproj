@@ -10,7 +10,8 @@
 		094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 094F5FD72A9986FB007EFAC9 /* best.mlmodel */; };
 		09B0AAF62A9FFFCA00A43C9C /* best160x128.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */; };
 		09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */; };
-
+		1D158CF52B1014890017810F /* AccessorySetupCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF42B1014890017810F /* AccessorySetupCard.swift */; };
+		1D158CF82B1017E50017810F /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF72B1017E50017810F /* ScanView.swift */; };
 		1D49450B2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */; };
 		1D49450D2A885CDD00D2DACE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450C2A885CDD00D2DACE /* ContentView.swift */; };
 		1D49450F2A885CDF00D2DACE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D49450E2A885CDF00D2DACE /* Assets.xcassets */; };
@@ -21,7 +22,6 @@
 		1D4945252A88708200D2DACE /* ControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4945242A88708200D2DACE /* ControlView.swift */; };
 		1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4945262A8870E700D2DACE /* SelectButton.swift */; };
 		1D4945292A88711B00D2DACE /* RoutePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4945282A88711B00D2DACE /* RoutePickerView.swift */; };
-		1D51EA152AC0C137002D3878 /* SpotifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D51EA142AC0C137002D3878 /* SpotifyiOS.framework */; };
 		1D727F452ADCA188003D0A27 /* MusicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D727F442ADCA188003D0A27 /* MusicModel.swift */; };
 		1D727F472ADCA7D7003D0A27 /* RouterPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D727F462ADCA7D7003D0A27 /* RouterPicker.swift */; };
 		1D727F4E2ADDF717003D0A27 /* TVModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D727F4D2ADDF717003D0A27 /* TVModel.swift */; };
@@ -30,15 +30,18 @@
 		1D94E38F2A933BD900B7C625 /* ServicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E38E2A933BD900B7C625 /* ServicesView.swift */; };
 		1D94E3912A933D2E00B7C625 /* CharacteristicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3902A933D2E00B7C625 /* CharacteristicsView.swift */; };
 		1D94E3932A93401F00B7C625 /* OutlinedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3922A93401F00B7C625 /* OutlinedButtonStyle.swift */; };
-		1D94E3952A936D2200B7C625 /* SpotifyWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3942A936D2200B7C625 /* SpotifyWebView.swift */; };
-		1D94E3972A936DD200B7C625 /* SpotifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3962A936DD200B7C625 /* SpotifyController.swift */; };
 		1D94E3992A9E0AB400B7C625 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */; };
+		1DA25EAE2B004CAF00217A1E /* SetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA25EAD2B004CAF00217A1E /* SetUpView.swift */; };
+		1DB7CB0D2AF87492001A29A7 /* EmbeddingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB7CB0C2AF87492001A29A7 /* EmbeddingModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		094F5FD72A9986FB007EFAC9 /* best.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best.mlmodel; sourceTree = "<group>"; };
 		09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best160x128.mlmodel; sourceTree = "<group>"; };
 		09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best96x96.mlmodel; sourceTree = "<group>"; };
+		1D158CF42B1014890017810F /* AccessorySetupCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessorySetupCard.swift; sourceTree = "<group>"; };
+		1D158CF72B1017E50017810F /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		1D279E422AC0B27E00E251C7 /* Ring-Camera-Control-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ring-Camera-Control-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D4945072A885CDD00D2DACE /* Ring-Camera-Control.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ring-Camera-Control.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_Camera_ControlApp.swift; sourceTree = "<group>"; };
 		1D49450C2A885CDD00D2DACE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -51,7 +54,6 @@
 		1D4945262A8870E700D2DACE /* SelectButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectButton.swift; sourceTree = "<group>"; };
 		1D4945282A88711B00D2DACE /* RoutePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutePickerView.swift; sourceTree = "<group>"; };
 		1D49452B2A88720200D2DACE /* Ring-Camera-Control.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Ring-Camera-Control.entitlements"; sourceTree = "<group>"; };
-		1D51EA142AC0C137002D3878 /* SpotifyiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyiOS.framework; path = "../../../../../Downloads/ios-sdk-1.2.4/SpotifyiOS.framework"; sourceTree = "<group>"; };
 		1D727F442ADCA188003D0A27 /* MusicModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicModel.swift; sourceTree = "<group>"; };
 		1D727F462ADCA7D7003D0A27 /* RouterPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterPicker.swift; sourceTree = "<group>"; };
 		1D727F4D2ADDF717003D0A27 /* TVModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVModel.swift; sourceTree = "<group>"; };
@@ -60,10 +62,10 @@
 		1D94E38E2A933BD900B7C625 /* ServicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesView.swift; sourceTree = "<group>"; };
 		1D94E3902A933D2E00B7C625 /* CharacteristicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicsView.swift; sourceTree = "<group>"; };
 		1D94E3922A93401F00B7C625 /* OutlinedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlinedButtonStyle.swift; sourceTree = "<group>"; };
-		1D94E3942A936D2200B7C625 /* SpotifyWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyWebView.swift; sourceTree = "<group>"; };
-		1D94E3962A936DD200B7C625 /* SpotifyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyController.swift; sourceTree = "<group>"; };
 		1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
 		1D94E39A2A9E0BEA00B7C625 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1DA25EAD2B004CAF00217A1E /* SetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpView.swift; sourceTree = "<group>"; };
+		1DB7CB0C2AF87492001A29A7 /* EmbeddingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbeddingModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,13 +73,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D51EA152AC0C137002D3878 /* SpotifyiOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1D158CF62B1017B90017810F /* SetUpUI */ = {
+			isa = PBXGroup;
+			children = (
+				1DA25EAD2B004CAF00217A1E /* SetUpView.swift */,
+				1D158CF42B1014890017810F /* AccessorySetupCard.swift */,
+				1D158CF72B1017E50017810F /* ScanView.swift */,
+			);
+			path = SetUpUI;
+			sourceTree = "<group>";
+		};
 		1D4944FE2A885CDD00D2DACE = {
 			isa = PBXGroup;
 			children = (
@@ -106,7 +117,6 @@
 				1D49450E2A885CDF00D2DACE /* Assets.xcassets */,
 				1D4945102A885CDF00D2DACE /* Preview Content */,
 				1D279E422AC0B27E00E251C7 /* Ring-Camera-Control-Bridging-Header.h */,
-				1D51EA142AC0C137002D3878 /* SpotifyiOS.framework */,
 			);
 			path = "Ring-Camera-Control";
 			sourceTree = "<group>";
@@ -122,13 +132,13 @@
 		1D4945182A885D0500D2DACE /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1D158CF62B1017B90017810F /* SetUpUI */,
 				1D49452A2A88712C00D2DACE /* UI */,
 				1D4945202A886F5C00D2DACE /* HomeView.swift */,
 				1D4945242A88708200D2DACE /* ControlView.swift */,
 				1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */,
 				1D94E38E2A933BD900B7C625 /* ServicesView.swift */,
 				1D94E3902A933D2E00B7C625 /* CharacteristicsView.swift */,
-				1D94E3942A936D2200B7C625 /* SpotifyWebView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -140,11 +150,10 @@
 				1D49451A2A885D2200D2DACE /* HomeStore.swift */,
 				1D49451E2A885DF100D2DACE /* BluetoothManager.swift */,
 				1D94E38C2A8D92A900B7C625 /* MLHandler.swift */,
-				1D94E3962A936DD200B7C625 /* SpotifyController.swift */,
 				1D727F442ADCA188003D0A27 /* MusicModel.swift */,
-				1D279E452AC0B86300E251C7 /* Spotify.swift */,
 				1D727F462ADCA7D7003D0A27 /* RouterPicker.swift */,
 				1D727F4D2ADDF717003D0A27 /* TVModel.swift */,
+				1DB7CB0C2AF87492001A29A7 /* EmbeddingModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -241,23 +250,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D158CF52B1014890017810F /* AccessorySetupCard.swift in Sources */,
 				1D727F452ADCA188003D0A27 /* MusicModel.swift in Sources */,
 				1D4945292A88711B00D2DACE /* RoutePickerView.swift in Sources */,
 				09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */,
 				1D94E38D2A8D92A900B7C625 /* MLHandler.swift in Sources */,
 				1D49450D2A885CDD00D2DACE /* ContentView.swift in Sources */,
-				1D279E462AC0B86300E251C7 /* Spotify.swift in Sources */,
+				1DB7CB0D2AF87492001A29A7 /* EmbeddingModel.swift in Sources */,
 				1D49451B2A885D2200D2DACE /* HomeStore.swift in Sources */,
 				1D727F4E2ADDF717003D0A27 /* TVModel.swift in Sources */,
-				1D94E3972A936DD200B7C625 /* SpotifyController.swift in Sources */,
-				1D94E3952A936D2200B7C625 /* SpotifyWebView.swift in Sources */,
 				1D94E38F2A933BD900B7C625 /* ServicesView.swift in Sources */,
 				1D49451F2A885DF100D2DACE /* BluetoothManager.swift in Sources */,
+				1DA25EAE2B004CAF00217A1E /* SetUpView.swift in Sources */,
 				09B0AAF62A9FFFCA00A43C9C /* best160x128.mlmodel in Sources */,
 				1D4945212A886F5C00D2DACE /* HomeView.swift in Sources */,
 				1D94E3912A933D2E00B7C625 /* CharacteristicsView.swift in Sources */,
 				1D94E3992A9E0AB400B7C625 /* MusicPlayer.swift in Sources */,
 				1D4945252A88708200D2DACE /* ControlView.swift in Sources */,
+				1D158CF82B1017E50017810F /* ScanView.swift in Sources */,
 				1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */,
 				094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */,
 				1D94E3932A93401F00B7C625 /* OutlinedButtonStyle.swift in Sources */,
@@ -416,7 +426,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -464,7 +474,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
