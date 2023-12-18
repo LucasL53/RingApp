@@ -7,16 +7,20 @@
 
 import SwiftUI
 import HomeKit
+import SwiftData
 
 struct HomeView: View {
     
+    @State var showCreate = false
     @State private var selectedHomeId: UUID?
-    @ObservedObject var model: HomeStore
     @State var header: String?
+    
+    @ObservedObject var model: HomeStore
+    
+    @Query var embeddings: [HomeEmbeddings]
     
     var body: some View {
         VStack {
-            // Menu as the sticky header
             Menu(header ?? "Select Home") {
                 ForEach(model.homes, id: \.uniqueIdentifier) { home in
                     Button(action: {
@@ -31,6 +35,22 @@ struct HomeView: View {
             }
             .padding()
             .background(Color(UIColor.systemBackground))
+            .toolbar {
+                ToolbarItem {
+                    Button(action: {
+                        showCreate.toggle()
+                    }, label: {
+                        Label("Scan Accessories", systemImage: "plus")
+                    })
+                }
+            }
+            .sheet(isPresented: $showCreate,
+                   content: {
+                NavigationStack{
+                    SetUpView(home: embeddings.first(where: { $0.home == header })!)
+                }
+                .presentationDetents([.large])
+            })
             
             Spacer()
             
@@ -40,13 +60,26 @@ struct HomeView: View {
                 ControlView(homeId: $selectedHomeId, model: model)
             }
         }
-        .onChange(of: model.areHomesLoaded) { areLoaded in
-            if areLoaded {
+        .onChange(of: model.areHomesLoaded) {
+            if model.areHomesLoaded {
                 if let primaryHome = model.homes.first {
                     selectedHomeId = primaryHome.uniqueIdentifier
                     header = primaryHome.name
                     model.areHomesLoaded = false
                     model.findAccessories(homeId: selectedHomeId!)
+                }
+            }
+        }
+    }
+    
+    // Populate all the accessory information needed for AccessoryEmbedding of selectedHome.
+    func initializeAccessories() {
+        if let embedding = embeddings.first(where: {$0.home == header}) {
+            for accessory in model.accessories {
+                if !embedding.hasAccessory(accessoryName: accessory.name){
+                    let newAccessory = AccessoryEmbedding(accessoryUUID: accessory.uniqueIdentifier, accessoryName: accessory.name)
+                    // Does this save?
+                    embedding.accessoryembeddings.append(newAccessory)
                 }
             }
         }

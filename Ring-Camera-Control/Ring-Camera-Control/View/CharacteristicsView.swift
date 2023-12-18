@@ -21,22 +21,7 @@ struct CharacteristicsView: View {
             }){
                 VStack{
                     HStack{
-                        Button(action: {
-                            model.controlAccessory(accessoryIdentifier: accessoryId, control: -1)
-                            model.readCharacteristicValues(serviceId: serviceId)
-                        }) {
-                            Text("Single")
-                                .frame(width: 55, height: 10)
-                        }.buttonStyle(OutlinedButtonStyle())
-                        Button(action: {
-                            model.controlAccessory(accessoryIdentifier: accessoryId, control: 100)
-                            model.readCharacteristicValues(serviceId: serviceId)
-                        }) {
-                            Text("Double")
-                                .frame(width: 55, height: 10)
-                        }.buttonStyle(OutlinedButtonStyle())
-                    }.frame(maxWidth: .infinity)
-                    HStack{
+                        Spacer()
                         Button(action: {
                             model.controlAccessory(accessoryIdentifier: accessoryId, control: 50)
                             model.readCharacteristicValues(serviceId: serviceId)
@@ -44,15 +29,42 @@ struct CharacteristicsView: View {
                             Text("Left")
                                 .frame(width: 55, height: 10)
                         }.buttonStyle(OutlinedButtonStyle())
+                            .accessibilityLabel("Left")
+                        Spacer()
+                        Button(action: {
+                            model.controlAccessory(accessoryIdentifier: accessoryId, control: -1)
+                            model.readCharacteristicValues(serviceId: serviceId)
+                        }) {
+                            Text("Single")
+                                .frame(width: 55, height: 10)
+                        }.buttonStyle(OutlinedButtonStyle())
+                            .accessibilityLabel("Single")
+                        Spacer()
+                        Button(action: {
+                            model.controlAccessory(accessoryIdentifier: accessoryId, control: 100)
+                            model.readCharacteristicValues(serviceId: serviceId)
+                        }) {
+                            Text("Double")
+                                .frame(width: 55, height: 10)
+                        }.buttonStyle(OutlinedButtonStyle())
+                            .accessibilityLabel("Double")
+                        Spacer()
                         Button(action: {
                             model.controlAccessory(accessoryIdentifier: accessoryId, control: 0)
                             model.readCharacteristicValues(serviceId: serviceId)
                         }) {
                             Text("Right")
-                                .frame(width: 55, height: 10)
+                                .frame(width: 50, height: 10)
                         }
                         .buttonStyle(OutlinedButtonStyle())
+                        .accessibilityLabel("Right")
+                        Spacer()
                     }.frame(maxWidth: .infinity)
+//                    Spacer()
+//                    HStack{
+//                        
+//                        
+//                    }.frame(maxWidth: .infinity)
                 }
                 
             }

@@ -12,7 +12,7 @@ import HomeKit
 enum exampleClass: String, CaseIterable, Identifiable {
     case lights = "Lights"
     case speaker = "Speaker"
-    case lock = "Smart Lock"
+    case lock = "Lock"
     case tv = "TV"
     case blinds = "Blinds"
 
@@ -35,8 +35,9 @@ struct ControlView: View {
                     .font(.title) // Increase the font size
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     Spacer()
-                        
+  
                     Text("banji " + blemanager.banjiStatus)
+
                     .frame(maxWidth: .infinity) // This keeps the button centered
                     .padding()
                 }
@@ -45,13 +46,14 @@ struct ControlView: View {
                     RouterPicker()
                         .frame(width: 100, height: 50) // adjust as needed
                         .background(Color.blue)
-                        .clipShape(Circle())
+                        .clipShape(RoundedRectangle(cornerRadius: 25.0))
                         .padding()
-                    AppleMusicPlayer()
+//                    AppleMusicPlayer()
                 }
                 
                 Spacer()
                 Section(header: Text("My Smart Home Device")
+
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     Picker("My Smart Home Device", selection: $selectedAccessoryId){
                         ForEach(exampleClass.allCases) { category in
@@ -66,35 +68,42 @@ struct ControlView: View {
                     }
                 }
                 Spacer()
+
                 Section(header: Text("Live View")
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     ZStack {
                         Rectangle()
                             .fill(Color.gray)
                             .frame(height: 160)
+                            .accessibilityLabel("Live Video Feed \(blemanager.banjiStatus)")
                         
                         // Foreground image if available
                         if let image = blemanager.thisImage {
                             image
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 300, height: 300)
+                                .frame(width: 324, height: 238)
                         }
                     }
                 }
-                Spacer()
+                Spacer(minLength: 30)
+                
+                Button(action: {
+                    blemanager.savePicture()
+                }) {
+                    Text("Save Picture")
+                        .frame(width: 110, height: 10)
+                }
+                .buttonStyle(OutlinedButtonStyle())
+                Spacer(minLength: 30)
+                
                 
                 if selectedAccessoryId != nil {
                     ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
                 }
-                if selectedAccessoryId == nil && spotify {
-                    SpotifyWebView()
-                }
             }
-        }.onChange(of: blemanager.banjiStatus) {newValue in 
+        }.onChange(of: blemanager.banjiStatus) {
             blemanager.scanForPeripherals()
         }
     }
 }
-
-

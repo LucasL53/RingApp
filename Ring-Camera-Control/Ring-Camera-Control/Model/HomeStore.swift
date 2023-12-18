@@ -74,8 +74,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
 
     func homeManagerDidUpdateHomes(_ manager: HMHomeManager) {
         self.homes = self.manager.homes
-        self.areHomesLoaded = true 
-//        print(self.homes)
+        self.areHomesLoaded = true
     }
     
     func findAccessories(homeId: UUID) {
@@ -274,7 +273,6 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                     
                     self.brightnessValue = brightnessCharacteristic.value as? Int
                     let targetBrightness = (self.brightnessValue! > 0) ? 0 : 100
-                    
                     brightnessCharacteristic.writeValue(targetBrightness, completionHandler: { error in
                         if let error = error {
                             print("Failed to change light brightness: \(error)")
@@ -295,8 +293,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                         }
                     })
                     
-                    var currentLockState = lockStateCharacteristic.value as! Int
-                    var targetLockState = (currentLockState == 1) ? HMCharacteristicValueLockMechanismState.unsecured.rawValue : HMCharacteristicValueLockMechanismState.secured.rawValue
+                    let currentLockState = lockStateCharacteristic.value as! Int
+                    let targetLockState = (currentLockState == 1) ? HMCharacteristicValueLockMechanismState.unsecured.rawValue : HMCharacteristicValueLockMechanismState.secured.rawValue
                  
                     lockStateCharacteristic.writeValue(targetLockState, completionHandler: { error in
                         if let error = error {
