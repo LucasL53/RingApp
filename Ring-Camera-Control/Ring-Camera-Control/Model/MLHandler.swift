@@ -192,7 +192,6 @@ extension Array where Element == Double {
     }
 }
 
-
 extension MLMultiArray {
     func argmax() -> Int {
         let valuesPointer = self.dataPointer.bindMemory(to: Float.self, capacity: self.count)

@@ -101,14 +101,9 @@ struct ControlView: View {
                 if selectedAccessoryId != nil {
                     ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
                 }
-                if selectedAccessoryId == nil && spotify {
-//                    SpotifyWebView()
-                }
             }
         }.onChange(of: blemanager.banjiStatus) {
             blemanager.scanForPeripherals()
         }
     }
 }
-
-
