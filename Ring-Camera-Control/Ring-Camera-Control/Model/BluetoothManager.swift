@@ -288,6 +288,26 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         return finalPixelBuffer
     }
     
+    func convertBufferTo2DArray(buffer: [UInt8], width: Int, height: Int) -> [[UInt8]] {
+        var array2D = [[UInt8]](repeating: [UInt8](repeating: 0, count: width), count: height)
+        for y in 0..<height {
+            for x in 0..<width {
+                array2D[y][x] = buffer[y * width + x]
+            }
+        }
+        return array2D
+    }
+
+    func convertBufferTo2DArrayDouble(buffer: [UInt8], width: Int, height: Int) -> [[Double]] {
+        var array2D = [[Double]](repeating: [Double](repeating: 0, count: width), count: height)
+        for y in 0..<height {
+            for x in 0..<width {
+                array2D[y][x] = Double(buffer[y * width + x])
+            }
+        }
+        return array2D
+    }
+    
 //    func createPixelBufferFromUInt8Buffer(buffer: [UInt8], width: Int, height: Int) -> CVPixelBuffer? {
 //        // Check if the buffer size matches the width and height
 //        guard buffer.count == width * height else { return nil }
@@ -464,6 +484,20 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         cameraBuffer.removeLast(extraSampleCount)
                         
                         if let uiImage = createImageFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
+                            
+                            if (buttonPressed && scanStatus){
+                                let doubleArray = convertBufferTo2DArrayDouble(buffer: cameraBuffer, width: imgWidth, height: imgHeight)
+                                let intArray = convertBufferTo2DArray(buffer: cameraBuffer, width: imgWidth, height: imgHeight)
+                                if let imagedata = uiImage.jpegData(compressionQuality: 1.0) {
+                                    // pass array to dinoV2 model and receive embeddings
+                                    // inference should find the 
+                                }
+                                else {
+                                    print("Could not convert image to JPEG data")
+                                }
+                            }
+                            
+                            
                             let image = Image(uiImage: uiImage)
                             DispatchQueue.main.async {
                                 self.updateImage(image: image)
