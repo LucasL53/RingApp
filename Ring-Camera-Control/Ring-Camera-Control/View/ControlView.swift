@@ -30,24 +30,30 @@ struct ControlView: View {
     var body: some View {
         VStack{
             ScrollView {
-                Section(header: Text("My Banji")
+                Section(header: Text("My Banji:")
                     .bold()
                     .font(.title) // Increase the font size
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     Spacer()
-                    Button(action: {
-                        print("setting up camera")
-                        blemanager.scanForPeripherals()
-                        blemanager.setHomeStore(homeStore: model)
-                    }) {
-                        Text("Scan for Banji")
-                    }
+  
+                    Text("banji " + blemanager.banjiStatus)
+
                     .frame(maxWidth: .infinity) // This keeps the button centered
                     .padding()
                 }
                 Spacer()
+                HStack{
+                    RouterPicker()
+                        .frame(width: 100, height: 50) // adjust as needed
+                        .background(Color.blue)
+                        .clipShape(Circle())
+                        .padding()
+                    AppleMusicPlayer()
+                }
                 
-                Section(header: Text("Smart Home Devices")
+                Spacer()
+                Section(header: Text("My Smart Home Device")
+
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     Picker("My Smart Home Device", selection: $selectedAccessoryId){
                         ForEach(exampleClass.allCases) { category in
@@ -98,6 +104,8 @@ struct ControlView: View {
                     SpotifyWebView()
                 }
             }
+        }.onChange(of: blemanager.banjiStatus) {newValue in 
+            blemanager.scanForPeripherals()
         }
     }
 }

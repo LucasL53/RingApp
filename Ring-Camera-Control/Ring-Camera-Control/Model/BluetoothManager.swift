@@ -68,6 +68,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
     
+    @Published var banjiStatus : String = "disconnected"
     @Published var thisImage : Image?
     @Published var prediction: UUID?
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
@@ -84,6 +85,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var classifiedDevice        : Int          = 0
     private var lastActionTimeMs        : Int          = 0
     private var prevButtonPressed       : Bool         = false
+
     private var saveImageFlag           : Bool         = false
     private var buttonPressedFlag       : Bool         = false
     private var controlDeviceFlag       : Bool         = false
@@ -146,10 +148,12 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     
     public func scanForPeripherals() {
         print("scan for peripherals ran")
+        self.banjiStatus = "scanning"
         guard centralManager.isScanning == false else {
             return // Return early if already scanning
         }
         centralManager.scanForPeripherals(withServices: nil, options: nil)
+        
     }
     
     public func stopScan() {
@@ -177,6 +181,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if(central.state == .poweredOn) {
             print("BLE powered on")
+            self.banjiStatus = "connected"
         } else {
             print("ERROR on BLE")
         }
@@ -192,6 +197,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         connectionIntervalUpdated = (connectionIntervalUpdated > 0) ? (connectionIntervalUpdated - 1) : 0
         print("Disconnected with banji \(peripheral.identifier)")
+        self.banjiStatus = "disconnected"
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -287,19 +293,19 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 //    func createPixelBufferFromUInt8Buffer(buffer: [UInt8], width: Int, height: Int) -> CVPixelBuffer? {
 //        // Check if the buffer size matches the width and height
 //        guard buffer.count == width * height else { return nil }
-//        
+//
 //        var pixelBuffer: CVPixelBuffer?
 //        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_OneComponent8, nil, &pixelBuffer)
-//        
+//
 //        guard status == kCVReturnSuccess else {
 //            return nil
 //        }
-//        
+//
 //        CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
 //        let pixelData = CVPixelBufferGetBaseAddress(pixelBuffer!)
-//        
+//
 //        memcpy(pixelData, buffer, buffer.count)
-//        
+//
 //        CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
 //
 //        return pixelBuffer
@@ -440,7 +446,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     let startOfFrame = (statusByte & 1) == 1
                     let buttonPressed = ((statusByte >> 1) & 1) == 1
                     let imuValid = ((statusByte >> 2) & 1) == 1
-                    
+
                     if (startOfFrame) {
                         let interval = CFAbsoluteTimeGetCurrent() - self.prevTimestamp
                         prevTimestamp = CFAbsoluteTimeGetCurrent()
@@ -465,6 +471,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                             
                             if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
                                 if let resized = resize(pixelBuffer: cvpixelbuffer, width: 160, height: 128) {
+
 //                                    let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
                                     classifiedDevice = mlModel.predict(image: resized)
 //                                    let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
@@ -475,6 +482,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                         print("Arming controlDeviceFlag")
                                         controlDeviceFlag = true
                                     }
+
                                 }
                                 
                                 print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
@@ -525,6 +533,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         buttonPressedFlag = false
                         controlDeviceFlag = false
                     }
+
                 
                     var accelX = (Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2])
                     var accelY = (Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4])
@@ -562,7 +571,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     let aTilt = sqrt(pow(accelTilt.x, 2) + pow(accelTilt.y, 2))
                     let gTilt = sqrt(pow(gyroTilt.x, 2) + pow(gyroTilt.y, 2))
                     let fTilt = sqrt(pow(fusedTilt.x, 2) + pow(fusedTilt.y, 2))
-                                                
+
                     if (buttonPressed && imuValid) {
                         var outputString = String(format: "a_x:%.2f a_y:%.2f a_z:%.2f | g_x:%.2f g_y:%.2f g_z%.2f", accelX_float, accelY_float, accelZ_float,gyroX_float, gyroY_float, gyroZ_float)
                         print(outputString)

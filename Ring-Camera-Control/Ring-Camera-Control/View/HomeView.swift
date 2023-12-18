@@ -42,10 +42,11 @@ struct HomeView: View {
         }
         .onChange(of: model.areHomesLoaded) { areLoaded in
             if areLoaded {
-                if let primaryHome = model.homes.first(where: { $0.isPrimary }) {
+                if let primaryHome = model.homes.first {
                     selectedHomeId = primaryHome.uniqueIdentifier
                     header = primaryHome.name
                     model.areHomesLoaded = false
+                    model.findAccessories(homeId: selectedHomeId!)
                 }
             }
         }
