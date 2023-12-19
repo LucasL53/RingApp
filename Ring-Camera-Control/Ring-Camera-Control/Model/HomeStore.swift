@@ -19,6 +19,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     @Published var characteristics: [HMCharacteristic] = []
     private var manager: HMHomeManager!
     
+    @Published var homeDictionary: [Int: String] = [:]
+    
     @Published var areHomesLoaded: Bool = false
     
     @Published var readingData: Bool = false // USE: disabling certain parts of the app's UI until the data has been successfully read and the UI has been updated.
@@ -82,19 +84,30 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             print("ERROR: No Accessory not found!")
             return
         }
-        print("accessory")
-        print(devices)
-        print()
         accessories = devices
+        
+        for accessory in accessories {
+            switch accessory.services.first!.serviceType {
+            case HMServiceTypeLightbulb:
+                self.homeDictionary[0] = accessory.uniqueIdentifier.uuidString
+            case HMServiceTypeWindowCovering:
+                self.homeDictionary[1] = accessory.uniqueIdentifier.uuidString
+            case HMServiceTypeLockManagement, HMServiceTypeLockMechanism:
+                self.homeDictionary[2] = accessory.uniqueIdentifier.uuidString
+            case HMServiceTypeSpeaker:
+                self.homeDictionary[3] = accessory.uniqueIdentifier.uuidString
+            default:
+                print("Unsure about categorizing ", accessory.name)
+            }
+        }
+        
+        print(self.homeDictionary)
     }
     func findServices(accessoryId: UUID, homeId: UUID){
         guard let accessoryServices = homes.first(where: {$0.uniqueIdentifier == homeId})?.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.services else {
             print("ERROR: No Services found!")
             return
         }
-        print("services")
-        print(accessoryServices)
-        print()
         services = accessoryServices
     }
     func findCharacteristics(serviceId: UUID, accessoryId: UUID, homeId: UUID){

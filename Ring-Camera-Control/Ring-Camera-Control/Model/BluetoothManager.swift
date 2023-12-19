@@ -472,7 +472,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                             }
                             
                             if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
-                                if let resized = resize(pixelBuffer: cvpixelbuffer, width: 160, height: 128) {
+                                if let resized = resize(pixelBuffer: cvpixelbuffer, width: 128, height: 128) {
 
 //                                    let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
                                     classifiedDevice = mlModel.predict(image: resized)

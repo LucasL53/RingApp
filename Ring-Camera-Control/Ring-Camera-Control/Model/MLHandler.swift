@@ -76,11 +76,11 @@ class MLHandler {
     
     // Fix resultData argument Type
     func calculateCenterBox(resultData: [[Double]]) -> (Int, Double) {
-        let imageCtr = calculateImageCenter(originShape: []) // get resultData origShape?
+        let imageCtr = calculateImageCenter(originShape: []) // get resultData origShape? TODO
         var distance: Double = Double.infinity
         var index: Int = -1
         
-//          Need to know coreml output.
+//          Need to know coreml output. this is just python script need translation
 //        for i in range(0, resultData.boxes.shape[0]):
 //                boxCtr = calculateCenter(resultData.boxes.xyxy[i])
 //                boxDistance = euclideanDsitan(boxCtr, imageCtr)
