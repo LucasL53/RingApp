@@ -52,6 +52,8 @@ class MLHandler {
         
         return -1
     }
+
+    //MARK: - COREML
     
     func calculateCenter(boxArray: [Double]) -> [Double] {
         let centerX = (boxArray[2] + boxArray[0]) / 2
@@ -89,6 +91,8 @@ class MLHandler {
         return (index, distance)
     }
     
+    //MARK: - Calculations
+    
     // Cosine Similarity Calculation
     func dotProduct(_ vectorA: [Double], _ vectorB: [Double]) -> Double {
         precondition(vectorA.count == vectorB.count, "Vectors must have the same length")
@@ -104,6 +108,8 @@ class MLHandler {
         let dotProductValue = dotProduct(vectorA, vectorB)
         return dotProductValue / (magnitude(vectorA) * magnitude(vectorB))
     }
+    
+    //MARK: - DINOV2
     
     // Question: What is sceneSim? Do I add e to persistence or q based on sceneSim?
     func inference(q: [[Double]], e: [[Double]]) {

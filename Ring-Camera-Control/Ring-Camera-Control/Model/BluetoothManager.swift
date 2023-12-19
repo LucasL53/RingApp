@@ -311,27 +311,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         }
         return array2D
     }
-    
-//    func createPixelBufferFromUInt8Buffer(buffer: [UInt8], width: Int, height: Int) -> CVPixelBuffer? {
-//        // Check if the buffer size matches the width and height
-//        guard buffer.count == width * height else { return nil }
-//
-//        var pixelBuffer: CVPixelBuffer?
-//        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_OneComponent8, nil, &pixelBuffer)
-//
-//        guard status == kCVReturnSuccess else {
-//            return nil
-//        }
-//
-//        CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
-//        let pixelData = CVPixelBufferGetBaseAddress(pixelBuffer!)
-//
-//        memcpy(pixelData, buffer, buffer.count)
-//
-//        CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
-//
-//        return pixelBuffer
-//    }
 
     func resize(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffer? {
         var maybePixelBuffer: CVPixelBuffer?
@@ -461,8 +440,10 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     // 10-11: Gyro Y
                     // 12-13: Gyro Z
                     // 14-xxx: Camera
+                    
+                    // let imgWidth = 128
 
-                    var imgWidth = 162
+                    let imgWidth = 162
 
                     let statusByte = bufferPointerUInt8[1]
                     let startOfFrame = (statusByte & 1) == 1
