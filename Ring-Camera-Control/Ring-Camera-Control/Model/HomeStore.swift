@@ -258,7 +258,6 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     }
     
     func toggleAccessory(accessoryIdentifier: UUID) {
-        print("1")
         if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
             // Light Services
             if let lightbulbService = accessory.services.first(where: { $0.serviceType == HMServiceTypeLightbulb }) {
@@ -275,7 +274,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                     
                     self.brightnessValue = brightnessCharacteristic.value as? Int
                     let targetBrightness = (self.brightnessValue! > 0) ? 0 : 100
-                    print("2")
+                
                     brightnessCharacteristic.writeValue(targetBrightness, completionHandler: { error in
                         if let error = error {
                             print("Failed to change light brightness: \(error)")
