@@ -12,6 +12,7 @@ import SwiftUI
 import CoreBluetooth
 import CoreML
 import CoreVideo
+import MediaPlayer
 
 //MARK: - Service Identifiers
 let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3246970")
@@ -59,6 +60,17 @@ enum ImageResolution: UInt8 {
     }
 }
 
+extension MPVolumeView {
+    static func setVolume(_ volume: Float) -> Void {
+        let volumeView = MPVolumeView()
+        let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider
+
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
+            slider?.value = volume
+        }
+    }
+}
+
 class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, ObservableObject {
 
     //MARK: - Properties
@@ -94,7 +106,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private let date = Date()
     
     // This must align with MLHandler
-    private let identifiers = ["69D467F4-2959-55C0-8DD3-C83B89A84FD2", "Blinds", "9CF6BB71-C066-5C6E-924E-994BCA7041E2", "Speaker", "TV"]
+    private let identifiers = HomeStore().homeDictionary
     
     struct accelTilt {
         static var x: Double = 0.0
@@ -516,6 +528,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 saveImageFlag = false
                             }
                             
+
                             if let centeredImage = centerImageOnBlackSquare(image: uiImage, squareSize: CGSize(width: 160, height: 160)) {
                                 let image = Image(uiImage: centeredImage)
                                 DispatchQueue.main.async {
@@ -523,12 +536,13 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 }
                                 
                                 if let cvpixelbuffer = createGrayScalePixelBuffer(image: centeredImage, width: 160, height: 160) {
+
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
-                                    
-                                    //classifiedDevice = mlModel.predict(image: resized)
+
+                                    classifiedDevice = mlModel.predict(image: resized)
                                     
                                     let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
-                                    let timeElapsed = endTime - startTime
+                                    let _ = endTime - startTime
                                     //print("prediction_time_ms: \(1000*timeElapsed)")
                                     if (buttonPressedFlag) {
                                         print("Arming controlDeviceFlag")
@@ -545,7 +559,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         }
                         cameraBuffer.removeAll()
                     } // startOfFrame end
-                    
                     
 //                    if (controlDeviceFlag) {
 //                        // Lights
