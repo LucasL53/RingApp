@@ -8,17 +8,17 @@
 import CoreML
 
 class MLHandler {
-    private var model: best160x128! // Implicitly unwrapped optional
+    private var model: last! // Implicitly unwrapped optional
 
     
     // Labels mapping from class indices to names
-    private let labels = ["lights", "blinds", "lock", "speaker", "tv"]
+    private let labels = ["Door", "Door handle", "Window", "Blind", "Lights", "Smart Lock", "Speaker", "TV"]
 
     // Initialization of the model
     init() {
         do {
             let configuration = MLModelConfiguration()
-            self.model = try best160x128(configuration: configuration)
+            self.model = try last(configuration: configuration)
         } catch {
             print("Error initializing model: \(error)")
         }
@@ -27,25 +27,56 @@ class MLHandler {
     // Function to predict from an image
     func predict(image: CVPixelBuffer) -> Int {
         do {
-            let prediction = try model.prediction(image: image)
+            let prediction = try model.prediction(image: image, iouThreshold: 0.45, confidenceThreshold: 0.25)
             
             // return a MultiArray(Float32)
-            let outputArray = prediction.var_379
+            let classConfidence = prediction.confidence
+            let classCoordinate = prediction.coordinates
             
-            // Find the index of the class with the highest probability
-            let maxIndex = outputArray.argmax()
-            let maxLabel = labels[maxIndex]
-
-            // Optionally, print all probabilities with corresponding labels
-            for i in 0..<labels.count {
-                let probability = outputArray[i].floatValue
-                print("\(labels[i]): \(probability)")
+            // Name : [x, y, width, height]
+            var classMap: [String: [Float]] = [:]
+            
+            var maxIndex: Int = -1
+            var maxValue: Float = -1.0
+            for i in 0..<classConfidence.shape[0].intValue {
+                for j in 0..<classConfidence.shape[1].intValue {
+                    let index = [NSNumber(value: i), NSNumber(value: j)]
+                    let value = classConfidence[index].floatValue
+//                     print("Value at [\(i), \(j),]: \(value)")
+                    if maxValue < value {
+                        maxValue = value
+                        maxIndex = j
+                    }
+                }
+                print("Predicted \(labels[maxIndex]) at confidence \(maxValue)")
+//                classMap[labels[maxIndex]] = [classCoordinate[i]]
             }
-            // Print the prediction
-            print("Prediction: \(maxLabel)\n")
             
-            return maxIndex
-//            return identifiers[maxIndex]
+            
+//            print(prediction)
+//            print(classConfidence)
+//            let dim1 = classConfidence.shape[0].intValue
+//            let dim2 = classConfidence.shape[1].intValue
+//            for i in 0..<dim1 {
+//                for j in 0..<dim2{
+//                    let index = [NSNumber(value: i), NSNumber(value: j)]
+//                                let value = classConfidence[index].floatValue
+//                                print("Value at [\(i), \(j),]: \(value)")
+//                }
+//            }
+//            print(classCoordinate)
+//            
+//            calculateCenterBox(confidence: )
+//
+//            // Optionally, print all probabilities with corresponding labels
+//            for i in 0..<labels.count {
+//                let probability = outputArray[i].floatValue
+//                print("\(labels[i]): \(probability)")
+//            }
+//            // Print the prediction
+//            print("Prediction: \(maxLabel)\n")
+            return 0
+//            return maxIndex
         } catch {
             print("Error making prediction: \(error)")
         }
@@ -56,6 +87,7 @@ class MLHandler {
     //MARK: - COREML
     
     func calculateCenter(boxArray: [Double]) -> [Double] {
+        //  X and Y-axis center = (Top-left/Top-right + Bottom-right/Bottom-left) / 2
         let centerX = (boxArray[2] + boxArray[0]) / 2
         let centerY = (boxArray[3] + boxArray[1]) / 2
         return [centerX, centerY]
@@ -76,7 +108,7 @@ class MLHandler {
     
     // Fix resultData argument Type
     func calculateCenterBox(resultData: [[Double]]) -> (Int, Double) {
-        let imageCtr = calculateImageCenter(originShape: []) // get resultData origShape? TODO
+        let imageCtr = calculateImageCenter(originShape: [])
         var distance: Double = Double.infinity
         var index: Int = -1
         

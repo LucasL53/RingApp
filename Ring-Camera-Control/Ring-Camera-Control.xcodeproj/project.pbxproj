@@ -10,6 +10,7 @@
 		094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 094F5FD72A9986FB007EFAC9 /* best.mlmodel */; };
 		09B0AAF62A9FFFCA00A43C9C /* best160x128.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */; };
 		09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */; };
+		1D0511392B51E52B00A27D21 /* last.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 1D0511382B51E52B00A27D21 /* last.mlpackage */; };
 		1D158CF52B1014890017810F /* AccessorySetupCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF42B1014890017810F /* AccessorySetupCard.swift */; };
 		1D158CF82B1017E50017810F /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF72B1017E50017810F /* ScanView.swift */; };
 		1D49450B2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */; };
@@ -39,6 +40,7 @@
 		094F5FD72A9986FB007EFAC9 /* best.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best.mlmodel; sourceTree = "<group>"; };
 		09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best160x128.mlmodel; sourceTree = "<group>"; };
 		09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best96x96.mlmodel; sourceTree = "<group>"; };
+		1D0511382B51E52B00A27D21 /* last.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = last.mlpackage; sourceTree = "<group>"; };
 		1D158CF42B1014890017810F /* AccessorySetupCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessorySetupCard.swift; sourceTree = "<group>"; };
 		1D158CF72B1017E50017810F /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		1D279E422AC0B27E00E251C7 /* Ring-Camera-Control-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ring-Camera-Control-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */,
 				094F5FD72A9986FB007EFAC9 /* best.mlmodel */,
 				1D94E3882A8C93E000B7C625 /* TestModel.mlmodel */,
+				1D0511382B51E52B00A27D21 /* last.mlpackage */,
 			);
 			path = CoreML;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 				1D4945212A886F5C00D2DACE /* HomeView.swift in Sources */,
 				1D94E3912A933D2E00B7C625 /* CharacteristicsView.swift in Sources */,
 				1D94E3992A9E0AB400B7C625 /* MusicPlayer.swift in Sources */,
+				1D0511392B51E52B00A27D21 /* last.mlpackage in Sources */,
 				1D4945252A88708200D2DACE /* ControlView.swift in Sources */,
 				1D158CF82B1017E50017810F /* ScanView.swift in Sources */,
 				1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */,
@@ -409,7 +413,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = 7BG4V8D2WN;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -437,7 +441,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-Objc";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control3";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Ring-Camera-Control/Ring-Camera-Control-Bridging-Header.h";
@@ -457,7 +461,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = 7BG4V8D2WN;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -485,7 +489,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-Objc";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control3";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Ring-Camera-Control/Ring-Camera-Control-Bridging-Header.h";
