@@ -431,6 +431,28 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         return (dps / halfScale) * Double(val)
     }
     
+    func centerImageOnBlackSquare(image: UIImage, squareSize: CGSize) -> UIImage? {
+        // Create a black square image
+        UIGraphicsBeginImageContextWithOptions(squareSize, false, 0.0)
+        UIColor.black.setFill()
+        UIRectFill(CGRect(origin: .zero, size: squareSize))
+        let blackSquareImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        // Calculate the position to center the original image
+        let xOffset = (squareSize.width - image.size.width) / 2.0
+        let yOffset = (squareSize.height - image.size.height) / 2.0
+
+        // Draw the original image on top of the black square
+        UIGraphicsBeginImageContextWithOptions(squareSize, false, 0.0)
+        blackSquareImage?.draw(at: .zero)
+        image.draw(at: CGPoint(x: xOffset, y: yOffset))
+        let centeredImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return centeredImage
+    }
+    
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard error == nil else {
             return
@@ -493,13 +515,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                                 saveImageFlag = false
                             }
-                            let image = Image(uiImage: uiImage)
-                            DispatchQueue.main.async {
-                                self.updateImage(image: image)
-                            }
                             
-                            if let cvpixelbuffer = createGrayScalePixelBuffer(image: uiImage, width: imgWidth, height: imgHeight) {
-                                if let resized = resize(pixelBuffer: cvpixelbuffer, width: 160, height: 128) {
+                            if let centeredImage = centerImageOnBlackSquare(image: uiImage, squareSize: CGSize(width: 160, height: 160)) {
+                                let image = Image(uiImage: centeredImage)
+                                DispatchQueue.main.async {
+                                    self.updateImage(image: image)
+                                }
+                                
+                                if let cvpixelbuffer = createGrayScalePixelBuffer(image: centeredImage, width: 160, height: 160) {
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
                                     
                                     //classifiedDevice = mlModel.predict(image: resized)
@@ -511,12 +534,11 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                         print("Arming controlDeviceFlag")
                                         controlDeviceFlag = true
                                     }
+                                    
+                                    //print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
+                                } else {
+                                    print("error creating cvpixelbuffer")
                                 }
-                                
-                                //print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
-                                
-                            } else {
-                                print("error creating cvpixelbuffer")
                             }
                         } else {
                             print("error creating image from buffer")
