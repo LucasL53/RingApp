@@ -13,6 +13,7 @@ import CoreBluetooth
 import CoreML
 import CoreVideo
 import MediaPlayer
+import AVFoundation
 
 //MARK: - Service Identifiers
 let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3246970")
@@ -167,11 +168,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     var tiltYPrev: Double = 0.0
     
     // Volume control logic
-    var volumePrev: Double = 0.0
-    var volumeCurrent: Double = 0.0
+    var prevMappedTilt: Double = 0.0
+    var currentMappedTilt: Double = 0.0
     var volumeFinal: Double = 0.0
     var volumeChange: Double = 0.0
+    var currentVolume: Double = 0.0
+    var newVolume: Double = 0.0
     var volumeCounter: Int = 0
+    var session: AVAudioSession = AVAudioSession.sharedInstance()
     
     //MARK: - Init
     required override init() {
@@ -180,6 +184,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         self.homeModel = HomeStore()
         super.init()
         centralManager.delegate = self
+        MPVolumeView.setVolume(0.5)
+        currentVolume = 0.5
     }
     
     public func setHomeStore(homeStore: HomeStore) {
@@ -471,6 +477,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 }
             }
         } else if characteristic == cameraDataCharacteristics {
+            
+            
+            
             value.withUnsafeBytes{ (bufferRawBufferPointer) -> Void in
                 let bufferPointerUInt8 = UnsafeBufferPointer<UInt8>.init(start: bufferRawBufferPointer.baseAddress!.bindMemory(to: UInt8.self, capacity: 1), count: packetLength)
                 let sequenceNumberBytes : [UInt8] = [bufferRawBufferPointer[1], bufferRawBufferPointer[0]]
@@ -586,14 +595,12 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         rotationInitialized = false
                     }
 
-                    
                     if ((buttonPressed == false) && (controlDeviceFlag == true)) {
                         buttonPressedFlag = false
                         controlDeviceFlag = false
                     }
 
                     // TILT CODE START
-                    // Establish Rotation Matrix
                     if (imuValid && !rotationInitialized && buttonPressed) {
                         // Get initial accelerometer vectors
                         accelX_init = lsbToMps2((Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2]),2,16)
@@ -637,8 +644,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         tiltXPrev = tiltX_init
                         tiltYPrev = tiltY_init
                         
-                        volumePrev = (tiltX_init + 90) / 180
-                        print("volume init", volumePrev)
+                        prevMappedTilt = (tiltX_init + 90) / 180
+                        print("volume init", prevMappedTilt)
                         
                         rotationInitialized = true
                     }
@@ -648,8 +655,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         accelX_float = lsbToMps2((Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2]), 2, 16)
                         accelY_float = lsbToMps2((Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4]), 2, 16)
                         accelZ_float = lsbToMps2((Int16(bufferPointerUInt8[7]) << 8) | Int16(bufferPointerUInt8[6]), 2, 16)
-                        
-                        //                        // Build Accel Vector
                         let accelerometerReadings: [Double] = [accelX_float, accelY_float, accelZ_float]  // Replace with your actual readings
                         
                         // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
@@ -662,10 +667,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         accelY_float = rotatedVector[1]
                         accelZ_float = rotatedVector[2]
                         
-                        //                        accelTilt.x = atan2(accelY_float, accelZ_float) * (180 / Double.pi)
-                        //                        accelTilt.y = atan2(-1*accelX_float, sqrt(pow(accelY_float,2) + pow(accelZ_float, 2))) * (180 / Double.pi)
-                        //                        accelTilt.z = atan2(accelX_float, accelY_float) * (180 / Double.pi)
-                        //
                         accelTilt.x = atan(accelX_float / sqrt(pow(accelY_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
                         accelTilt.y = atan(accelY_float / sqrt(pow(accelX_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
                         accelTilt.z = atan(sqrt(pow(accelX_float,2) + pow(accelY_float,2)) / accelZ_float) * 180 / Double.pi
@@ -676,23 +677,12 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         tiltXPrev = accelTilt.x
                         tiltYPrev = accelTilt.y
                         
-                        var ratio = Double((1+(abs(self.deltaXSum))) / (1+abs(self.deltaYSum)))
-                        var threshold = 9.0
-                        
-                        //                        if (ratio > threshold) {
-                        //                            print("ROTATION")
-                        //                        } else if ((1.0/ratio) > threshold) {
-                        //                            print("UP/DOWN")
-                        //                        }
-                        //
-                        if (abs(deltaXSum) >= 10) {
-                            print("ROTATION")
-                        }
-                        
-                        if (abs(deltaYSum) >= 10) {
-                            print("UP/DOWN")
-                        }
-                        
+//                        if (abs(deltaXSum) >= 10) {
+//                            print("ROTATION")
+//                        }
+//                        if (abs(deltaYSum) >= 10) {
+//                            print("UP/DOWN")
+//                        }
                         
                         var u_x = accelTilt.x / 90.0
                         var u_y = accelTilt.y / 90.0
@@ -700,20 +690,16 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         
                         var mappedTilt = (u_x + u_y + u_z) / 3
                         
-                        //var outputString1 = String(format: "x:%.2f y:%.2f z:%.2f | x:%.2f y:%.2f z:%.2f | %f", accelX_float, accelY_float, accelZ_float, accelTilt.x, accelTilt.y,accelTilt.z, mappedTilt)
-                        //print(outputString1)
-                        
-                        var volumeCurrent = (accelTilt.x + 90) / 180
-                        volumeCounter += 1
-                        if(volumeCounter > 5){
-                            volumeChange = volumeCurrent - volumePrev
-                            volumePrev = volumeCurrent
-                            volumeCounter = 0
-                        }
-                        
-                        var volumeString = String(format: "%0.9f", volumeChange)
-                        print(volumeString)
-                        
+                      
+                        currentMappedTilt = (accelTilt.x + 90) / 180
+                        volumeChange = currentMappedTilt - prevMappedTilt
+                        prevMappedTilt = currentMappedTilt
+                        newVolume = currentVolume + volumeChange
+                        MPVolumeView.setVolume(Float(newVolume))
+//                            var volumeString = String(format: "current:%0.5f, new:%0.5f, %0.9f", currentVolume, newVolume, volumeChange)
+//                            print(volumeString)
+                        currentVolume = newVolume
+
                     }
                     if (prevButtonPressed != buttonPressed) {
                         prevButtonPressed = buttonPressed
