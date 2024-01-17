@@ -87,7 +87,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         accessories = devices
         
         for accessory in accessories {
-            self.homeDictionary[4] = "speaker UUID"
+            self.homeDictionary[3] = "speaker UUID"
             switch accessory.services.first!.serviceType {
             case HMServiceTypeLightbulb:
                 self.homeDictionary[0] = accessory.uniqueIdentifier.uuidString

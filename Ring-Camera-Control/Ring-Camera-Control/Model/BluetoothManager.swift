@@ -333,14 +333,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                                  kCVPixelBufferCGBitmapContextCompatibilityKey as String: true]
 
         var pixelBuffer: CVPixelBuffer? = nil
-        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_OneComponent8, pixelBufferOptions as CFDictionary, &pixelBuffer)
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, pixelBufferOptions as CFDictionary, &pixelBuffer)
         guard status == kCVReturnSuccess, let finalPixelBuffer = pixelBuffer else {
             return nil
         }
 
         let rect = CGRect(x: 0, y: 0, width: width, height: height)
-        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceGray())
-
+//        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceGray())
+        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceRGB())
         return finalPixelBuffer
     }
     
@@ -555,7 +555,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
 
-                                    classifiedDevice = mlModel.predict(image: resized)
+                                    classifiedDevice = mlModel.predict(image: cvpixelbuffer)
                                     
                                     let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
                                     let _ = endTime - startTime

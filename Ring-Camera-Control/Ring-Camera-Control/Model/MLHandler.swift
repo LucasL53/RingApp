@@ -9,7 +9,6 @@ import CoreML
 
 class MLHandler {
     private var model: last! // Implicitly unwrapped optional
-
     
     // Labels mapping from class indices to names
     private let labels = ["Door", "Door handle", "Window", "Blind", "Lights", "Smart Lock", "Speaker", "TV"]
@@ -49,56 +48,58 @@ class MLHandler {
                     }
                 }
                 print("Predicted \(labels[maxIndex]) at confidence \(maxValue)")
-//                classMap[labels[maxIndex]] = [classCoordinate[i]]
+                print("Coordinates: \(classCoordinate)")
+                var objectArray = [Float]()
+                for k in 0..<classCoordinate.shape[1].intValue {
+                    let index = [NSNumber(value: i), NSNumber(value: k)]
+                    let value = classCoordinate[index].floatValue
+                    objectArray.append(value)
+                }
+                classMap[labels[maxIndex]] = objectArray
             }
-            
-            
-//            print(prediction)
-//            print(classConfidence)
-//            let dim1 = classConfidence.shape[0].intValue
-//            let dim2 = classConfidence.shape[1].intValue
-//            for i in 0..<dim1 {
-//                for j in 0..<dim2{
-//                    let index = [NSNumber(value: i), NSNumber(value: j)]
-//                                let value = classConfidence[index].floatValue
-//                                print("Value at [\(i), \(j),]: \(value)")
-//                }
-//            }
-//            print(classCoordinate)
-//            
-//            calculateCenterBox(confidence: )
-//
-//            // Optionally, print all probabilities with corresponding labels
-//            for i in 0..<labels.count {
-//                let probability = outputArray[i].floatValue
-//                print("\(labels[i]): \(probability)")
-//            }
-//            // Print the prediction
-//            print("Prediction: \(maxLabel)\n")
-            return 0
-//            return maxIndex
+            print("map contains: \(classMap.keys), \(classMap.values)")
+            if classMap.count > 0 {
+                let output = calculateCenterBox(resultData: classMap)
+                let finalClass = output.0
+                
+                switch finalClass{
+                case "Lights":
+                    return 0
+                case "Window", "Blind":
+                    return 1
+                case "Door", "Door handle", "Smart Lock":
+                    return 2
+                case "Speaker":
+                    return 3
+                case "TV":
+                    return 4
+                default:
+                    return -1
+                }
+            }
         } catch {
             print("Error making prediction: \(error)")
         }
-        
+        print("nothing printed")
         return -1
     }
 
     //MARK: - COREML
     
-    func calculateCenter(boxArray: [Double]) -> [Double] {
+    func calculateCenter(boxArray: [Float]) -> [Float] {
         //  X and Y-axis center = (Top-left/Top-right + Bottom-right/Bottom-left) / 2
+        // [x, y, width, height]
         let centerX = (boxArray[2] + boxArray[0]) / 2
         let centerY = (boxArray[3] + boxArray[1]) / 2
         return [centerX, centerY]
     }
     
-    func calculateImageCenter(originShape: [Double]) -> (Double, Double) {
-        return (originShape[0] / 2, originShape[1] / 2)
+    func calculateImageCenter(originShape: [Float]) -> [Float]{
+        return [originShape[0] / 2, originShape[1] / 2]
     }
     
     // Translated numpy linalg method. double check for validity
-    func euclideanDistance(point1: [Double], point2: [Double]) -> Double? {
+    func euclideanDistance(point1: [Float], point2: [Float]) -> Float? {
         guard point1.count == point2.count else { return nil }
         // Calculate the squared differences between corresponding coordinates of the two points
         let squaredDifference = zip(point1, point2).map { ($0 - $1) * ($0 - $1) }
@@ -107,10 +108,10 @@ class MLHandler {
     }
     
     // Fix resultData argument Type
-    func calculateCenterBox(resultData: [[Double]]) -> (Int, Double) {
-        let imageCtr = calculateImageCenter(originShape: [])
-        var distance: Double = Double.infinity
-        var index: Int = -1
+    func calculateCenterBox(resultData:  [String: [Float]]) -> (String, Float) {
+        let imageCtr = calculateImageCenter(originShape: [160, 160])
+        var distance: Float = Float.infinity
+        var index: String = ""
         
 //          Need to know coreml output. this is just python script need translation
 //        for i in range(0, resultData.boxes.shape[0]):
@@ -119,7 +120,16 @@ class MLHandler {
 //                if distance > boxDistance:
 //                    distance = boxDistance
 //                    lowestIndex = i
+        for (key, value) in resultData{
+            let boxCtr = calculateCenter(boxArray: value)
+            let boxDistance = euclideanDistance(point1: boxCtr, point2: imageCtr)
+            if distance > boxDistance! {
+                distance = boxDistance!
+                index = key
+            }
+        }
         
+        // Name of Class, Euclidean Distance
         return (index, distance)
     }
     
