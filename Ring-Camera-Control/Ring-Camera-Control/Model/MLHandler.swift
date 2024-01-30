@@ -24,7 +24,7 @@ class MLHandler {
     }
     
     // Function to predict from an image
-    func predict(image: CVPixelBuffer) -> Int {
+    func predict(image: CVPixelBuffer) -> [String: [Float]] {
         do {
             let prediction = try model.prediction(image: image, iouThreshold: 0.45, confidenceThreshold: 0.25)
             
@@ -41,14 +41,14 @@ class MLHandler {
                 for j in 0..<classConfidence.shape[1].intValue {
                     let index = [NSNumber(value: i), NSNumber(value: j)]
                     let value = classConfidence[index].floatValue
-//                     print("Value at [\(i), \(j),]: \(value)")
+                     print("Value at [\(i), \(j),]: \(value)")
                     if maxValue < value {
                         maxValue = value
                         maxIndex = j
                     }
                 }
                 print("Predicted \(labels[maxIndex]) at confidence \(maxValue)")
-                print("Coordinates: \(classCoordinate)")
+//                print("Coordinates: \(classCoordinate)")
                 var objectArray = [Float]()
                 for k in 0..<classCoordinate.shape[1].intValue {
                     let index = [NSNumber(value: i), NSNumber(value: k)]
@@ -58,30 +58,31 @@ class MLHandler {
                 classMap[labels[maxIndex]] = objectArray
             }
             print("map contains: \(classMap.keys), \(classMap.values)")
-            if classMap.count > 0 {
-                let output = calculateCenterBox(resultData: classMap)
-                let finalClass = output.0
-                
-                switch finalClass{
-                case "Lights":
-                    return 0
-                case "Window", "Blind":
-                    return 1
-                case "Door", "Door handle", "Smart Lock":
-                    return 2
-                case "Speaker":
-                    return 3
-                case "TV":
-                    return 4
-                default:
-                    return -1
-                }
-            }
+            return classMap
+//            if classMap.count > 0 {
+//                let output = calculateCenterBox(resultData: classMap)
+//                let finalClass = output.0
+//                
+//                switch finalClass{
+//                case "Lights":
+//                    return 0
+//                case "Window", "Blind":
+//                    return 1
+//                case "Door", "Door handle", "Smart Lock":
+//                    return 2
+//                case "Speaker":
+//                    return 3
+//                case "TV":
+//                    return 4
+//                default:
+//                    return -1
+//                }
+//            }
         } catch {
             print("Error making prediction: \(error)")
         }
         print("nothing printed")
-        return -1
+        return [:]
     }
 
     //MARK: - COREML

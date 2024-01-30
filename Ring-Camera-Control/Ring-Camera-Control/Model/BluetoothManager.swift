@@ -98,6 +98,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var framesCount             : Int          = 0
     private var prevTimestamp           : Double       = 0.0
     private var classifiedDevice        : Int          = 0
+    private var classifiedDeviceMap      : [String : [Float]] = [:]
     private var lastActionTimeMs        : Int          = 0
     private var prevButtonPressed       : Bool         = false
     private var saveImageFlag           : Bool         = false
@@ -395,6 +396,35 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         return resizedPixelBuffer
     }
+    
+    func boundingBoxToImage(drawText text: String, inImage image: UIImage, inRect rect: CGRect) -> UIImage {
+        // font attributes
+        let textColor = UIColor.white
+        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
+        
+        // Setup image context using the given image
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(image.size, false, scale)
+        
+        // Setup font attributes
+        let textFontAttributes = [
+                NSAttributedString.Key.font: textFont,
+                NSAttributedString.Key.foregroundColor: textColor,
+                ] as [NSAttributedString.Key : Any]
+            image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+
+        // Create a point within the space to write text
+        text.draw(in: rect, withAttributes: textFontAttributes)
+        
+        // Create a point within the space to draw rectangle
+//        image.draw(in: rect)
+        
+        // Create a new image out of the images we made graphical addition
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage!
+    }
 
     
     func updateImage(image: Image) {
@@ -543,19 +573,22 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
                                 saveImageFlag = false
                             }
-                            
 
                             if let centeredImage = centerImageOnBlackSquare(image: uiImage, squareSize: CGSize(width: 160, height: 160)) {
-                                let image = Image(uiImage: centeredImage)
-                                DispatchQueue.main.async {
-                                    self.updateImage(image: image)
-                                }
-                                
                                 if let cvpixelbuffer = createGrayScalePixelBuffer(image: centeredImage, width: 160, height: 160) {
-
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
-
-                                    classifiedDevice = mlModel.predict(image: cvpixelbuffer)
+                                    classifiedDeviceMap = mlModel.predict(image: cvpixelbuffer)
+                                    var newImage = centeredImage
+                                    for (key, value) in classifiedDeviceMap {
+                                        print("x: \(value[0] * Float(newImage.size.width)), y: \(value[1] * Float(newImage.size.height)), width: \(value[2] * Float(newImage.size.width)), height: \(value[3] * Float(newImage.size.height))")
+                                        let rect = CGRect(x: CGFloat(value[0] * Float(newImage.size.width)), y: CGFloat(value[1] * Float(newImage.size.height)), width: CGFloat(value[2] * Float(newImage.size.width)), height: CGFloat(value[3] * Float(newImage.size.height)))
+                                        newImage = boundingBoxToImage(drawText: key, inImage: newImage, inRect: rect)
+                                    }
+//                                    
+                                    let image = Image(uiImage: newImage)
+                                    DispatchQueue.main.async {
+                                        self.updateImage(image: image)
+                                    }
                                     
                                     let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
                                     let _ = endTime - startTime

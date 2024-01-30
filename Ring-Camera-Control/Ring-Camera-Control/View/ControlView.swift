@@ -82,7 +82,7 @@ struct ControlView: View {
                             image
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 324, height: 238)
+                                .frame(width: 160, height: 160)
                         }
                     }
                 }
@@ -97,9 +97,15 @@ struct ControlView: View {
                 .buttonStyle(OutlinedButtonStyle())
                 Spacer(minLength: 30)
                 
-                
-                if selectedAccessoryId != nil {
-                    ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
+//                
+//                if selectedAccessoryId != nil {
+//                    ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
+//                }
+                Button(action: {
+                    blemanager.savePicture()
+                }) {
+                    Text("Save Picture")
+                        .frame(width: 110, height: 10)
                 }
             }
         }.onChange(of: blemanager.banjiStatus) {
