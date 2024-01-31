@@ -93,6 +93,30 @@ public extension UIImage {
     }
 }
 
+func createGrayScalePixelBuffer(image: UIImage, width: Int, height: Int) -> CVPixelBuffer? {
+    let ciImage = CIImage(image: image)
+    let filter = CIFilter(name: "CIColorControls")!
+    filter.setValue(ciImage, forKey: kCIInputImageKey)
+    filter.setValue(0, forKey: kCIInputSaturationKey) // Set saturation to 0 to get grayscale
+
+    guard let outputImage = filter.outputImage else { return nil }
+
+    let context = CIContext()
+    let pixelBufferOptions: [String: Any] = [kCVPixelBufferCGImageCompatibilityKey as String: true,
+                                             kCVPixelBufferCGBitmapContextCompatibilityKey as String: true]
+
+    var pixelBuffer: CVPixelBuffer? = nil
+    let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, pixelBufferOptions as CFDictionary, &pixelBuffer)
+    guard status == kCVReturnSuccess, let finalPixelBuffer = pixelBuffer else {
+        return nil
+    }
+
+    let rect = CGRect(x: 0, y: 0, width: width, height: height)
+//        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceGray())
+    context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceRGB())
+    return finalPixelBuffer
+}
+
 func centerImageOnBlackSquare(image: UIImage, squareSize: CGSize) -> UIImage? {
     // Create a black square image
     UIGraphicsBeginImageContextWithOptions(squareSize, false, 0.0)
@@ -179,15 +203,54 @@ func boundingBoxToImage(drawText text: String, inImage image: UIImage, inRect re
 // MARK: - Setting up ML Model
 
 var urlOfModelInThisBundle: URL { let resPath = Bundle.main.url(forResource: "last", withExtension: "mlmodelc")!; return try! MLModel.compileModel(at: resPath) }
-let image = UIImage(named: "test/lights_2/IMG_3243.JPG")
+var image = UIImage(named: "test_set/blinds/IMG_3261.JPG")
+image = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 160, height: 160))
+
+let modelURL = Bundle.main.url(forResource: "last", withExtension: "mlmodelc")!
+let model = try! VNCoreMLModel(for: MLModel(contentsOf: modelURL))
+
+let handler = VNImageRequestHandler(cgImage: image!.cgImage!, options: [:])
+let request = VNCoreMLRequest(model: model, completionHandler: { (request, error) in
+//    guard let results = request.results as? [VNClassificationObservation] else {
+//        fatalError()
+//    }
+    let results = request.results
+    for result in results! where result is VNRecognizedObjectObservation {
+        guard let objectObservation = result as? VNRecognizedObjectObservation else {
+                fatalError()
+            }
+        let obj = objectObservation.labels[0].identifier
+        print(obj, objectObservation.labels[0].confidence)
+        let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(160), Int(160))
+        
+//        let shapeLayer = createRoundedRectLayerWithBounds(objectBounds)
+//        
+//        let textLayer = createTextSubLayerInBounds(objectBounds,
+//                    identifier: topLabelObservation.identifier,
+//                    confidence: topLabelObservation.confidence)
+    }
+    let classification = results
+
+    print("[predict result]")
+})
+try! handler.perform([request])
+
+
+let noBorderBuffer = (image?.convertToBuffer())!
+let noBorderImage = UIImage(pixelBuffer: noBorderBuffer)
+image = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 160, height: 160))
 //let newimage = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 160, height: 160))
 let buffer = (image?.convertToBuffer())!
+let myBuffer = (image?.convertToBuffer())!
+let maruchiBuffer = createGrayScalePixelBuffer(image: image!, width: 160, height: 160)
 let address = CVPixelBufferGetDataSize(buffer)
 let resized_buffer = resize(pixelBuffer: (image?.convertToBuffer())!, width: 160, height: 160)
 let resized_buffer_size = CVPixelBufferGetDataSize(resized_buffer!)
-let transformedImage = UIImage(pixelBuffer: buffer)
+let borderlessImage = noBorderImage
+let transformedImage = UIImage(pixelBuffer: myBuffer)
+let maruchiImage = UIImage(pixelBuffer: maruchiBuffer!)
 //let colors = transformedImage!.colors
-let result = try! last().prediction(image: resized_buffer!, iouThreshold: 0.4, confidenceThreshold: 0.1)
+let result = try! last().prediction(image: buffer, iouThreshold: 0.2, confidenceThreshold: 0.25)
 // MARK: - Handling result
 //
 let classConfidence = result.confidence
@@ -200,10 +263,12 @@ var fakePos: [[Float]] = []
 var maxIndex: Int = -1
 var maxValue: Float = -1.0
 for i in 0..<classConfidence.shape[0].intValue {
+    maxValue = -1.0
+    maxIndex = -1
     for j in 0..<classConfidence.shape[1].intValue {
         let index = [NSNumber(value: i), NSNumber(value: j)]
         let value = classConfidence[index].floatValue
-         print("Value at [\(i), \(j),]: \(value)")
+//         print("Value at [\(i), \(j),]: \(value)")
         if maxValue < value {
             maxValue = value
             maxIndex = j
@@ -211,7 +276,7 @@ for i in 0..<classConfidence.shape[0].intValue {
     }
     fakeArr.append(labels[maxIndex])
     
-    print("Predicted \(labels[maxIndex]) at confidence \(maxValue)")
+//    print("Predicted \(labels[maxIndex]) at confidence \(maxValue)")
     classMap[labels[maxIndex]] = [Float.zero]
     var objectArray = [Float]()
     for k in 0..<classCoordinate.shape[1].intValue {
@@ -223,10 +288,10 @@ for i in 0..<classConfidence.shape[0].intValue {
     classMap[labels[maxIndex]] = objectArray
     print(i)
 }
-print("map contains: \(classMap.keys), \(classMap.values)")
+//print("map contains: \(classMap.keys), \(classMap.values)")
 var newImage = transformedImage!
 for (key, value) in classMap {
-    print("x: \(value[0] * Float(newImage.size.width)), y: \(value[1] * Float(newImage.size.height)), width: \(value[2] * Float(newImage.size.width)), height: \(value[3] * Float(newImage.size.height))")
+//    print("x: \(value[0] * Float(newImage.size.width)), y: \(value[1] * Float(newImage.size.height)), width: \(value[2] * Float(newImage.size.width)), height: \(value[3] * Float(newImage.size.height))")
     let rect = CGRect(x: CGFloat(value[0] * Float(newImage.size.width)), y: CGFloat(value[1] * Float(newImage.size.height)), width: CGFloat(value[2] * Float(newImage.size.width)), height: CGFloat(value[3] * Float(newImage.size.height)))
     newImage = boundingBoxToImage(drawText: key, inImage: newImage, inRect: rect)
 }
