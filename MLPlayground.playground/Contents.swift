@@ -19,33 +19,40 @@ extension UIImage {
 }
 
 public extension UIImage {
-    /// Resize image while keeping the aspect ratio. Original image is not modified.
-    /// - Parameters:
-    ///   - width: A new width in pixels.
-    ///   - height: A new height in pixels.
-    /// - Returns: Resized image.
-    func resize(_ width: Int, _ height: Int) -> UIImage {
-        // Keep aspect ratio
-        let maxSize = CGSize(width: width, height: height)
-
-        let availableRect = AVFoundation.AVMakeRect(
-            aspectRatio: self.size,
-            insideRect: .init(origin: .zero, size: maxSize)
-        )
-        let targetSize = availableRect.size
-
-        // Set scale of renderer so that 1pt == 1px
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
-
-        // Resize the image
-        let resized = renderer.image { _ in
-            self.draw(in: CGRect(origin: .zero, size: targetSize))
-        }
-
-        return resized
-    }
+    func normalized() -> [Float32]? {
+         guard let cgImage = self.cgImage else {
+             return nil
+         }
+         let w = cgImage.width
+         let h = cgImage.height
+         let bytesPerPixel = 4
+         let bytesPerRow = bytesPerPixel * w
+         let bitsPerComponent = 8
+         var rawBytes: [UInt8] = [UInt8](repeating: 0, count: w * h * 4)
+         rawBytes.withUnsafeMutableBytes { ptr in
+             if let cgImage = self.cgImage,
+                 let context = CGContext(data: ptr.baseAddress,
+                                         width: w,
+                                         height: h,
+                                         bitsPerComponent: bitsPerComponent,
+                                         bytesPerRow: bytesPerRow,
+                                         space: CGColorSpaceCreateDeviceRGB(),
+                                         bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
+                 let rect = CGRect(x: 0, y: 0, width: w, height: h)
+                 context.draw(cgImage, in: rect)
+             }
+         }
+         var normalizedBuffer: [Float32] = [Float32](repeating: 0, count: w * h * 3)
+         // normalize the pixel buffer
+         // see https://pytorch.org/hub/pytorch_vision_resnet/ for more detail
+         for i in 0 ..< w * h {
+             normalizedBuffer[i] = (Float32(rawBytes[i * 4 + 0]) / 255.0 - 0.485) / 0.229 // R
+             normalizedBuffer[w * h + i] = (Float32(rawBytes[i * 4 + 1]) / 255.0 - 0.456) / 0.224 // G
+             normalizedBuffer[w * h * 2 + i] = (Float32(rawBytes[i * 4 + 2]) / 255.0 - 0.406) / 0.225 // B
+         }
+         return normalizedBuffer
+     }
+    
     func convertToBuffer() -> CVPixelBuffer? {
         
         let attributes = [
@@ -117,6 +124,51 @@ func createGrayScalePixelBuffer(image: UIImage, width: Int, height: Int) -> CVPi
     return finalPixelBuffer
 }
 
+struct Detection {
+    let box:CGRect
+    let confidence:Float
+    let label:String?
+    let color:UIColor
+}
+
+func drawDetectionsOnImage(_ detections: [Detection], _ image: UIImage) -> UIImage? {
+    let imageSize = image.size
+    let scale: CGFloat = 0.0
+    UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+
+    image.draw(at: CGPoint.zero)
+    let ctx = UIGraphicsGetCurrentContext()
+    var rects:[CGRect] = []
+    for detection in detections {
+        rects.append(detection.box)
+        if let labelText = detection.label {
+        let text = "\(labelText) : \(round(detection.confidence*100))"
+            let textRect  = CGRect(x: detection.box.minX + imageSize.width * 0.01, y: detection.box.minY + imageSize.width * 0.01, width: detection.box.width, height: detection.box.height)
+                    
+        let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+                    
+        let textFontAttributes = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
+            NSAttributedString.Key.foregroundColor: detection.color,
+            NSAttributedString.Key.paragraphStyle: textStyle
+        ]
+                    
+        text.draw(in: textRect, withAttributes: textFontAttributes)
+        ctx?.addRect(detection.box)
+        ctx?.setStrokeColor(detection.color.cgColor)
+        ctx?.setLineWidth(1.0)
+        ctx?.strokePath()
+        }
+    }
+
+    guard let drawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
+        fatalError()
+    }
+
+    UIGraphicsEndImageContext()
+    return drawnImage
+}
+
 func centerImageOnBlackSquare(image: UIImage, squareSize: CGSize) -> UIImage? {
     // Create a black square image
     UIGraphicsBeginImageContextWithOptions(squareSize, false, 0.0)
@@ -171,6 +223,72 @@ func resize(pixelBuffer: CVPixelBuffer, width: Int, height: Int) -> CVPixelBuffe
     return resizedPixelBuffer
 }
 
+// Resize UIImage to target size
+func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage? {
+    let size = image.size
+    
+    let widthRatio  = targetSize.width  / size.width
+    let heightRatio = targetSize.height / size.height
+    
+    // Figure out what our orientation is, and use that to form the rectangle
+    var newSize: CGSize
+    if(widthRatio > heightRatio) {
+        newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+    } else {
+        newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+    }
+    
+    // This is the rect that we've calculated out and this is what is actually used below
+    let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+    
+    // Actually do the resizing to the rect using the ImageContext stuff
+    UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+    image.draw(in: rect)
+    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    
+    return newImage
+}
+
+func calculateCenter(boxArray: CGRect) -> (CGFloat, CGFloat) {
+    //  X and Y-axis center = (Top-left/Top-right + Bottom-right/Bottom-left) / 2
+    // [x, y, width, height]
+    return (boxArray.midX, boxArray.midY)
+}
+
+func calculateImageCenter(originShape: [Float]) -> (CGFloat, CGFloat){
+    return (CGFloat(originShape[0] / 2), CGFloat(originShape[1] / 2))
+}
+
+// Translated numpy linalg method. double check for validity
+func euclideanDistance(point1: (CGFloat, CGFloat), point2: (CGFloat, CGFloat)) -> Float {
+    let deltaX = point1.0 - point2.0
+    let deltaY = point1.1 - point2.1
+    let squaredDifference = deltaX * deltaX + deltaY * deltaY
+    return Float(sqrt(squaredDifference))
+}
+
+// Fix resultData argument Type
+func calculateCenterBox(preds: [String], bounds: [CGRect]) -> (String, CGRect) {
+    let imageCtr = calculateImageCenter(originShape: [160, 160])
+    var distance: Float = Float.infinity
+    var index: String = ""
+    var bound: CGRect = CGRect()
+
+    for i in 0..<bounds.count{
+        let boxCtr = calculateCenter(boxArray: bounds[i])
+        let boxDistance = euclideanDistance(point1: boxCtr, point2: imageCtr)
+        if distance > boxDistance {
+            distance = boxDistance
+            index = preds[i]
+            bound = bounds[i]
+        }
+    }
+    
+    // Name of Class, Euclidean Distance
+    return (index, bound)
+}
+
 func boundingBoxToImage(drawText text: String, inImage image: UIImage, inRect rect: CGRect) -> UIImage {
     // font attributes
     let textColor = UIColor.systemPink
@@ -203,13 +321,17 @@ func boundingBoxToImage(drawText text: String, inImage image: UIImage, inRect re
 // MARK: - Setting up ML Model
 
 var urlOfModelInThisBundle: URL { let resPath = Bundle.main.url(forResource: "last", withExtension: "mlmodelc")!; return try! MLModel.compileModel(at: resPath) }
-var image = UIImage(named: "test_set/blinds/IMG_3261.JPG")
-image = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 160, height: 160))
+var image = UIImage(named: "test_set/tv/IMG_0650.JPG")
+//image = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 160, height: 160))
+
+let resizedImgTest = resizeImage(image: image!, targetSize: CGSize(width: 160, height: 160))
 
 let modelURL = Bundle.main.url(forResource: "last", withExtension: "mlmodelc")!
 let model = try! VNCoreMLModel(for: MLModel(contentsOf: modelURL))
+var preds: [String] = []
+var bounds: [CGRect] = []
 
-let handler = VNImageRequestHandler(cgImage: image!.cgImage!, options: [:])
+let handler = VNImageRequestHandler(cgImage: resizedImgTest!.cgImage!, options: [:])
 let request = VNCoreMLRequest(model: model, completionHandler: { (request, error) in
 //    guard let results = request.results as? [VNClassificationObservation] else {
 //        fatalError()
@@ -222,19 +344,21 @@ let request = VNCoreMLRequest(model: model, completionHandler: { (request, error
         let obj = objectObservation.labels[0].identifier
         print(obj, objectObservation.labels[0].confidence)
         let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(160), Int(160))
-        
-//        let shapeLayer = createRoundedRectLayerWithBounds(objectBounds)
-//        
-//        let textLayer = createTextSubLayerInBounds(objectBounds,
-//                    identifier: topLabelObservation.identifier,
-//                    confidence: topLabelObservation.confidence)
+        type(of: objectBounds)
+        bounds.append(objectBounds)
+        preds.append(obj)
     }
     let classification = results
-
     print("[predict result]")
 })
 try! handler.perform([request])
 
+let calc = calculateCenterBox(preds: preds, bounds: bounds)
+let det = Detection(box: calc.1, confidence: 0.0, label: calc.0, color: .green)
+let dets = [det]
+
+
+resizeImage(image: drawDetectionsOnImage(dets, resizedImgTest!)!, targetSize: CGSize(width: 320, height: 320))
 
 let noBorderBuffer = (image?.convertToBuffer())!
 let noBorderImage = UIImage(pixelBuffer: noBorderBuffer)

@@ -13,6 +13,7 @@
 		1D0511392B51E52B00A27D21 /* last.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 1D0511382B51E52B00A27D21 /* last.mlpackage */; };
 		1D158CF52B1014890017810F /* AccessorySetupCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF42B1014890017810F /* AccessorySetupCard.swift */; };
 		1D158CF82B1017E50017810F /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF72B1017E50017810F /* ScanView.swift */; };
+		1D18BE382B6D88CE008C7478 /* dinov2.pt in Resources */ = {isa = PBXBuildFile; fileRef = 1D18BE372B6D88CE008C7478 /* dinov2.pt */; };
 		1D49450B2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */; };
 		1D49450D2A885CDD00D2DACE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D49450C2A885CDD00D2DACE /* ContentView.swift */; };
 		1D49450F2A885CDF00D2DACE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D49450E2A885CDF00D2DACE /* Assets.xcassets */; };
@@ -34,6 +35,7 @@
 		1D94E3992A9E0AB400B7C625 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */; };
 		1DA25EAE2B004CAF00217A1E /* SetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA25EAD2B004CAF00217A1E /* SetUpView.swift */; };
 		1DB7CB0D2AF87492001A29A7 /* EmbeddingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB7CB0C2AF87492001A29A7 /* EmbeddingModel.swift */; };
+		A7A7A013A5BEA443653B2CFE /* Pods_Ring_Camera_Control.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEBE2FA76FA31C3B12F639E /* Pods_Ring_Camera_Control.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +45,9 @@
 		1D0511382B51E52B00A27D21 /* last.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = last.mlpackage; sourceTree = "<group>"; };
 		1D158CF42B1014890017810F /* AccessorySetupCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessorySetupCard.swift; sourceTree = "<group>"; };
 		1D158CF72B1017E50017810F /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		1D18BE372B6D88CE008C7478 /* dinov2.pt */ = {isa = PBXFileReference; lastKnownFileType = file; path = dinov2.pt; sourceTree = "<group>"; };
 		1D279E422AC0B27E00E251C7 /* Ring-Camera-Control-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ring-Camera-Control-Bridging-Header.h"; sourceTree = "<group>"; };
+		1D38CF8B2B6D7BAC000E1939 /* onnxruntime_objc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = onnxruntime_objc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D4945072A885CDD00D2DACE /* Ring-Camera-Control.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ring-Camera-Control.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D49450A2A885CDD00D2DACE /* Ring_Camera_ControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ring_Camera_ControlApp.swift; sourceTree = "<group>"; };
 		1D49450C2A885CDD00D2DACE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -68,6 +72,9 @@
 		1D94E39A2A9E0BEA00B7C625 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1DA25EAD2B004CAF00217A1E /* SetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpView.swift; sourceTree = "<group>"; };
 		1DB7CB0C2AF87492001A29A7 /* EmbeddingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbeddingModel.swift; sourceTree = "<group>"; };
+		6AEBE2FA76FA31C3B12F639E /* Pods_Ring_Camera_Control.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ring_Camera_Control.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1313E756BCD04F8DF64C6C2 /* Pods-Ring-Camera-Control.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ring-Camera-Control.debug.xcconfig"; path = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control.debug.xcconfig"; sourceTree = "<group>"; };
+		E4980BECDD6BCA47DCF46808 /* Pods-Ring-Camera-Control.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ring-Camera-Control.release.xcconfig"; path = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7A7A013A5BEA443653B2CFE /* Pods_Ring_Camera_Control.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +104,8 @@
 			children = (
 				1D4945092A885CDD00D2DACE /* Ring-Camera-Control */,
 				1D4945082A885CDD00D2DACE /* Products */,
+				2678F2FBCA72CDA4AE4D050F /* Pods */,
+				5629BB486FC9B63C39467FFD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -173,6 +183,7 @@
 		1D94E38B2A8C941300B7C625 /* CoreML */ = {
 			isa = PBXGroup;
 			children = (
+				1D18BE372B6D88CE008C7478 /* dinov2.pt */,
 				09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */,
 				09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */,
 				094F5FD72A9986FB007EFAC9 /* best.mlmodel */,
@@ -182,6 +193,24 @@
 			path = CoreML;
 			sourceTree = "<group>";
 		};
+		2678F2FBCA72CDA4AE4D050F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B1313E756BCD04F8DF64C6C2 /* Pods-Ring-Camera-Control.debug.xcconfig */,
+				E4980BECDD6BCA47DCF46808 /* Pods-Ring-Camera-Control.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		5629BB486FC9B63C39467FFD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1D38CF8B2B6D7BAC000E1939 /* onnxruntime_objc.framework */,
+				6AEBE2FA76FA31C3B12F639E /* Pods_Ring_Camera_Control.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -189,6 +218,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D4945152A885CDF00D2DACE /* Build configuration list for PBXNativeTarget "Ring-Camera-Control" */;
 			buildPhases = (
+				9A58973BB5C59DFF7C8B2FBE /* [CP] Check Pods Manifest.lock */,
 				1D4945032A885CDD00D2DACE /* Sources */,
 				1D4945042A885CDD00D2DACE /* Frameworks */,
 				1D4945052A885CDD00D2DACE /* Resources */,
@@ -242,11 +272,37 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D4945122A885CDF00D2DACE /* Preview Assets.xcassets in Resources */,
+				1D18BE382B6D88CE008C7478 /* dinov2.pt in Resources */,
 				1D49450F2A885CDF00D2DACE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9A58973BB5C59DFF7C8B2FBE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Ring-Camera-Control-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1D4945032A885CDD00D2DACE /* Sources */ = {
@@ -405,6 +461,7 @@
 		};
 		1D4945162A885CDF00D2DACE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B1313E756BCD04F8DF64C6C2 /* Pods-Ring-Camera-Control.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -453,6 +510,7 @@
 		};
 		1D4945172A885CDF00D2DACE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E4980BECDD6BCA47DCF46808 /* Pods-Ring-Camera-Control.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

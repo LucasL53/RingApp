@@ -72,6 +72,52 @@ extension MPVolumeView {
     }
 }
 
+extension UIImage {
+    func resized(to newSize: CGSize, scale: CGFloat = 1) -> UIImage {
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = scale
+        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
+        let image = renderer.image { _ in
+            draw(in: CGRect(origin: .zero, size: newSize))
+        }
+        return image
+    }
+
+    func normalized() -> [Float32]? {
+        guard let cgImage = self.cgImage else {
+            return nil
+        }
+        let w = cgImage.width
+        let h = cgImage.height
+        let bytesPerPixel = 4
+        let bytesPerRow = bytesPerPixel * w
+        let bitsPerComponent = 8
+        var rawBytes: [UInt8] = [UInt8](repeating: 0, count: w * h * 4)
+        rawBytes.withUnsafeMutableBytes { ptr in
+            if let cgImage = self.cgImage,
+                let context = CGContext(data: ptr.baseAddress,
+                                        width: w,
+                                        height: h,
+                                        bitsPerComponent: bitsPerComponent,
+                                        bytesPerRow: bytesPerRow,
+                                        space: CGColorSpaceCreateDeviceRGB(),
+                                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
+                let rect = CGRect(x: 0, y: 0, width: w, height: h)
+                context.draw(cgImage, in: rect)
+            }
+        }
+        var normalizedBuffer: [Float32] = [Float32](repeating: 0, count: w * h * 3)
+        // normalize the pixel buffer
+        // see https://pytorch.org/hub/pytorch_vision_resnet/ for more detail
+        for i in 0 ..< w * h {
+            normalizedBuffer[i] = (Float32(rawBytes[i * 4 + 0]) / 255.0 - 0.485) / 0.229 // R
+            normalizedBuffer[w * h + i] = (Float32(rawBytes[i * 4 + 1]) / 255.0 - 0.456) / 0.224 // G
+            normalizedBuffer[w * h * 2 + i] = (Float32(rawBytes[i * 4 + 2]) / 255.0 - 0.406) / 0.225 // B
+        }
+        return normalizedBuffer
+    }
+}
+
 class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, ObservableObject {
 
     //MARK: - Properties
@@ -321,29 +367,55 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         return image
     }
     
-    func createGrayScalePixelBuffer(image: UIImage, width: Int, height: Int) -> CVPixelBuffer? {
-        let ciImage = CIImage(image: image)
-        let filter = CIFilter(name: "CIColorControls")!
-        filter.setValue(ciImage, forKey: kCIInputImageKey)
-        filter.setValue(0, forKey: kCIInputSaturationKey) // Set saturation to 0 to get grayscale
-
-        guard let outputImage = filter.outputImage else { return nil }
-
-        let context = CIContext()
-        let pixelBufferOptions: [String: Any] = [kCVPixelBufferCGImageCompatibilityKey as String: true,
-                                                 kCVPixelBufferCGBitmapContextCompatibilityKey as String: true]
-
-        var pixelBuffer: CVPixelBuffer? = nil
-        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, pixelBufferOptions as CFDictionary, &pixelBuffer)
-        guard status == kCVReturnSuccess, let finalPixelBuffer = pixelBuffer else {
-            return nil
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage? {
+        let size = image.size
+        
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        // Figure out what our orientation is, and use that to form the rectangle
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
         }
-
-        let rect = CGRect(x: 0, y: 0, width: width, height: height)
-//        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceGray())
-        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceRGB())
-        return finalPixelBuffer
+        
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+        
+        // Actually do the resizing to the rect using the ImageContext stuff
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage
     }
+    
+//    func createGrayScalePixelBuffer(image: UIImage, width: Int, height: Int) -> CVPixelBuffer? {
+//        let ciImage = CIImage(image: image)
+//        let filter = CIFilter(name: "CIColorControls")!
+//        filter.setValue(ciImage, forKey: kCIInputImageKey)
+//        filter.setValue(0, forKey: kCIInputSaturationKey) // Set saturation to 0 to get grayscale
+//
+//        guard let outputImage = filter.outputImage else { return nil }
+//
+//        let context = CIContext()
+//        let pixelBufferOptions: [String: Any] = [kCVPixelBufferCGImageCompatibilityKey as String: true,
+//                                                 kCVPixelBufferCGBitmapContextCompatibilityKey as String: true]
+//
+//        var pixelBuffer: CVPixelBuffer? = nil
+//        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, pixelBufferOptions as CFDictionary, &pixelBuffer)
+//        guard status == kCVReturnSuccess, let finalPixelBuffer = pixelBuffer else {
+//            return nil
+//        }
+//
+//        let rect = CGRect(x: 0, y: 0, width: width, height: height)
+////        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceGray())
+//        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceRGB())
+//        return finalPixelBuffer
+//    }
     
     func convertBufferTo2DArray(buffer: [UInt8], width: Int, height: Int) -> [[UInt8]] {
         var array2D = [[UInt8]](repeating: [UInt8](repeating: 0, count: width), count: height)
@@ -567,41 +639,58 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         cameraBuffer.removeLast(extraSampleCount)
                         
                         if let uiImage = createImageFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
-                            if (saveImageFlag || buttonPressedFlag) {
-                                // Save image on either iOS UI button press or ring hardware button press
-                                print("Saving image to photo library")
-                                UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                                saveImageFlag = false
-                            }
-
                             if let centeredImage = centerImageOnBlackSquare(image: uiImage, squareSize: CGSize(width: 160, height: 160)) {
-                                if let cvpixelbuffer = createGrayScalePixelBuffer(image: centeredImage, width: 160, height: 160) {
+                                
+                                if let cgimage = centeredImage.cgImage {
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
-                                    classifiedDeviceMap = mlModel.predict(image: cvpixelbuffer)
-                                    var newImage = centeredImage
-                                    for (key, value) in classifiedDeviceMap {
-                                        print("x: \(value[0] * Float(newImage.size.width)), y: \(value[1] * Float(newImage.size.height)), width: \(value[2] * Float(newImage.size.width)), height: \(value[3] * Float(newImage.size.height))")
-                                        let rect = CGRect(x: CGFloat(value[0] * Float(newImage.size.width)), y: CGFloat(value[1] * Float(newImage.size.height)), width: CGFloat(value[2] * Float(newImage.size.width)), height: CGFloat(value[3] * Float(newImage.size.height)))
-                                        newImage = boundingBoxToImage(drawText: key, inImage: newImage, inRect: rect)
-                                    }
-//                                    
-                                    let image = Image(uiImage: newImage)
+                                    let prediction = mlModel.predict(image: cgimage)
+                                    let resizedOutput = resizeImage(image: prediction, targetSize: CGSize(width: 640, height: 640))
                                     DispatchQueue.main.async {
-                                        self.updateImage(image: image)
+                                        self.updateImage(image: Image(uiImage: resizedOutput!))
                                     }
-                                    
+                                    if (saveImageFlag || buttonPressedFlag) {
+                                        // Save image on either iOS UI button press or ring hardware button press
+                                        print("Saving image to photo library")
+                                        UIImageWriteToSavedPhotosAlbum(prediction, nil, nil, nil)
+                                        saveImageFlag = false
+                                    }
                                     let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
-                                    let _ = endTime - startTime
-                                    //print("prediction_time_ms: \(1000*timeElapsed)")
-                                    if (buttonPressedFlag) {
-                                        print("Arming controlDeviceFlag")
-                                        controlDeviceFlag = true
-                                    }
-                                    
-                                    //print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
-                                } else {
-                                    print("error creating cvpixelbuffer")
+                                    let timeElapsed = endTime - startTime
+//                                    print("prediction_time_ms: \(1000*timeElapsed)")
                                 }
+                                if (buttonPressedFlag) {
+                                    print("Arming controlDeviceFlag")
+                                    controlDeviceFlag = true
+                                }
+                                
+
+//                                if let cvpixelbuffer = createGrayScalePixelBuffer(image: centeredImage, width: 160, height: 160) {
+//                                    let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
+//                                    classifiedDeviceMap = mlModel.predict(image: cvpixelbuffer)
+//                                    var newImage = centeredImage
+//                                    for (key, value) in classifiedDeviceMap {
+//                                        print("x: \(value[0] * Float(newImage.size.width)), y: \(value[1] * Float(newImage.size.height)), width: \(value[2] * Float(newImage.size.width)), height: \(value[3] * Float(newImage.size.height))")
+//                                        let rect = CGRect(x: CGFloat(value[0] * Float(newImage.size.width)), y: CGFloat(value[1] * Float(newImage.size.height)), width: CGFloat(value[2] * Float(newImage.size.width)), height: CGFloat(value[3] * Float(newImage.size.height)))
+//                                        newImage = boundingBoxToImage(drawText: key, inImage: newImage, inRect: rect)
+//                                    }
+////                                    
+//                                    let image = Image(uiImage: newImage)
+//                                    DispatchQueue.main.async {
+//                                        self.updateImage(image: image)
+//                                    }
+//                                    
+//                                    let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
+//                                    let _ = endTime - startTime
+//                                    //print("prediction_time_ms: \(1000*timeElapsed)")
+//                                    if (buttonPressedFlag) {
+//                                        print("Arming controlDeviceFlag")
+//                                        controlDeviceFlag = true
+//                                    }
+//                                    
+//                                    //print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
+//                                } else {
+//                                    print("error creating cvpixelbuffer")
+//                                }
                             }
                         } else {
                             print("error creating image from buffer")

@@ -6,132 +6,183 @@
 //
 
 import CoreML
+import Vision
+import UIKit
+import AVFoundation
 
 class MLHandler {
-    private var model: last! // Implicitly unwrapped optional
+    private var model: MLModel
+    private var visionModel: VNCoreMLModel
+    private var detectionOverlay: CALayer! = nil
     
-    // Labels mapping from class indices to names
-    private let labels = ["Door", "Door handle", "Window", "Blind", "Lights", "Smart Lock", "Speaker", "TV"]
+//    private lazy var module: TorchModule = {
+//        if let filePath = Bundle.main.path(forResource: "model", ofType: "pt"),
+//            let module = TorchModule(fileAtPath: filePath) {
+//            return module
+//        } else {
+//            fatalError("Can't find the model file!")
+//        }
+//    }()
 
     // Initialization of the model
     init() {
-        do {
-            let configuration = MLModelConfiguration()
-            self.model = try last(configuration: configuration)
-        } catch {
-            print("Error initializing model: \(error)")
-        }
+        self.model = try! last(configuration: MLModelConfiguration()).model
+        self.visionModel = try! VNCoreMLModel(for: model)
     }
     
-    // Function to predict from an image
-    func predict(image: CVPixelBuffer) -> [String: [Float]] {
-        do {
-            let prediction = try model.prediction(image: image, iouThreshold: 0.45, confidenceThreshold: 0.25)
-            
-            // return a MultiArray(Float32)
-            let classConfidence = prediction.confidence
-            let classCoordinate = prediction.coordinates
-            
-            // Name : [x, y, width, height]
-            var classMap: [String: [Float]] = [:]
-            
-            var maxIndex: Int = -1
-            var maxValue: Float = -1.0
-            for i in 0..<classConfidence.shape[0].intValue {
-                for j in 0..<classConfidence.shape[1].intValue {
-                    let index = [NSNumber(value: i), NSNumber(value: j)]
-                    let value = classConfidence[index].floatValue
-                     print("Value at [\(i), \(j),]: \(value)")
-                    if maxValue < value {
-                        maxValue = value
-                        maxIndex = j
-                    }
-                }
-                print("Predicted \(labels[maxIndex]) at confidence \(maxValue)")
-//                print("Coordinates: \(classCoordinate)")
-                var objectArray = [Float]()
-                for k in 0..<classCoordinate.shape[1].intValue {
-                    let index = [NSNumber(value: i), NSNumber(value: k)]
-                    let value = classCoordinate[index].floatValue
-                    objectArray.append(value)
-                }
-                classMap[labels[maxIndex]] = objectArray
-            }
-            print("map contains: \(classMap.keys), \(classMap.values)")
-            return classMap
-//            if classMap.count > 0 {
-//                let output = calculateCenterBox(resultData: classMap)
-//                let finalClass = output.0
-//                
-//                switch finalClass{
-//                case "Lights":
-//                    return 0
-//                case "Window", "Blind":
-//                    return 1
-//                case "Door", "Door handle", "Smart Lock":
-//                    return 2
-//                case "Speaker":
-//                    return 3
-//                case "TV":
-//                    return 4
-//                default:
-//                    return -1
-//                }
-//            }
-        } catch {
-            print("Error making prediction: \(error)")
-        }
-        print("nothing printed")
-        return [:]
+    struct Detection {
+        let box:CGRect
+        let confidence:Float
+        let label:String?
+        let color:UIColor
     }
 
-    //MARK: - COREML
-    
-    func calculateCenter(boxArray: [Float]) -> [Float] {
-        //  X and Y-axis center = (Top-left/Top-right + Bottom-right/Bottom-left) / 2
-        // [x, y, width, height]
-        let centerX = (boxArray[2] + boxArray[0]) / 2
-        let centerY = (boxArray[3] + boxArray[1]) / 2
-        return [centerX, centerY]
+    func drawDetectionsOnImage(_ detections: [Detection], _ image: UIImage) -> UIImage? {
+        let imageSize = image.size
+        let scale: CGFloat = 0.0
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+
+        image.draw(at: CGPoint.zero)
+        let ctx = UIGraphicsGetCurrentContext()
+        var rects:[CGRect] = []
+        for detection in detections {
+            rects.append(detection.box)
+            if let labelText = detection.label {
+            let text = "\(labelText) : \(round(detection.confidence*100))"
+                let textRect  = CGRect(x: detection.box.minX + imageSize.width * 0.01, y: detection.box.minY + imageSize.width * 0.01, width: detection.box.width, height: detection.box.height)
+                        
+            let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+                        
+            let textFontAttributes = [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
+                NSAttributedString.Key.foregroundColor: detection.color,
+                NSAttributedString.Key.paragraphStyle: textStyle
+            ]
+                        
+            text.draw(in: textRect, withAttributes: textFontAttributes)
+            ctx?.addRect(detection.box)
+            ctx?.setStrokeColor(detection.color.cgColor)
+            ctx?.setLineWidth(1.0)
+            ctx?.strokePath()
+            }
+        }
+
+        guard let drawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
+            fatalError()
+        }
+
+        UIGraphicsEndImageContext()
+        return drawnImage
     }
     
-    func calculateImageCenter(originShape: [Float]) -> [Float]{
-        return [originShape[0] / 2, originShape[1] / 2]
+    func predict(image: CGImage) -> UIImage {
+        var predictions: [String] = []
+        var boxes: [CGRect] = []
+        var confidences: [Float] = []
+        let handler = VNImageRequestHandler(cgImage: image, options: [:])
+        
+        let request = VNCoreMLRequest(model: self.visionModel, completionHandler: { (request, error) in
+            let results = request.results
+            for result in results! where result is VNRecognizedObjectObservation {
+                guard let objectObservation = result as? VNRecognizedObjectObservation else {
+                        fatalError()
+                    }
+                
+                // Highest confidence result
+                let topLabelObservation = objectObservation.labels[0]
+                let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(160), Int(160))
+                
+                print("Found: \(topLabelObservation.identifier)")
+                
+                predictions.append(topLabelObservation.identifier.lowercased())
+                boxes.append(objectBounds)
+                confidences.append(topLabelObservation.confidence)
+                
+                let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
+        
+                let textLayer = self.createTextSubLayerInBounds(objectBounds,
+                            identifier: topLabelObservation.identifier.lowercased(),
+                            confidence: topLabelObservation.confidence)
+                
+                shapeLayer.addSublayer(textLayer)
+            }
+        })
+        
+        try! handler.perform([request])
+        
+        let finalPrediction = calculateCenterBox(preds: predictions, bounds: boxes, confs: confidences)
+        
+        return drawDetectionsOnImage([Detection(box: finalPrediction.1, confidence: finalPrediction.2, label: finalPrediction.0, color: .green)], UIImage(cgImage: image))!
+    }
+    
+    func createTextSubLayerInBounds(_ bounds: CGRect, identifier: String, confidence: VNConfidence) -> CATextLayer {
+        let textLayer = CATextLayer()
+        textLayer.name = "Object Label"
+        let formattedString = NSMutableAttributedString(string: String(format: "\(identifier)\n: %.3f", confidence*100) + "%")
+        let largeFont = UIFont(name: "Helvetica", size: 15.0)!
+        formattedString.addAttributes([NSAttributedString.Key.font: largeFont], range: NSRange(location: 0, length: identifier.count))
+        textLayer.string = formattedString
+        textLayer.bounds = CGRect(x: 0, y: 0, width: bounds.size.height - 10, height: bounds.size.width - 10)
+        textLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
+        textLayer.shadowOpacity = 0.7
+        textLayer.shadowOffset = CGSize(width: 2, height: 2)
+        textLayer.foregroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [0.0, 0.0, 0.0, 1.0])
+        textLayer.contentsScale = 2.0 // retina rendering
+        // rotate the layer into screen orientation and scale and mirror
+        textLayer.setAffineTransform(CGAffineTransform(rotationAngle: CGFloat(.pi / 2.0)).scaledBy(x: 1.0, y: -1.0))
+        return textLayer
+    }
+    
+    func createRoundedRectLayerWithBounds(_ bounds: CGRect) -> CALayer {
+        let shapeLayer = CALayer()
+        shapeLayer.bounds = bounds
+        shapeLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
+        shapeLayer.name = "Found Object"
+        shapeLayer.backgroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [1.0, 1.0, 0.2, 0.4])
+        shapeLayer.cornerRadius = 7
+        return shapeLayer
+    }
+    //MARK: - COREML
+    
+    func calculateCenter(boxArray: CGRect) -> (CGFloat, CGFloat) {
+        //  X and Y-axis center = (Top-left/Top-right + Bottom-right/Bottom-left) / 2
+        // [x, y, width, height]
+        return (boxArray.midX, boxArray.midY)
+    }
+    
+    func calculateImageCenter(originShape: [Float]) -> (CGFloat, CGFloat){
+        return (CGFloat(originShape[0] / 2), CGFloat(originShape[1] / 2))
     }
     
     // Translated numpy linalg method. double check for validity
-    func euclideanDistance(point1: [Float], point2: [Float]) -> Float? {
-        guard point1.count == point2.count else { return nil }
-        // Calculate the squared differences between corresponding coordinates of the two points
-        let squaredDifference = zip(point1, point2).map { ($0 - $1) * ($0 - $1) }
-        let sumOfSquaredDifference = squaredDifference.reduce(0, +)
-        return sqrt(sumOfSquaredDifference)
+    func euclideanDistance(point1: (CGFloat, CGFloat), point2: (CGFloat, CGFloat)) -> Float {
+        let deltaX = point1.0 - point2.0
+        let deltaY = point1.1 - point2.1
+        let squaredDifference = deltaX * deltaX + deltaY * deltaY
+        return Float(sqrt(squaredDifference))
     }
     
     // Fix resultData argument Type
-    func calculateCenterBox(resultData:  [String: [Float]]) -> (String, Float) {
+    func calculateCenterBox(preds: [String], bounds: [CGRect], confs: [Float]) -> (String, CGRect, Float) {
         let imageCtr = calculateImageCenter(originShape: [160, 160])
         var distance: Float = Float.infinity
         var index: String = ""
-        
-//          Need to know coreml output. this is just python script need translation
-//        for i in range(0, resultData.boxes.shape[0]):
-//                boxCtr = calculateCenter(resultData.boxes.xyxy[i])
-//                boxDistance = euclideanDsitan(boxCtr, imageCtr)
-//                if distance > boxDistance:
-//                    distance = boxDistance
-//                    lowestIndex = i
-        for (key, value) in resultData{
-            let boxCtr = calculateCenter(boxArray: value)
+        var bound: CGRect = CGRect()
+        var conf: Float = Float.zero
+
+        for i in 0..<bounds.count{
+            let boxCtr = calculateCenter(boxArray: bounds[i])
             let boxDistance = euclideanDistance(point1: boxCtr, point2: imageCtr)
-            if distance > boxDistance! {
-                distance = boxDistance!
-                index = key
+            if distance > boxDistance {
+                distance = boxDistance
+                index = preds[i]
+                bound = bounds[i]
+                conf = confs[i]
             }
         }
         
         // Name of Class, Euclidean Distance
-        return (index, distance)
+        return (index, bound, conf)
     }
     
     //MARK: - Calculations

@@ -122,12 +122,6 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         characteristics = serviceCharacteristics
     }
     
-//    func selectActiveService(accessoryId: UUID, homeId: UUID) {
-//        if let thisAccessory = accessories.first(where: { $0.uniqueIdentifier == accessoryId }) {
-//            
-//        }
-//    }
-    
     func characteristicValue(for characteristic: HMCharacteristic) -> Any? {
         switch characteristic.localizedDescription {
         case "Power State":

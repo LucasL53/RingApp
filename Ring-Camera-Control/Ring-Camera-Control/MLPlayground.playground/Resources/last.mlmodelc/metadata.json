@@ -1,0 +1,128 @@
+[
+  {
+    "shortDescription" : "Ultralytics last model trained on \/content\/RevisedResize-Images-3\/data.yaml",
+    "metadataOutputVersion" : "3.0",
+    "outputSchema" : [
+      {
+        "dataType" : "Float32",
+        "hasShapeFlexibility" : "1",
+        "isOptional" : "0",
+        "shapeFlexibility" : "0... × 8",
+        "shapeRange" : "[[0, -1], [8, 8]]",
+        "formattedType" : "MultiArray (Float32 0 × 8)",
+        "type" : "MultiArray",
+        "shape" : "[0, 8]",
+        "name" : "confidence",
+        "shortDescription" : "Boxes × Class confidence (see user-defined metadata \"classes\")"
+      },
+      {
+        "dataType" : "Float32",
+        "hasShapeFlexibility" : "1",
+        "isOptional" : "0",
+        "shapeFlexibility" : "0... × 4",
+        "shapeRange" : "[[0, -1], [4, 4]]",
+        "formattedType" : "MultiArray (Float32 0 × 4)",
+        "type" : "MultiArray",
+        "shape" : "[0, 4]",
+        "name" : "coordinates",
+        "shortDescription" : "Boxes × [x, y, width, height] (relative to image size)"
+      }
+    ],
+    "version" : "8.1.1",
+    "modelParameters" : [
+
+    ],
+    "author" : "Ultralytics",
+    "specificationVersion" : 5,
+    "storagePrecision" : "Float16",
+    "license" : "AGPL-3.0 https:\/\/ultralytics.com\/license",
+    "mlProgramOperationTypeHistogram" : {
+      "Concat" : 19,
+      "Silu" : 57,
+      "SliceByIndex" : 1,
+      "Sub" : 2,
+      "Transpose" : 2,
+      "UpsampleNearestNeighbor" : 2,
+      "Softmax" : 1,
+      "Mul" : 4,
+      "Cast" : 3,
+      "MaxPool" : 3,
+      "Add" : 8,
+      "Reshape" : 5,
+      "Sigmoid" : 1,
+      "Split" : 11,
+      "Conv" : 64
+    },
+    "computePrecision" : "Mixed (Float16, Float32, Int32)",
+    "isUpdatable" : "0",
+    "availability" : {
+      "macOS" : "11.0",
+      "tvOS" : "14.0",
+      "visionOS" : "1.0",
+      "watchOS" : "7.0",
+      "iOS" : "14.0",
+      "macCatalyst" : "14.0"
+    },
+    "modelType" : {
+      "name" : "MLModelType_pipeline",
+      "structure" : [
+        {
+          "name" : "MLModelType_mlProgram"
+        },
+        {
+          "name" : "MLModelType_nonMaximumSuppression"
+        }
+      ]
+    },
+    "inputSchema" : [
+      {
+        "height" : "160",
+        "colorspace" : "RGB",
+        "isOptional" : "0",
+        "width" : "160",
+        "isColor" : "1",
+        "formattedType" : "Image (Color 160 × 160)",
+        "hasSizeFlexibility" : "0",
+        "type" : "Image",
+        "shortDescription" : "Input image",
+        "name" : "image"
+      },
+      {
+        "isOptional" : "0",
+        "formattedType" : "Double",
+        "type" : "Double",
+        "name" : "iouThreshold",
+        "shortDescription" : "(optional) IOU threshold override (default: 0.45)"
+      },
+      {
+        "isOptional" : "0",
+        "formattedType" : "Double",
+        "type" : "Double",
+        "name" : "confidenceThreshold",
+        "shortDescription" : "(optional) Confidence threshold override (default: 0.25)"
+      }
+    ],
+    "classLabels" : [
+      "Door",
+      "Door handle",
+      "Window",
+      "blind",
+      "lights",
+      "smart lock",
+      "speaker",
+      "tv"
+    ],
+    "generatedClassName" : "last",
+    "userDefinedMetadata" : {
+      "IoU threshold" : "0.45",
+      "Confidence threshold" : "0.25",
+      "stride" : "32",
+      "task" : "detect",
+      "imgsz" : "[160, 160]",
+      "date" : "2024-01-12T19:24:19.739702",
+      "batch" : "1",
+      "names" : "{0: 'Door', 1: 'Door handle', 2: 'Window', 3: 'blind', 4: 'lights', 5: 'smart lock', 6: 'speaker', 7: 'tv'}"
+    },
+    "method" : "predict"
+  }
+]

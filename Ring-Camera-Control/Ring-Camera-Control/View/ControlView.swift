@@ -74,7 +74,7 @@ struct ControlView: View {
                     ZStack {
                         Rectangle()
                             .fill(Color.gray)
-                            .frame(height: 160)
+                            .frame(height: 640)
                             .accessibilityLabel("Live Video Feed \(blemanager.banjiStatus)")
                         
                         // Foreground image if available
