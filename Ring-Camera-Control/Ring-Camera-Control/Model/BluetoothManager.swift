@@ -130,7 +130,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     
     @Published var banjiStatus : String = "disconnected"
     @Published var thisImage : Image?
-    @Published var prediction: UUID?
+//    @Published var prediction: UUID?
+    @Published var foundAccessory : UUID?
+    
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var connectionIntervalUpdated = 0
     var scanStatus  :  Bool = false
@@ -143,8 +145,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var transferRate            : Double       = 0
     private var framesCount             : Int          = 0
     private var prevTimestamp           : Double       = 0.0
-    private var classifiedDevice        : Int          = 0
-    private var classifiedDeviceMap      : [String : [Float]] = [:]
+    private var classifiedDevice        : String?
     private var lastActionTimeMs        : Int          = 0
     private var prevButtonPressed       : Bool         = false
     private var saveImageFlag           : Bool         = false
@@ -155,6 +156,13 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     
     // This must align with MLHandler
     private let identifiers = HomeStore().homeDictionary
+    
+    struct Detection {
+        let box:CGRect
+        let confidence:Float
+        let label:String?
+        let color:UIColor
+    }
     
     struct accelTilt {
         static var x: Double = 0.0
@@ -468,36 +476,44 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         return resizedPixelBuffer
     }
-    
-    func boundingBoxToImage(drawText text: String, inImage image: UIImage, inRect rect: CGRect) -> UIImage {
-        // font attributes
-        let textColor = UIColor.white
-        let textFont = UIFont(name: "Helvetica Bold", size: 12)!
-        
-        // Setup image context using the given image
-        let scale = UIScreen.main.scale
-        UIGraphicsBeginImageContextWithOptions(image.size, false, scale)
-        
-        // Setup font attributes
-        let textFontAttributes = [
-                NSAttributedString.Key.font: textFont,
-                NSAttributedString.Key.foregroundColor: textColor,
-                ] as [NSAttributedString.Key : Any]
-            image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
 
-        // Create a point within the space to write text
-        text.draw(in: rect, withAttributes: textFontAttributes)
-        
-        // Create a point within the space to draw rectangle
-//        image.draw(in: rect)
-        
-        // Create a new image out of the images we made graphical addition
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    func drawDetectionsOnImage(_ detections: [Detection], _ image: UIImage) -> UIImage? {
+        let imageSize = image.size
+        let scale: CGFloat = 0.0
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+
+        image.draw(at: CGPoint.zero)
+        let ctx = UIGraphicsGetCurrentContext()
+        var rects:[CGRect] = []
+        for detection in detections {
+            rects.append(detection.box)
+            if let labelText = detection.label {
+            let text = "\(labelText) : \(round(detection.confidence*100))"
+                let textRect  = CGRect(x: detection.box.minX + imageSize.width * 0.01, y: detection.box.minY + imageSize.width * 0.01, width: detection.box.width, height: detection.box.height)
+                        
+            let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+                        
+            let textFontAttributes = [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
+                NSAttributedString.Key.foregroundColor: detection.color,
+                NSAttributedString.Key.paragraphStyle: textStyle
+            ]
+                        
+            text.draw(in: textRect, withAttributes: textFontAttributes)
+            ctx?.addRect(detection.box)
+            ctx?.setStrokeColor(detection.color.cgColor)
+            ctx?.setLineWidth(1.0)
+            ctx?.strokePath()
+            }
+        }
+
+        guard let drawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
+            fatalError()
+        }
+
         UIGraphicsEndImageContext()
-
-        return newImage!
+        return drawnImage
     }
-
     
     func updateImage(image: Image) {
         self.thisImage = image
@@ -644,25 +660,33 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 if let cgimage = centeredImage.cgImage {
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
                                     let prediction = mlModel.predict(image: cgimage)
-                                    let resizedOutput = resizeImage(image: prediction, targetSize: CGSize(width: 640, height: 640))
+                                    classifiedDevice = prediction.0.lowercased()
+                                    if let device = classifiedDevice {
+                                        if device != "tv" {
+                                            foundAccessory = UUID(uuidString: homeModel.homeDictionary[device]!)
+                                        } else {
+                                            foundAccessory = nil
+                                        }
+                                    }
+                                    let predictImage = drawDetectionsOnImage([Detection(box: prediction.1, confidence: prediction.2, label: classifiedDevice, color: .green)], UIImage(cgImage: cgimage))
+//                                    let resizedOutput = resizeImage(image: predictImage!, targetSize: CGSize(width: 640, height: 640))
                                     DispatchQueue.main.async {
-                                        self.updateImage(image: Image(uiImage: resizedOutput!))
+                                        self.updateImage(image: Image(uiImage: predictImage!))
                                     }
                                     if (saveImageFlag || buttonPressedFlag) {
                                         // Save image on either iOS UI button press or ring hardware button press
                                         print("Saving image to photo library")
-                                        UIImageWriteToSavedPhotosAlbum(prediction, nil, nil, nil)
+                                        UIImageWriteToSavedPhotosAlbum(predictImage!, nil, nil, nil)
                                         saveImageFlag = false
                                     }
                                     let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
                                     let timeElapsed = endTime - startTime
-//                                    print("prediction_time_ms: \(1000*timeElapsed)")
+                                    print("prediction_time_ms: \(1000*timeElapsed)")
                                 }
                                 if (buttonPressedFlag) {
                                     print("Arming controlDeviceFlag")
                                     controlDeviceFlag = true
                                 }
-                                
 
 //                                if let cvpixelbuffer = createGrayScalePixelBuffer(image: centeredImage, width: 160, height: 160) {
 //                                    let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
@@ -698,28 +722,28 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         cameraBuffer.removeAll()
                     } // startOfFrame end
                     
-//                    if (controlDeviceFlag) {
-//                        // Lights
-//                        if (classifiedDevice == 0) {
-//                            print("Controlling lights!")
-//                            let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
-//                            if let unwrappedUUID = optionalUUID {
-//                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
-//                            } else {
-//                                // Handle the case where optionalUUID is nil
-//                                print("Failed to unwrap UUID")
-//                            }
-//                        } else if (classifiedDevice == 2) {
-//                            print("Controlling Lock!")
-//                            let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
-//                            if let unwrappedUUID = optionalUUID {
-//                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
-//                            } else {
-//                                // Handle the case where optionalUUID is nil
-//                                print("Failed to unwrap UUID")
-//                            }
-//                        }
-//                    } // deviceControl end
+                    if (controlDeviceFlag) {
+                        // Lights
+                        if (classifiedDevice == "lights") {
+                            print("Controlling lights!")
+                            if let unwrappedUUID = foundAccessory {
+                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
+                            } else {
+                                // Handle the case where optionalUUID is nil
+                                print("Failed to unwrap UUID")
+                            }
+                        } else if (classifiedDevice == "smart lock") {
+                            print("Controlling Lock!")
+                            if let unwrappedUUID = foundAccessory {
+                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
+                            } else {
+                                // Handle the case where optionalUUID is nil
+                                print("Failed to unwrap UUID")
+                            }
+                        } else if (classifiedDevice == "speaker") {
+                            // TODO: Volume controls stay here
+                        }
+                    } // deviceControl end
                     
 
                     // Single Press Gesture

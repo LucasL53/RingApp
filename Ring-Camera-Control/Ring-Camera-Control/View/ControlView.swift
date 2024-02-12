@@ -52,22 +52,21 @@ struct ControlView: View {
                 }
                 
                 Spacer()
-                Section(header: Text("My Smart Home Device")
-
-                    .frame(maxWidth: .infinity, alignment: .leading)) {
-                    Picker("My Smart Home Device", selection: $selectedAccessoryId){
-                        ForEach(exampleClass.allCases) { category in
-                             Text(category.rawValue).tag(category)
-                       }
-                    }
-                    .pickerStyle(.segmented)
-                    .onReceive(blemanager.$prediction) { newPrediction in
-                        if let newPrediction = newPrediction {
-                            selectedAccessoryId = newPrediction
-                        }
-                    }
-                }
-                Spacer()
+//                Section(header: Text("My Smart Home Device")
+//                    .frame(maxWidth: .infinity, alignment: .leading)) {
+//                    Picker("My Smart Home Device", selection: $selectedAccessoryId){
+//                        ForEach(exampleClass.allCases) { category in
+//                             Text(category.rawValue).tag(category)
+//                       }
+//                    }
+//                    .pickerStyle(.segmented)
+//                    .onReceive(blemanager.$prediction) { newPrediction in
+//                        if let newPrediction = newPrediction {
+//                            selectedAccessoryId = newPrediction
+//                        }
+//                    }
+//                }
+//                Spacer()
 
                 Section(header: Text("Live View")
                     .frame(maxWidth: .infinity, alignment: .leading)) {

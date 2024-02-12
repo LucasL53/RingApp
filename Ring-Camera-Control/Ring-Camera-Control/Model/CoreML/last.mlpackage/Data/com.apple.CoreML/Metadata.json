@@ -2,12 +2,12 @@
   "MLModelVersionStringKey" : "8.1.1",
   "MLModelDescriptionKey" : "Ultralytics last model trained on \/content\/RevisedResize-Images-3\/data.yaml",
   "MLModelCreatorDefinedKey" : {
-    "IoU threshold" : "0.45",
     "stride" : "32",
-    "Confidence threshold" : "0.25",
+    "Confidence threshold" : "0.10",
+    "IoU threshold" : "0.30",
     "task" : "detect",
-    "imgsz" : "[160, 160]",
     "date" : "2024-01-12T19:24:19.739702",
+    "imgsz" : "[160, 160]",
     "batch" : "1",
     "names" : "{0: 'Door', 1: 'Door handle', 2: 'Window', 3: 'blind', 4: 'lights', 5: 'smart lock', 6: 'speaker', 7: 'tv'}"
   },

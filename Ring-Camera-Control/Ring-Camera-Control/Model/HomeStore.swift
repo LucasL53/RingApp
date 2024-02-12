@@ -19,7 +19,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     @Published var characteristics: [HMCharacteristic] = []
     private var manager: HMHomeManager!
     
-    @Published var homeDictionary: [Int: String] = [:]
+    @Published var homeDictionary: [String: String] = [:]
     
     @Published var areHomesLoaded: Bool = false
     
@@ -87,16 +87,19 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         accessories = devices
         
         for accessory in accessories {
-            self.homeDictionary[3] = "speaker UUID"
+            self.homeDictionary["speaker"] = "speaker UUID"
             switch accessory.services.first!.serviceType {
             case HMServiceTypeLightbulb:
-                self.homeDictionary[0] = accessory.uniqueIdentifier.uuidString
+                self.homeDictionary["lights"] = accessory.uniqueIdentifier.uuidString
             case HMServiceTypeWindowCovering:
-                self.homeDictionary[1] = accessory.uniqueIdentifier.uuidString
+                self.homeDictionary["window"] = accessory.uniqueIdentifier.uuidString
+                self.homeDictionary["blind"] = accessory.uniqueIdentifier.uuidString
             case HMServiceTypeLockManagement, HMServiceTypeLockMechanism:
-                self.homeDictionary[2] = accessory.uniqueIdentifier.uuidString
+                self.homeDictionary["door"] = accessory.uniqueIdentifier.uuidString
+                self.homeDictionary["door handle"] = accessory.uniqueIdentifier.uuidString
+                self.homeDictionary["smart lock"] = accessory.uniqueIdentifier.uuidString
             case HMServiceTypeSpeaker:
-                self.homeDictionary[3] = accessory.uniqueIdentifier.uuidString
+                self.homeDictionary["speaker"] = accessory.uniqueIdentifier.uuidString
             default:
                 print("Unsure about categorizing ", accessory.name)
             }

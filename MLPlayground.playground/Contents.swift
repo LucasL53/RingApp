@@ -321,17 +321,17 @@ func boundingBoxToImage(drawText text: String, inImage image: UIImage, inRect re
 // MARK: - Setting up ML Model
 
 var urlOfModelInThisBundle: URL { let resPath = Bundle.main.url(forResource: "last", withExtension: "mlmodelc")!; return try! MLModel.compileModel(at: resPath) }
-var image = UIImage(named: "test_set/tv/IMG_0650.JPG")
-//image = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 160, height: 160))
+var image = UIImage(named: "test_set/tv/IMG_3313.JPG")
+image = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 160, height: 160))
 
-let resizedImgTest = resizeImage(image: image!, targetSize: CGSize(width: 160, height: 160))
+//let resizedImgTest = resizeImage(image: image!, targetSize: CGSize(width: 160, height: 160))
 
 let modelURL = Bundle.main.url(forResource: "last", withExtension: "mlmodelc")!
 let model = try! VNCoreMLModel(for: MLModel(contentsOf: modelURL))
 var preds: [String] = []
 var bounds: [CGRect] = []
 
-let handler = VNImageRequestHandler(cgImage: resizedImgTest!.cgImage!, options: [:])
+let handler = VNImageRequestHandler(cgImage: image!.cgImage!, options: [:])
 let request = VNCoreMLRequest(model: model, completionHandler: { (request, error) in
 //    guard let results = request.results as? [VNClassificationObservation] else {
 //        fatalError()
@@ -357,8 +357,7 @@ let calc = calculateCenterBox(preds: preds, bounds: bounds)
 let det = Detection(box: calc.1, confidence: 0.0, label: calc.0, color: .green)
 let dets = [det]
 
-
-resizeImage(image: drawDetectionsOnImage(dets, resizedImgTest!)!, targetSize: CGSize(width: 320, height: 320))
+resizeImage(image: drawDetectionsOnImage(dets, image!)!, targetSize: CGSize(width: 320, height: 320))
 
 let noBorderBuffer = (image?.convertToBuffer())!
 let noBorderImage = UIImage(pixelBuffer: noBorderBuffer)

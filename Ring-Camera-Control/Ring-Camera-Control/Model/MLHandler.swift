@@ -30,52 +30,7 @@ class MLHandler {
         self.visionModel = try! VNCoreMLModel(for: model)
     }
     
-    struct Detection {
-        let box:CGRect
-        let confidence:Float
-        let label:String?
-        let color:UIColor
-    }
-
-    func drawDetectionsOnImage(_ detections: [Detection], _ image: UIImage) -> UIImage? {
-        let imageSize = image.size
-        let scale: CGFloat = 0.0
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
-
-        image.draw(at: CGPoint.zero)
-        let ctx = UIGraphicsGetCurrentContext()
-        var rects:[CGRect] = []
-        for detection in detections {
-            rects.append(detection.box)
-            if let labelText = detection.label {
-            let text = "\(labelText) : \(round(detection.confidence*100))"
-                let textRect  = CGRect(x: detection.box.minX + imageSize.width * 0.01, y: detection.box.minY + imageSize.width * 0.01, width: detection.box.width, height: detection.box.height)
-                        
-            let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
-                        
-            let textFontAttributes = [
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
-                NSAttributedString.Key.foregroundColor: detection.color,
-                NSAttributedString.Key.paragraphStyle: textStyle
-            ]
-                        
-            text.draw(in: textRect, withAttributes: textFontAttributes)
-            ctx?.addRect(detection.box)
-            ctx?.setStrokeColor(detection.color.cgColor)
-            ctx?.setLineWidth(1.0)
-            ctx?.strokePath()
-            }
-        }
-
-        guard let drawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
-            fatalError()
-        }
-
-        UIGraphicsEndImageContext()
-        return drawnImage
-    }
-    
-    func predict(image: CGImage) -> UIImage {
+    func predict(image: CGImage) -> (String, CGRect, Float) {
         var predictions: [String] = []
         var boxes: [CGRect] = []
         var confidences: [Float] = []
@@ -92,7 +47,7 @@ class MLHandler {
                 let topLabelObservation = objectObservation.labels[0]
                 let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(160), Int(160))
                 
-                print("Found: \(topLabelObservation.identifier)")
+                print("Found: \(topLabelObservation.identifier) at \(topLabelObservation.confidence)")
                 
                 predictions.append(topLabelObservation.identifier.lowercased())
                 boxes.append(objectBounds)
@@ -112,7 +67,7 @@ class MLHandler {
         
         let finalPrediction = calculateCenterBox(preds: predictions, bounds: boxes, confs: confidences)
         
-        return drawDetectionsOnImage([Detection(box: finalPrediction.1, confidence: finalPrediction.2, label: finalPrediction.0, color: .green)], UIImage(cgImage: image))!
+        return finalPrediction
     }
     
     func createTextSubLayerInBounds(_ bounds: CGRect, identifier: String, confidence: VNConfidence) -> CATextLayer {
