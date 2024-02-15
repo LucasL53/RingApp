@@ -109,6 +109,7 @@ struct ControlView: View {
             }
         }.onChange(of: blemanager.banjiStatus) {
             blemanager.scanForPeripherals()
+            blemanager.setHomeStore(homeStore: model)
         }
     }
 }

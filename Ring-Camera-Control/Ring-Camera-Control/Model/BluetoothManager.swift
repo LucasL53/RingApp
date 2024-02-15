@@ -662,10 +662,16 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                     let prediction = mlModel.predict(image: cgimage)
                                     classifiedDevice = prediction.0.lowercased()
                                     if let device = classifiedDevice {
-                                        if device != "tv" {
-                                            foundAccessory = UUID(uuidString: homeModel.homeDictionary[device]!)
-                                        } else {
-                                            foundAccessory = nil
+                                        if let deviceuuid = homeModel.homeDictionary[device] {
+                                            if device == "tv" {
+                                                foundAccessory = nil
+                                            } else {
+                                                print("calling device:", device)
+                                                foundAccessory = UUID(uuidString: deviceuuid)
+                                            }
+                                        }
+                                        else {
+                                            print("home Dictionary does not contain \(device):", homeModel.homeDictionary)
                                         }
                                     }
                                     let predictImage = drawDetectionsOnImage([Detection(box: prediction.1, confidence: prediction.2, label: classifiedDevice, color: .green)], UIImage(cgImage: cgimage))

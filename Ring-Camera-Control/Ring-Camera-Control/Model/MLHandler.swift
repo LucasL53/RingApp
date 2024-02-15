@@ -52,14 +52,7 @@ class MLHandler {
                 predictions.append(topLabelObservation.identifier.lowercased())
                 boxes.append(objectBounds)
                 confidences.append(topLabelObservation.confidence)
-                
-                let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
-        
-                let textLayer = self.createTextSubLayerInBounds(objectBounds,
-                            identifier: topLabelObservation.identifier.lowercased(),
-                            confidence: topLabelObservation.confidence)
-                
-                shapeLayer.addSublayer(textLayer)
+    
             }
         })
         
@@ -70,33 +63,6 @@ class MLHandler {
         return finalPrediction
     }
     
-    func createTextSubLayerInBounds(_ bounds: CGRect, identifier: String, confidence: VNConfidence) -> CATextLayer {
-        let textLayer = CATextLayer()
-        textLayer.name = "Object Label"
-        let formattedString = NSMutableAttributedString(string: String(format: "\(identifier)\n: %.3f", confidence*100) + "%")
-        let largeFont = UIFont(name: "Helvetica", size: 15.0)!
-        formattedString.addAttributes([NSAttributedString.Key.font: largeFont], range: NSRange(location: 0, length: identifier.count))
-        textLayer.string = formattedString
-        textLayer.bounds = CGRect(x: 0, y: 0, width: bounds.size.height - 10, height: bounds.size.width - 10)
-        textLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
-        textLayer.shadowOpacity = 0.7
-        textLayer.shadowOffset = CGSize(width: 2, height: 2)
-        textLayer.foregroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [0.0, 0.0, 0.0, 1.0])
-        textLayer.contentsScale = 2.0 // retina rendering
-        // rotate the layer into screen orientation and scale and mirror
-        textLayer.setAffineTransform(CGAffineTransform(rotationAngle: CGFloat(.pi / 2.0)).scaledBy(x: 1.0, y: -1.0))
-        return textLayer
-    }
-    
-    func createRoundedRectLayerWithBounds(_ bounds: CGRect) -> CALayer {
-        let shapeLayer = CALayer()
-        shapeLayer.bounds = bounds
-        shapeLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
-        shapeLayer.name = "Found Object"
-        shapeLayer.backgroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [1.0, 1.0, 0.2, 0.4])
-        shapeLayer.cornerRadius = 7
-        return shapeLayer
-    }
     //MARK: - COREML
     
     func calculateCenter(boxArray: CGRect) -> (CGFloat, CGFloat) {
@@ -121,23 +87,19 @@ class MLHandler {
     func calculateCenterBox(preds: [String], bounds: [CGRect], confs: [Float]) -> (String, CGRect, Float) {
         let imageCtr = calculateImageCenter(originShape: [160, 160])
         var distance: Float = Float.infinity
-        var index: String = ""
-        var bound: CGRect = CGRect()
-        var conf: Float = Float.zero
+        var index: Int = 0
 
         for i in 0..<bounds.count{
             let boxCtr = calculateCenter(boxArray: bounds[i])
             let boxDistance = euclideanDistance(point1: boxCtr, point2: imageCtr)
             if distance > boxDistance {
                 distance = boxDistance
-                index = preds[i]
-                bound = bounds[i]
-                conf = confs[i]
+                index = i
             }
         }
         
         // Name of Class, Euclidean Distance
-        return (index, bound, conf)
+        return (preds[index], bounds[index], confs[index])
     }
     
     //MARK: - Calculations
