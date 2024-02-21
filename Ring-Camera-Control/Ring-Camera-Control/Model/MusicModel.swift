@@ -39,5 +39,7 @@ class MusicModel: ObservableObject {
                 musicPlayer.play()
             }
         }
-    
+    func pause() {
+        musicPlayer.pause()
+    }
 }
