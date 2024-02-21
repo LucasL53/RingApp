@@ -91,6 +91,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             switch accessory.services.first!.serviceType {
             case HMServiceTypeLightbulb:
                 self.homeDictionary["lights"] = accessory.uniqueIdentifier.uuidString
+            case "00000236-0000-1000-8000-0026BB765291":
+                self.homeDictionary["lights"] = "00000236-0000-1000-8000-0026BB765291"
             case HMServiceTypeWindowCovering:
                 self.homeDictionary["window"] = accessory.uniqueIdentifier.uuidString
                 self.homeDictionary["blind"] = accessory.uniqueIdentifier.uuidString
@@ -101,7 +103,7 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             case HMServiceTypeSpeaker:
                 self.homeDictionary["speaker"] = accessory.uniqueIdentifier.uuidString
             default:
-                print("Unsure about categorizing ", accessory.name)
+                print("Unsure about categorizing ", accessory.name, accessory.services.first!.serviceType)
             }
         }
         
@@ -276,7 +278,8 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
     func toggleAccessory(accessoryIdentifier: UUID) {
         if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
             // Light Services
-            if let lightbulbService = accessory.services.first(where: { $0.serviceType == HMServiceTypeLightbulb }) {
+            if let lightbulbService = accessory.services.first(where: { ($0.serviceType == HMServiceTypeLightbulb) || ($0.serviceType == "00000236-0000-1000-8000-0026BB765291") }) {
+                print("Lights")
                 // Power control = -1
                 // Brightness control = positive value of brightness
                 
