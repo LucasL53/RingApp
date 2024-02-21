@@ -47,7 +47,7 @@ class MLHandler {
                 let topLabelObservation = objectObservation.labels[0]
                 let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(160), Int(160))
                 
-                print("Found: \(topLabelObservation.identifier) at \(topLabelObservation.confidence)")
+//                print("Found: \(topLabelObservation.identifier) at \(topLabelObservation.confidence)")
                 
                 predictions.append(topLabelObservation.identifier.lowercased())
                 boxes.append(objectBounds)
@@ -88,6 +88,10 @@ class MLHandler {
         let imageCtr = calculateImageCenter(originShape: [160, 160])
         var distance: Float = Float.infinity
         var index: Int = 0
+        
+        if (preds.count == 0) {
+            return ("", CGRect(), 0.0)
+        }
 
         for i in 0..<bounds.count{
             let boxCtr = calculateCenter(boxArray: bounds[i])
