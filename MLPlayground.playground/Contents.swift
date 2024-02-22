@@ -322,7 +322,7 @@ func boundingBoxToImage(drawText text: String, inImage image: UIImage, inRect re
 
 var urlOfModelInThisBundle: URL { let resPath = Bundle.main.url(forResource: "last", withExtension: "mlmodelc")!; return try! MLModel.compileModel(at: resPath) }
 var image = UIImage(named: "test_set/tv/IMG_3313.JPG")
-image = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 160, height: 160))
+image = centerImageOnBlackSquare(image: image!, squareSize: CGSize(width: 224, height: 224))
 
 //let resizedImgTest = resizeImage(image: image!, targetSize: CGSize(width: 160, height: 160))
 

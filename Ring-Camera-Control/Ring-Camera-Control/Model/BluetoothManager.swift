@@ -809,7 +809,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 if let cgimage = centeredImage.cgImage {
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
                                     let prediction = mlModel.predict(image: cgimage)
-                                    classifiedDevice = prediction.0.lowercased()
+                                    classifiedDevice = prediction[0].0.lowercased()
                                     if let device = classifiedDevice {
                                         if let deviceuuid = homeModel.homeDictionary[device] {
                                             if device == "tv" {
@@ -824,12 +824,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 //                                            print("Detected device not in homeDictionary:", homeModel.homeDictionary)
                                         }
                                     }
-//                                    let predictImage = drawDetectionsOnImage([Detection(box: prediction.1, confidence: prediction.2, label: classifiedDevice, color: .green)], UIImage(cgImage: cgimage))
-                                    let predictImage = drawBoundingBoxWithLabel(on: UIImage(cgImage: cgimage), with: [Detection(box: prediction.1, confidence: prediction.2, label: classifiedDevice, color: .green)])
-//                                    let predictImage = drawBoundingBoxWithLabel(on: UIImage(cgImage: cgimage), with: [Detection(box: CGRect(x:40, y:40, width:80, height:80), confidence: prediction.2, label: classifiedDevice, color: .green)])
-//                                    let resizedOutput = resizeImage(image: predictImage!, targetSize: CGSize(width: 640, height: 640))
+                                    var predictImage = UIImage(cgImage: cgimage)
+                                    
+                                    for pred in prediction {
+                                        predictImage = drawBoundingBoxWithLabel(on: predictImage, with: [Detection(box: pred.1, confidence: pred.2, label: pred.0.lowercased(), color: .green)])!
+                                    }
+                                    
                                     DispatchQueue.main.async {
-                                        self.updateImage(image: Image(uiImage: predictImage!))
+                                        self.updateImage(image: Image(uiImage: predictImage))
                                     }
                                     if (saveImageFlag || buttonPressedFlag) {
                                         // Save image on either iOS UI button press or ring hardware button press

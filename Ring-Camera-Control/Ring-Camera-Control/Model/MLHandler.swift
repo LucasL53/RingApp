@@ -30,10 +30,11 @@ class MLHandler {
         self.visionModel = try! VNCoreMLModel(for: model)
     }
     
-    func predict(image: CGImage) -> (String, CGRect, Float) {
+    func predict(image: CGImage) -> [(String, CGRect, Float)] {
         var predictions: [String] = []
         var boxes: [CGRect] = []
         var confidences: [Float] = []
+        var preds: [(String, CGRect, Float)] = []
         let handler = VNImageRequestHandler(cgImage: image, options: [:])
         
         let request = VNCoreMLRequest(model: self.visionModel, completionHandler: { (request, error) in
@@ -52,13 +53,22 @@ class MLHandler {
                 predictions.append(topLabelObservation.identifier.lowercased())
                 boxes.append(objectBounds)
                 confidences.append(topLabelObservation.confidence)
+                
+                preds.append((topLabelObservation.identifier.lowercased(), objectBounds, topLabelObservation.confidence))
+    
             }
         })
         
         try! handler.perform([request])
         
-        let finalPrediction = calculateCenterBox(preds: predictions, bounds: boxes, confs: confidences)
-//        print(finalPrediction.1.minX, finalPrediction.1.minY, finalPrediction.1.width, finalPrediction.1.height)
+        var finalPrediction = [calculateCenterBox(preds: predictions, bounds: boxes, confs: confidences)]
+        
+        for p in preds {
+            if !finalPrediction.contains(where: {$0 == p}) {
+                finalPrediction.append(p)
+            }
+        }
+        
         return finalPrediction
     }
     
