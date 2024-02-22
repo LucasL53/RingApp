@@ -123,6 +123,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     //MARK: - Properties
     var mlModel          : MLHandler
     @ObservedObject var homeModel : HomeStore
+    @ObservedObject var musicPlayer : MusicModel
     
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
@@ -241,6 +242,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         centralManager = CBCentralManager()
         mlModel = MLHandler()
         self.homeModel = HomeStore()
+        self.musicPlayer = MusicModel()
         super.init()
         centralManager.delegate = self
         MPVolumeView.setVolume(0.3)
@@ -405,30 +407,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         return newImage
     }
     
-//    func createGrayScalePixelBuffer(image: UIImage, width: Int, height: Int) -> CVPixelBuffer? {
-//        let ciImage = CIImage(image: image)
-//        let filter = CIFilter(name: "CIColorControls")!
-//        filter.setValue(ciImage, forKey: kCIInputImageKey)
-//        filter.setValue(0, forKey: kCIInputSaturationKey) // Set saturation to 0 to get grayscale
-//
-//        guard let outputImage = filter.outputImage else { return nil }
-//
-//        let context = CIContext()
-//        let pixelBufferOptions: [String: Any] = [kCVPixelBufferCGImageCompatibilityKey as String: true,
-//                                                 kCVPixelBufferCGBitmapContextCompatibilityKey as String: true]
-//
-//        var pixelBuffer: CVPixelBuffer? = nil
-//        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, pixelBufferOptions as CFDictionary, &pixelBuffer)
-//        guard status == kCVReturnSuccess, let finalPixelBuffer = pixelBuffer else {
-//            return nil
-//        }
-//
-//        let rect = CGRect(x: 0, y: 0, width: width, height: height)
-////        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceGray())
-//        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceRGB())
-//        return finalPixelBuffer
-//    }
-    
     func convertBufferTo2DArray(buffer: [UInt8], width: Int, height: Int) -> [[UInt8]] {
         var array2D = [[UInt8]](repeating: [UInt8](repeating: 0, count: width), count: height)
         for y in 0..<height {
@@ -479,44 +457,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         CVPixelBufferUnlockBaseAddress(resizedPixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
 
         return resizedPixelBuffer
-    }
-
-    func drawDetectionsOnImage(_ detections: [Detection], _ image: UIImage) -> UIImage? {
-        let imageSize = image.size
-        let scale: CGFloat = 0.0
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
-
-        image.draw(at: CGPoint.zero)
-        let ctx = UIGraphicsGetCurrentContext()
-        var rects:[CGRect] = []
-        for detection in detections {
-            rects.append(detection.box)
-            if let labelText = detection.label {
-            let text = "\(labelText) : \(round(detection.confidence*100))"
-                let textRect  = CGRect(x: detection.box.minX + imageSize.width * 0.01, y: detection.box.minY + imageSize.width * 0.01, width: detection.box.width, height: detection.box.height)
-                        
-            let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
-                        
-            let textFontAttributes = [
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
-                NSAttributedString.Key.foregroundColor: detection.color,
-                NSAttributedString.Key.paragraphStyle: textStyle
-            ]
-                        
-            text.draw(in: textRect, withAttributes: textFontAttributes)
-            ctx?.addRect(detection.box)
-            ctx?.setStrokeColor(detection.color.cgColor)
-            ctx?.setLineWidth(1.0)
-            ctx?.strokePath()
-            }
-        }
-
-        guard let drawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
-            fatalError()
-        }
-
-        UIGraphicsEndImageContext()
-        return drawnImage
     }
     
     func updateImage(image: Image) {
@@ -676,6 +616,139 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         prevMappedTilt = currentMappedTilt
     }
     
+    func drawDetectionsOnImage(_ detections: [Detection], _ image: UIImage) -> UIImage? {
+        let imageSize = image.size
+        let scale: CGFloat = 0.0
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+
+        image.draw(at: CGPoint.zero)
+        let ctx = UIGraphicsGetCurrentContext()
+        var rects:[CGRect] = []
+        for detection in detections {
+            rects.append(detection.box)
+            if let labelText = detection.label {
+            let text = "\(labelText) : \(round(detection.confidence*100))"
+                let textRect  = CGRect(x: detection.box.minX + imageSize.width * 0.01, y: detection.box.minY + imageSize.width * 0.01, width: detection.box.width, height: detection.box.height)
+                        
+            let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+                        
+            let textFontAttributes = [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
+                NSAttributedString.Key.foregroundColor: detection.color,
+                NSAttributedString.Key.paragraphStyle: textStyle
+            ]
+                
+            text.draw(in: textRect, withAttributes: textFontAttributes)
+            
+            let boundingBoxRect = CGRect(
+                x:detection.box.minX * (image.size.width / 160),
+                y:detection.box.minY * (image.size.height / 160),
+                width:detection.box.width * (image.size.width / 160),
+                height:detection.box.height * (image.size.height / 160)
+            )
+                
+            ctx?.addRect(boundingBoxRect)
+            ctx?.setStrokeColor(detection.color.cgColor)
+            ctx?.setLineWidth(1.0)
+            ctx?.strokePath()
+            }
+        }
+
+        guard let drawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
+            fatalError()
+        }
+
+        UIGraphicsEndImageContext()
+        return drawnImage
+    }
+    
+    func drawBoundingBoxWithLabel(on image: UIImage, with detections: [Detection]) -> UIImage? {
+        // Begin image context to draw on
+        UIGraphicsBeginImageContextWithOptions(image.size, true, 0.0)
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+        
+        // Draw the image
+        image.draw(at: CGPoint.zero)
+        
+        // Flip the coordinate system
+        context.scaleBy(x: 1, y: -1)
+        context.translateBy(x: 0, y: -image.size.height)
+        
+        // Set bounding box stroke color and width
+        UIColor.green.setStroke()
+        context.setLineWidth(3.0)
+        
+        for detection in detections {
+            // Get the bounding box
+            let boundingBoxRect = CGRect(
+                x:detection.box.minX * (image.size.width / 160),
+                y:detection.box.minY * (image.size.height / 160),
+                width:detection.box.width * (image.size.width / 160),
+                height:detection.box.height * (image.size.height / 160))
+            
+            // Draw bounding box
+            context.addRect(boundingBoxRect)
+            context.drawPath(using: .stroke)
+            
+            // Draw text label
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: 32),
+                .foregroundColor: UIColor.green
+            ]
+            
+            if let labelText = detection.label {
+                let text = "\(labelText) : \(round(detection.confidence*100))"
+                let textSize = (text as NSString).size(withAttributes: attributes)
+                let textRect = CGRect(
+                    x: boundingBoxRect.origin.x,
+                    y: boundingBoxRect.origin.y + boundingBoxRect.size.height + 4,
+                    width: textSize.width,
+                    height: textSize.height
+                )
+                
+                // Flip the text orientation
+                context.saveGState()
+                context.translateBy(x: textRect.origin.x, y: textRect.origin.y)
+                context.scaleBy(x: 1.0, y: -1.0)
+                context.translateBy(x: -textRect.origin.x, y: -textRect.origin.y)
+                
+                (text as NSString).draw(in: textRect, withAttributes: [.font: UIFont.boldSystemFont(ofSize: 32), .foregroundColor: UIColor.green])
+                           
+               context.restoreGState()
+                
+//                let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+//                
+//                let textFontAttributes = [
+//                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
+//                    NSAttributedString.Key.foregroundColor: detection.color,
+//                    NSAttributedString.Key.paragraphStyle: textStyle
+//                ]
+//                
+//                text.draw(in: textRect, withAttributes: textFontAttributes)
+            }
+        }
+        
+        // Get the drawn image from context
+        let drawnImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        // End image context
+        UIGraphicsEndImageContext()
+        
+        return drawnImage
+    }
+
+    // Example usage:
+    // Assuming you have your UIImage and VNRecognizedObjectObservation
+    // let image: UIImage = ...
+    // let observation: VNRecognizedObjectObservation = ...
+
+    // Draw bounding box with label on image
+    // let imageWithBoundingBoxAndLabel = drawBoundingBoxWithLabel(on: image, with: observation)
+    // Now you can use imageWithBoundingBoxAndLabel which contains the original image with the bounding box and label drawn on it.
+
+    
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard error == nil else {
             return
@@ -751,7 +824,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 //                                            print("Detected device not in homeDictionary:", homeModel.homeDictionary)
                                         }
                                     }
-                                    let predictImage = drawDetectionsOnImage([Detection(box: prediction.1, confidence: prediction.2, label: classifiedDevice, color: .green)], UIImage(cgImage: cgimage))
+//                                    let predictImage = drawDetectionsOnImage([Detection(box: prediction.1, confidence: prediction.2, label: classifiedDevice, color: .green)], UIImage(cgImage: cgimage))
+                                    let predictImage = drawBoundingBoxWithLabel(on: UIImage(cgImage: cgimage), with: [Detection(box: prediction.1, confidence: prediction.2, label: classifiedDevice, color: .green)])
+//                                    let predictImage = drawBoundingBoxWithLabel(on: UIImage(cgImage: cgimage), with: [Detection(box: CGRect(x:40, y:40, width:80, height:80), confidence: prediction.2, label: classifiedDevice, color: .green)])
 //                                    let resizedOutput = resizeImage(image: predictImage!, targetSize: CGSize(width: 640, height: 640))
                                     DispatchQueue.main.async {
                                         self.updateImage(image: Image(uiImage: predictImage!))
@@ -780,12 +855,16 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     } // startOfFrame end
                     
                     // SINGLE PRESS LOGIC START
-                    if (controlDeviceFlag && !buttonPressed) { // buttons been released and control flag armed
+                    if (controlDeviceFlag && !buttonPressed && (rotationCounter < rotationThreshold)) { // buttons been released and control flag armed
                         if (classifiedDevice == "speaker") {
                             if (currentVolume > 0 && (muted == false)) {
+                                print("PAUSE")
+//                                musicPlayer.resumePlayback()
                                 MPVolumeView.setVolume(0)
                                 muted = true
                             } else {
+                                print("PLAY")
+//                                musicPlayer.pause()
                                 MPVolumeView.setVolume(Float(currentVolume))
                                 muted = false
                             }
