@@ -52,14 +52,13 @@ class MLHandler {
                 predictions.append(topLabelObservation.identifier.lowercased())
                 boxes.append(objectBounds)
                 confidences.append(topLabelObservation.confidence)
-    
             }
         })
         
         try! handler.perform([request])
         
         let finalPrediction = calculateCenterBox(preds: predictions, bounds: boxes, confs: confidences)
-        
+//        print(finalPrediction.1.minX, finalPrediction.1.minY, finalPrediction.1.width, finalPrediction.1.height)
         return finalPrediction
     }
     
@@ -79,14 +78,25 @@ class MLHandler {
     func euclideanDistance(point1: (CGFloat, CGFloat), point2: (CGFloat, CGFloat)) -> Float {
         let deltaX = point1.0 - point2.0
         let deltaY = point1.1 - point2.1
-        let squaredDifference = deltaX * deltaX + deltaY * deltaY
-        return Float(sqrt(squaredDifference))
+        let distance = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
+        return Float(distance)
+    }
+    
+    func overlappingArea(rect1: CGRect, rect2: CGRect) -> Float {
+        let overlappingRect = rect1.intersection(rect2)
+        let area = overlappingRect.width * overlappingRect.height
+        return Float(area)
+    }
+    
+    func rectArea(rect: CGRect) -> Float {
+        return Float(rect.width * rect.height)
     }
     
     // Fix resultData argument Type
     func calculateCenterBox(preds: [String], bounds: [CGRect], confs: [Float]) -> (String, CGRect, Float) {
         let imageCtr = calculateImageCenter(originShape: [160, 160])
         var distance: Float = Float.infinity
+//        var distance: Float = 0
         var index: Int = 0
         
         if (preds.count == 0) {
@@ -96,7 +106,10 @@ class MLHandler {
         for i in 0..<bounds.count{
             let boxCtr = calculateCenter(boxArray: bounds[i])
             let boxDistance = euclideanDistance(point1: boxCtr, point2: imageCtr)
-            if distance > boxDistance {
+//            var boxDistance = overlappingArea(rect1: bounds[i], rect2: CGRect(x:40, y:40, width:80, height:80))
+//            let overlappedRatio = boxDistance / rectArea(rect: bounds[i])
+//            boxDistance = overlappedRatio - 1
+            if boxDistance < distance {
                 distance = boxDistance
                 index = i
             }
