@@ -123,7 +123,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     //MARK: - Properties
     var mlModel          : MLHandler
     @ObservedObject var homeModel : HomeStore
-    @ObservedObject var musicPlayer : MusicModel
+    @ObservedObject var musicPlayer = MusicModel.shared
     
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
@@ -155,7 +155,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var controlDeviceFlag       : Bool         = false
     private var rotationInitialized     : Bool         = false
     private var rotationCounter         : Int          = 0
-    private var muted                   : Bool         = false
+//    private var muted                   : Bool         = false
     private let rotationThreshold       : Int          = 20
     private let date = Date()
     
@@ -242,7 +242,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         centralManager = CBCentralManager()
         mlModel = MLHandler()
         self.homeModel = HomeStore()
-        self.musicPlayer = MusicModel()
         super.init()
         centralManager.delegate = self
         MPVolumeView.setVolume(0.3)
@@ -668,7 +667,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         guard let context = UIGraphicsGetCurrentContext() else {
             return nil
         }
-        
         // Draw the image
         image.draw(at: CGPoint.zero)
         
@@ -681,6 +679,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         context.setLineWidth(3.0)
         
         for detection in detections {
+            
+//            print(detection.box.minX, detection.box.minY, detection.box.width, detection.box.height)
             // Get the bounding box
             let boundingBoxRect = CGRect(
                 x:detection.box.minX * (image.size.width / 160),
@@ -859,16 +859,16 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                     // SINGLE PRESS LOGIC START
                     if (controlDeviceFlag && !buttonPressed && (rotationCounter < rotationThreshold)) { // buttons been released and control flag armed
                         if (classifiedDevice == "speaker") {
-                            if (currentVolume > 0 && (muted == false)) {
+                            if (musicPlayer.musicPlayer.playbackState == .playing) {
                                 print("PAUSE")
-//                                musicPlayer.resumePlayback()
-                                MPVolumeView.setVolume(0)
-                                muted = true
+                                musicPlayer.pause()
+//                                MPVolumeView.setVolume(0)
+//                                muted = true
                             } else {
                                 print("PLAY")
-//                                musicPlayer.pause()
-                                MPVolumeView.setVolume(Float(currentVolume))
-                                muted = false
+                                musicPlayer.resumePlayback()
+//                                MPVolumeView.setVolume(Float(currentVolume))
+//                                muted = false
                             }
                        } else if (classifiedDevice == "lights") {
                             print("Controlling lights!")
@@ -939,7 +939,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                             MPVolumeView.setVolume(Float(currentVolume))
                             currentVolume = newVolume
                             if (currentVolume > 0) {
-                                muted = false
+//                                muted = false
                             }
                         }
                     }

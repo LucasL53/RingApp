@@ -23,6 +23,7 @@ struct ControlView: View {
     @Binding var homeId: UUID?
     @ObservedObject var model: HomeStore
     @StateObject var blemanager = BluetoothManager()
+    @ObservedObject var musicModel = MusicModel.shared
 //    @State private var selectedAccessory: String?
     @State private var selectedAccessoryId: UUID? = UUID(uuidString: "1A7337DD-577D-510E-8E50-5E91C5B8BE34")
     @State private var spotify: Bool = false
@@ -73,15 +74,18 @@ struct ControlView: View {
                     ZStack {
                         Rectangle()
                             .fill(Color.gray)
-                            .frame(height: 640)
+                            .frame(height: 500)
                             .accessibilityLabel("Live Video Feed \(blemanager.banjiStatus)")
                         
                         // Foreground image if available
                         if let image = blemanager.thisImage {
-                            image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 160, height: 160)
+                            GeometryReader { proxy in
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: proxy.size.width * 0.95)
+                                    .frame(width: proxy.size.width, height: proxy.size.height)
+                            }
                         }
                     }
                 }
@@ -96,15 +100,20 @@ struct ControlView: View {
                 .buttonStyle(OutlinedButtonStyle())
                 Spacer(minLength: 30)
                 
-//                
-//                if selectedAccessoryId != nil {
-//                    ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
-//                }
-                Button(action: {
-                    blemanager.savePicture()
-                }) {
-                    Text("Save Picture")
-                        .frame(width: 110, height: 10)
+                if spotify {
+                    Image(systemName: "pause.fill")
+                        .font(.title)
+                        .onTapGesture {
+                            musicModel.pause()
+                            spotify = false
+                        }
+                } else {
+                    Image(systemName: "play.fill")
+                        .font(.title)
+                        .onTapGesture {
+                            musicModel.resumePlayback()
+                            spotify = true
+                        }
                 }
             }
         }.onChange(of: blemanager.banjiStatus) {
