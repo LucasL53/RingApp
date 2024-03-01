@@ -79,13 +79,15 @@ struct ControlView: View {
                         
                         // Foreground image if available
                         if let image = blemanager.thisImage {
-                            GeometryReader { proxy in
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: proxy.size.width * 0.95)
-                                    .frame(width: proxy.size.width, height: proxy.size.height)
-                            }
+//                            GeometryReader { proxy in
+//                                image
+//                                    .resizable()
+//                                    .scaledToFit()
+//                                    .frame(width: proxy.size.width * 0.95)
+//                                    .frame(width: proxy.size.width, height: proxy.size.height)
+//                            }
+                            image
+                            .resizable()
                         }
                     }
                 }
@@ -99,6 +101,16 @@ struct ControlView: View {
                 }
                 .buttonStyle(OutlinedButtonStyle())
                 Spacer(minLength: 30)
+                
+                Button(action: {
+                    model.toggleAccessory(accessoryIdentifier: UUID(uuidString: model.homeDictionary["lights"]!)!)
+                }) {
+                    Text("Toggle Bulb")
+                        .frame(width: 110, height: 10)
+                }
+                .buttonStyle(OutlinedButtonStyle())
+                Spacer(minLength: 30)
+                
                 
                 if spotify {
                     Image(systemName: "pause.fill")

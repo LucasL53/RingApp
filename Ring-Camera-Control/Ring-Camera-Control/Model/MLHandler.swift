@@ -61,6 +61,34 @@ class MLHandler {
         
         try! handler.perform([request])
         
+        let iouThreshold: Float = 0.5
+        
+        print(predictions)
+        
+        var filteredPredictions: [(String, CGRect, Float)] = []
+
+        for pred in preds {
+            var shouldAdd = true
+            for filteredPred in filteredPredictions {
+                if calculateIOU(rectA: pred.1, rectB: filteredPred.1) > iouThreshold {
+                    // If the current prediction overlaps significantly with an existing one,
+                    // only add it if it has a higher confidence.
+                    if pred.2 <= filteredPred.2 {
+                        shouldAdd = false
+                        break
+                    }
+                }
+            }
+            if shouldAdd {
+                filteredPredictions = filteredPredictions.filter { calculateIOU(rectA: pred.1, rectB: $0.1) <= iouThreshold }
+                filteredPredictions.append(pred)
+            }
+        }
+//        
+//        for p in filteredPredictions {
+//            print("Filtered preds: ", p.0)
+//        }
+        
         var finalPrediction = [calculateCenterBox(preds: predictions, bounds: boxes, confs: confidences)]
         
         for p in preds {
@@ -68,8 +96,21 @@ class MLHandler {
                 finalPrediction.append(p)
             }
         }
-        
         return finalPrediction
+//        if filteredPredictions.isEmpty {
+//            filteredPredictions.append(("", CGRect(), 0.0))
+//        }
+//        
+//        return filteredPredictions
+    }
+    
+    //MARK: - Non Max Suppression
+    func calculateIOU(rectA: CGRect, rectB: CGRect) -> Float {
+        let intersection = rectA.intersection(rectB)
+        let interArea = intersection.width * intersection.height
+        let unionArea = rectA.width * rectA.height + rectB.width * rectB.height - interArea
+        print(Float(interArea / unionArea))
+        return Float(interArea / unionArea)
     }
     
     //MARK: - COREML

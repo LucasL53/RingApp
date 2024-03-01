@@ -7,9 +7,36 @@
 
 import Foundation
 import HomeKit
+import Matter
 
 // overall access to the home network will only be done through the HomeStore
 class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
+    
+    // MARK: - Matter controls
+    
+//    func storageData(forKey key: String) -> Data? {
+//        // Return the data for the given key, if any.
+//        print(key)
+//        return nil
+//    }
+//
+//
+//    func setStorageData(_ value: Data, forKey key: String) -> Bool {
+//        // Store the data for the given key. Return true on success,
+//        // false on failure.
+//        return false
+//    }
+//
+//
+//    func removeStorageData(forKey key: String) -> Bool {
+//        // Remove the given key from the storage. Return true on success,
+//        // false on failure.
+//        return false
+//    }
+    
+    
+    
+    // MARK: - HomeKit Controls
     
     // To stay informed of any changes made on any of the Homes,
     // the HMHomeManagerDelegate Protocol communicates any changes in the state of the home network
@@ -87,23 +114,30 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         accessories = devices
         
         for accessory in accessories {
+            print("\(accessory.name) found with UUID: \(accessory.uniqueIdentifier)")
+            
             self.homeDictionary["speaker"] = "speaker UUID"
-            switch accessory.services.first!.serviceType {
-            case HMServiceTypeLightbulb:
-                self.homeDictionary["lights"] = accessory.uniqueIdentifier.uuidString
-            case "00000236-0000-1000-8000-0026BB765291":
-                self.homeDictionary["lights"] = "00000236-0000-1000-8000-0026BB765291"
-            case HMServiceTypeWindowCovering:
-                self.homeDictionary["window"] = accessory.uniqueIdentifier.uuidString
-                self.homeDictionary["blind"] = accessory.uniqueIdentifier.uuidString
-            case HMServiceTypeLockManagement, HMServiceTypeLockMechanism:
-                self.homeDictionary["door"] = accessory.uniqueIdentifier.uuidString
-                self.homeDictionary["door handle"] = accessory.uniqueIdentifier.uuidString
-                self.homeDictionary["smart lock"] = accessory.uniqueIdentifier.uuidString
-            case HMServiceTypeSpeaker:
-                self.homeDictionary["speaker"] = accessory.uniqueIdentifier.uuidString
-            default:
-                print("Unsure about categorizing ", accessory.name, accessory.services.first!.serviceType)
+            let services = accessory.services
+            for service in services {
+                switch service.serviceType {
+                case HMServiceTypeLightbulb:
+                    print("\(accessory.services.first!.characteristics)")
+                    self.homeDictionary["lights"] = accessory.uniqueIdentifier.uuidString
+                case HMServiceTypeWindowCovering:
+                    self.homeDictionary["window"] = accessory.uniqueIdentifier.uuidString
+                    self.homeDictionary["blind"] = accessory.uniqueIdentifier.uuidString
+                case HMServiceTypeLockManagement, HMServiceTypeLockMechanism:
+                    self.homeDictionary["door"] = accessory.uniqueIdentifier.uuidString
+                    self.homeDictionary["door handle"] = accessory.uniqueIdentifier.uuidString
+                    self.homeDictionary["smart lock"] = accessory.uniqueIdentifier.uuidString
+                case HMServiceTypeSpeaker:
+                    self.homeDictionary["speaker"] = accessory.uniqueIdentifier.uuidString
+                case HMServiceTypeAccessoryInformation:
+                    print("Skipping information")
+                default:
+                    print("Unsure about categorizing ", accessory.name, accessory.services.first!.serviceType)
+                    print("\(accessory.services)")
+                }
             }
         }
         
@@ -115,16 +149,15 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
             return
         }
         services = accessoryServices
+        print("\(accessoryId.description): services \(services)")
     }
     func findCharacteristics(serviceId: UUID, accessoryId: UUID, homeId: UUID){
         guard let serviceCharacteristics = homes.first(where: {$0.uniqueIdentifier == homeId})?.accessories.first(where: {$0.uniqueIdentifier == accessoryId})?.services.first(where: {$0.uniqueIdentifier == serviceId})?.characteristics else {
             print("ERROR: No Characteristics found!")
             return
         }
-        print("characteristics")
-        print(serviceCharacteristics)
-        print()
         characteristics = serviceCharacteristics
+        print("\(serviceId.description), chars \(serviceCharacteristics)")
     }
     
     func characteristicValue(for characteristic: HMCharacteristic) -> Any? {
@@ -282,23 +315,39 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
                 print("Lights")
                 // Power control = -1
                 // Brightness control = positive value of brightness
-                
-                if let brightnessCharacteristic = lightbulbService.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypeBrightness }) {
-                    
-                    brightnessCharacteristic.readValue(completionHandler: { error in
-                        if let error = error {
-                            print("Failed to read brightness: \(error)")
-                        }
-                    })
-                    
-                    self.brightnessValue = brightnessCharacteristic.value as? Int
-                    let targetBrightness = (self.brightnessValue! > 0) ? 0 : 100
-                    brightnessCharacteristic.writeValue(targetBrightness, completionHandler: { error in
-                        if let error = error {
-                            print("Failed to change light brightness: \(error)")
-                        }
-                    })
+                for characteristic in lightbulbService.characteristics {
+                    print(characteristic.localizedDescription)
+                    print(characteristic.characteristicType)
+                    print(characteristic.value)
                 }
+                
+                if let powerCharacteristic = lightbulbService.characteristics.first(where: {$0.localizedDescription == "Power State"}) {
+                    if let power = powerCharacteristic.value {
+                        let targetPowerState = power as! Int == 1 ? 0 : 1
+                        powerCharacteristic.writeValue(targetPowerState, completionHandler: { error in
+                            if let error = error {
+                                print("Failed to change light power state: \(error)")
+                            }
+                        })
+                    }
+                }
+                
+//                if let brightnessCharacteristic = lightbulbService.characteristics.first(where: { $0.characteristicType == HMCharacteristicTypeBrightness }) {
+//                    
+//                    brightnessCharacteristic.readValue(completionHandler: { error in
+//                        if let error = error {
+//                            print("Failed to read brightness: \(error)")
+//                        }
+//                    })
+//                    
+//                    self.brightnessValue = brightnessCharacteristic.value as? Int
+//                    let targetBrightness = (self.brightnessValue! > 0) ? 0 : 100
+//                    brightnessCharacteristic.writeValue(targetBrightness, completionHandler: { error in
+//                        if let error = error {
+//                            print("Failed to change light brightness: \(error)")
+//                        }
+//                    })
+//                }
             }
             // END LIGHT SERVICES
             
