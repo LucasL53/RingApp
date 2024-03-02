@@ -23,6 +23,7 @@ struct ControlView: View {
     @Binding var homeId: UUID?
     @ObservedObject var model: HomeStore
     @StateObject var blemanager = BluetoothManager()
+    @ObservedObject var musicModel = MusicModel.shared
 //    @State private var selectedAccessory: String?
     @State private var selectedAccessoryId: UUID? = UUID(uuidString: "1A7337DD-577D-510E-8E50-5E91C5B8BE34")
     @State private var spotify: Bool = false
@@ -52,37 +53,41 @@ struct ControlView: View {
                 }
                 
                 Spacer()
-                Section(header: Text("My Smart Home Device")
-
-                    .frame(maxWidth: .infinity, alignment: .leading)) {
-                    Picker("My Smart Home Device", selection: $selectedAccessoryId){
-                        ForEach(exampleClass.allCases) { category in
-                             Text(category.rawValue).tag(category)
-                       }
-                    }
-                    .pickerStyle(.segmented)
-                    .onReceive(blemanager.$prediction) { newPrediction in
-                        if let newPrediction = newPrediction {
-                            selectedAccessoryId = newPrediction
-                        }
-                    }
-                }
-                Spacer()
+//                Section(header: Text("My Smart Home Device")
+//                    .frame(maxWidth: .infinity, alignment: .leading)) {
+//                    Picker("My Smart Home Device", selection: $selectedAccessoryId){
+//                        ForEach(exampleClass.allCases) { category in
+//                             Text(category.rawValue).tag(category)
+//                       }
+//                    }
+//                    .pickerStyle(.segmented)
+//                    .onReceive(blemanager.$prediction) { newPrediction in
+//                        if let newPrediction = newPrediction {
+//                            selectedAccessoryId = newPrediction
+//                        }
+//                    }
+//                }
+//                Spacer()
 
                 Section(header: Text("Live View")
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     ZStack {
                         Rectangle()
                             .fill(Color.gray)
-                            .frame(height: 160)
+                            .frame(height: 500)
                             .accessibilityLabel("Live Video Feed \(blemanager.banjiStatus)")
                         
                         // Foreground image if available
                         if let image = blemanager.thisImage {
+//                            GeometryReader { proxy in
+//                                image
+//                                    .resizable()
+//                                    .scaledToFit()
+//                                    .frame(width: proxy.size.width * 0.95)
+//                                    .frame(width: proxy.size.width, height: proxy.size.height)
+//                            }
                             image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 324, height: 238)
+                            .resizable()
                         }
                     }
                 }
@@ -97,13 +102,35 @@ struct ControlView: View {
                 .buttonStyle(OutlinedButtonStyle())
                 Spacer(minLength: 30)
                 
+                Button(action: {
+                    model.toggleAccessory(accessoryIdentifier: UUID(uuidString: model.homeDictionary["lights"]!)!)
+                }) {
+                    Text("Toggle Bulb")
+                        .frame(width: 110, height: 10)
+                }
+                .buttonStyle(OutlinedButtonStyle())
+                Spacer(minLength: 30)
                 
-                if selectedAccessoryId != nil {
-                    ServicesView(accessoryId: $selectedAccessoryId, homeId: $homeId, model: model)
+                
+                if spotify {
+                    Image(systemName: "pause.fill")
+                        .font(.title)
+                        .onTapGesture {
+                            musicModel.pause()
+                            spotify = false
+                        }
+                } else {
+                    Image(systemName: "play.fill")
+                        .font(.title)
+                        .onTapGesture {
+                            musicModel.resumePlayback()
+                            spotify = true
+                        }
                 }
             }
         }.onChange(of: blemanager.banjiStatus) {
             blemanager.scanForPeripherals()
+            blemanager.setHomeStore(homeStore: model)
         }
     }
 }

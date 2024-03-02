@@ -72,11 +72,58 @@ extension MPVolumeView {
     }
 }
 
+extension UIImage {
+    func resized(to newSize: CGSize, scale: CGFloat = 1) -> UIImage {
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = scale
+        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
+        let image = renderer.image { _ in
+            draw(in: CGRect(origin: .zero, size: newSize))
+        }
+        return image
+    }
+
+    func normalized() -> [Float32]? {
+        guard let cgImage = self.cgImage else {
+            return nil
+        }
+        let w = cgImage.width
+        let h = cgImage.height
+        let bytesPerPixel = 4
+        let bytesPerRow = bytesPerPixel * w
+        let bitsPerComponent = 8
+        var rawBytes: [UInt8] = [UInt8](repeating: 0, count: w * h * 4)
+        rawBytes.withUnsafeMutableBytes { ptr in
+            if let cgImage = self.cgImage,
+                let context = CGContext(data: ptr.baseAddress,
+                                        width: w,
+                                        height: h,
+                                        bitsPerComponent: bitsPerComponent,
+                                        bytesPerRow: bytesPerRow,
+                                        space: CGColorSpaceCreateDeviceRGB(),
+                                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) {
+                let rect = CGRect(x: 0, y: 0, width: w, height: h)
+                context.draw(cgImage, in: rect)
+            }
+        }
+        var normalizedBuffer: [Float32] = [Float32](repeating: 0, count: w * h * 3)
+        // normalize the pixel buffer
+        // see https://pytorch.org/hub/pytorch_vision_resnet/ for more detail
+        for i in 0 ..< w * h {
+            normalizedBuffer[i] = (Float32(rawBytes[i * 4 + 0]) / 255.0 - 0.485) / 0.229 // R
+            normalizedBuffer[w * h + i] = (Float32(rawBytes[i * 4 + 1]) / 255.0 - 0.456) / 0.224 // G
+            normalizedBuffer[w * h * 2 + i] = (Float32(rawBytes[i * 4 + 2]) / 255.0 - 0.406) / 0.225 // B
+        }
+        return normalizedBuffer
+    }
+}
+
 class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, ObservableObject {
 
     //MARK: - Properties
     var mlModel          : MLHandler
     @ObservedObject var homeModel : HomeStore
+    @ObservedObject var musicPlayer = MusicModel.shared
     
     let centralManager   : CBCentralManager
     var banji            : CBPeripheral!
@@ -84,7 +131,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     
     @Published var banjiStatus : String = "disconnected"
     @Published var thisImage : Image?
-    @Published var prediction: UUID?
+//    @Published var prediction: UUID?
+    @Published var foundAccessory : UUID?
+    
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var connectionIntervalUpdated = 0
     var scanStatus  :  Bool = false
@@ -92,22 +141,35 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var cameraDataCharacteristics   : CBCharacteristic!
     private var cameraControlCharacteristics: CBCharacteristic!
     
+    private var imageToSave: UIImage?
+    
     private var snapshotData            : Data         = Data()
     private var currentImageSize        : Int          = 0
     private var transferRate            : Double       = 0
     private var framesCount             : Int          = 0
     private var prevTimestamp           : Double       = 0.0
-    private var classifiedDevice        : Int          = 0
+    private var classifiedDevice        : String?
+    private var prevClassifiedDevice    : String?
     private var lastActionTimeMs        : Int          = 0
     private var prevButtonPressed       : Bool         = false
     private var saveImageFlag           : Bool         = false
     private var buttonPressedFlag       : Bool         = false
     private var controlDeviceFlag       : Bool         = false
     private var rotationInitialized     : Bool         = false
+    private var rotationCounter         : Int          = 0
+//    private var muted                   : Bool         = false
+    private let rotationThreshold       : Int          = 20
     private let date = Date()
     
     // This must align with MLHandler
     private let identifiers = HomeStore().homeDictionary
+    
+    struct Detection {
+        let box:CGRect
+        let confidence:Float
+        let label:String?
+        let color:UIColor
+    }
     
     struct accelTilt {
         static var x: Double = 0.0
@@ -184,8 +246,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         self.homeModel = HomeStore()
         super.init()
         centralManager.delegate = self
-        MPVolumeView.setVolume(0.5)
-        currentVolume = 0.5
+        MPVolumeView.setVolume(0.3)
+        currentVolume = 0.3
     }
     
     public func setHomeStore(homeStore: HomeStore) {
@@ -320,28 +382,30 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         return image
     }
     
-    func createGrayScalePixelBuffer(image: UIImage, width: Int, height: Int) -> CVPixelBuffer? {
-        let ciImage = CIImage(image: image)
-        let filter = CIFilter(name: "CIColorControls")!
-        filter.setValue(ciImage, forKey: kCIInputImageKey)
-        filter.setValue(0, forKey: kCIInputSaturationKey) // Set saturation to 0 to get grayscale
-
-        guard let outputImage = filter.outputImage else { return nil }
-
-        let context = CIContext()
-        let pixelBufferOptions: [String: Any] = [kCVPixelBufferCGImageCompatibilityKey as String: true,
-                                                 kCVPixelBufferCGBitmapContextCompatibilityKey as String: true]
-
-        var pixelBuffer: CVPixelBuffer? = nil
-        let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, pixelBufferOptions as CFDictionary, &pixelBuffer)
-        guard status == kCVReturnSuccess, let finalPixelBuffer = pixelBuffer else {
-            return nil
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage? {
+        let size = image.size
+        
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        // Figure out what our orientation is, and use that to form the rectangle
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
         }
-
-        let rect = CGRect(x: 0, y: 0, width: width, height: height)
-//        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceGray())
-        context.render(outputImage, to: finalPixelBuffer, bounds: rect, colorSpace: CGColorSpaceCreateDeviceRGB())
-        return finalPixelBuffer
+        
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+        
+        // Actually do the resizing to the rect using the ImageContext stuff
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage
     }
     
     func convertBufferTo2DArray(buffer: [UInt8], width: Int, height: Int) -> [[UInt8]] {
@@ -395,7 +459,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         return resizedPixelBuffer
     }
-
     
     func updateImage(image: Image) {
         self.thisImage = image
@@ -474,9 +537,219 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         image.draw(at: CGPoint(x: xOffset, y: yOffset))
         let centeredImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-
+        
         return centeredImage
     }
+    
+    public func initRotationMatrix(x:Double, y:Double, z:Double) {
+        print("Initial Accel:", accelX_init, accelY_init, accelZ_init)
+        
+        // Build Accel vector
+        //let accelVector_init = [accelX_init, accelY_init, accelZ_init]
+
+        // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
+        //rotationMatrix3D = rotationMatrix(fromVector: accelVector_init, toVector: GRAVITY_REFERENCE_VECTOR)
+        
+        
+        // Apply rotation to 0 out axes
+        //var rotatedVectorInit = applyRotationMatrix(matrix: rotationMatrix3D, toVector: accelVector_init)
+        let accelerometerReadings: [Double] = [accelX_init, accelY_init, accelY_init]  // Replace with your actual readings
+        
+        // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
+        var rotationMatrix: [[Double]] = [  [1.0000000,  0.0000000,  0.0000000],
+                                            [0.0000000,  0.1673408,  0.9858991],
+                                            [0.0000000, -0.9858991,  0.1673408 ]]
+        var rotatedVectorInit = applyRotationMatrix(matrix: rotationMatrix, toVector: accelerometerReadings)
+        accelX_init = rotatedVectorInit[0]
+        accelY_init = rotatedVectorInit[1]
+        accelZ_init = rotatedVectorInit[2]
+        
+
+        tiltX_init = atan(accelX_init / sqrt(pow(accelY_init,2) + pow(accelZ_init,2))) * 180 / Double.pi
+        tiltY_init = atan(accelY_init / sqrt(pow(accelX_init,2) + pow(accelZ_init,2))) * 180 / Double.pi
+        tiltZ_init = atan(sqrt(pow(accelX_init,2) + pow(accelY_init,2)) / accelZ_init) * 180 / Double.pi
+        
+        var string1 = String(format: "%.2f %.2f %.2f", tiltX_init, tiltY_init, tiltZ_init)
+        print("Initial tilt: ", string1)
+        
+        deltaXSum = 0.0
+        deltaYSum = 0.0
+        tiltXPrev = tiltX_init
+        tiltYPrev = tiltY_init
+        
+        prevMappedTilt = (tiltX_init + 90) / 180
+        print("volume init", prevMappedTilt)
+        
+        rotationInitialized = true
+    }
+    
+    public func updateRotationMatrix(x: Double, y: Double, z: Double) {
+        let accelerometerReadings: [Double] = [accelX_float, accelY_float, accelZ_float]
+        
+        // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
+        let rotationMatrix: [[Double]] = [  [1.0000000,  0.0000000,  0.0000000],
+                                            [0.0000000,  0.1673408,  0.9858991],
+                                            [0.0000000, -0.9858991,  0.1673408 ]]
+        let rotatedVector = applyRotationMatrix(matrix: rotationMatrix, toVector: accelerometerReadings)
+        
+        accelX_float = rotatedVector[0]
+        accelY_float = rotatedVector[1]
+        accelZ_float = rotatedVector[2]
+        
+        accelTilt.x = atan(accelX_float / sqrt(pow(accelY_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
+        accelTilt.y = atan(accelY_float / sqrt(pow(accelX_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
+        accelTilt.z = atan(sqrt(pow(accelX_float,2) + pow(accelY_float,2)) / accelZ_float) * 180 / Double.pi
+        
+        deltaXSum += accelTilt.x - tiltXPrev
+        deltaYSum += accelTilt.y - tiltYPrev
+        
+        tiltXPrev = accelTilt.x
+        tiltYPrev = accelTilt.y
+        
+        let u_x = accelTilt.x / 90.0
+        let u_y = accelTilt.y / 90.0
+        let u_z = accelTilt.z / 90.0
+        
+        let mappedTilt = (u_x + u_y + u_z) / 3
+        
+        currentMappedTilt = (accelTilt.x + 90) / 180
+        volumeChange = currentMappedTilt - prevMappedTilt
+        prevMappedTilt = currentMappedTilt
+    }
+    
+    func drawDetectionsOnImage(_ detections: [Detection], _ image: UIImage) -> UIImage? {
+        let imageSize = image.size
+        let scale: CGFloat = 0.0
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+
+        image.draw(at: CGPoint.zero)
+        let ctx = UIGraphicsGetCurrentContext()
+        var rects:[CGRect] = []
+        for detection in detections {
+            rects.append(detection.box)
+            if let labelText = detection.label {
+            let text = "\(labelText) : \(round(detection.confidence*100))"
+                let textRect  = CGRect(x: detection.box.minX + imageSize.width * 0.01, y: detection.box.minY + imageSize.width * 0.01, width: detection.box.width, height: detection.box.height)
+                        
+            let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+                        
+            let textFontAttributes = [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
+                NSAttributedString.Key.foregroundColor: detection.color,
+                NSAttributedString.Key.paragraphStyle: textStyle
+            ]
+                
+            text.draw(in: textRect, withAttributes: textFontAttributes)
+            
+            let boundingBoxRect = CGRect(
+                x:detection.box.minX * (image.size.width / 160),
+                y:detection.box.minY * (image.size.height / 160),
+                width:detection.box.width * (image.size.width / 160),
+                height:detection.box.height * (image.size.height / 160)
+            )
+                
+            ctx?.addRect(boundingBoxRect)
+            ctx?.setStrokeColor(detection.color.cgColor)
+            ctx?.setLineWidth(1.0)
+            ctx?.strokePath()
+            }
+        }
+
+        guard let drawnImage = UIGraphicsGetImageFromCurrentImageContext() else {
+            fatalError()
+        }
+
+        UIGraphicsEndImageContext()
+        return drawnImage
+    }
+    
+    func drawBoundingBoxWithLabel(on image: UIImage, with detections: [Detection]) -> UIImage? {
+        // Begin image context to draw on
+        UIGraphicsBeginImageContextWithOptions(image.size, true, 0.0)
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+        // Draw the image
+        image.draw(at: CGPoint.zero)
+        
+        // Flip the coordinate system
+        context.scaleBy(x: 1, y: -1)
+        context.translateBy(x: 0, y: -image.size.height)
+        
+        // Set bounding box stroke color and width
+        UIColor.green.setStroke()
+        context.setLineWidth(3.0)
+        
+        for detection in detections {
+            
+//            print(detection.box.minX, detection.box.minY, detection.box.width, detection.box.height)
+            // Get the bounding box
+            let boundingBoxRect = CGRect(
+                x:detection.box.minX * (image.size.width / 160),
+                y:detection.box.minY * (image.size.height / 160),
+                width:detection.box.width * (image.size.width / 160),
+                height:detection.box.height * (image.size.height / 160))
+            
+            // Draw bounding box
+            context.addRect(boundingBoxRect)
+            context.drawPath(using: .stroke)
+            
+            // Draw text label
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: 32),
+                .foregroundColor: UIColor.green
+            ]
+            
+            if let labelText = detection.label {
+                let text = "\(labelText) : \(round(detection.confidence*100))"
+                let textSize = (text as NSString).size(withAttributes: attributes)
+                let textRect = CGRect(
+                    x: boundingBoxRect.origin.x,
+                    y: boundingBoxRect.origin.y + boundingBoxRect.size.height + 4,
+                    width: textSize.width,
+                    height: textSize.height
+                )
+                
+                // Flip the text orientation
+                context.saveGState()
+                context.translateBy(x: textRect.origin.x, y: textRect.origin.y)
+                context.scaleBy(x: 1.0, y: -1.0)
+                context.translateBy(x: -textRect.origin.x, y: -textRect.origin.y)
+                
+                (text as NSString).draw(in: textRect, withAttributes: [.font: UIFont.boldSystemFont(ofSize: 32), .foregroundColor: UIColor.green])
+                           
+               context.restoreGState()
+                
+//                let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+//                
+//                let textFontAttributes = [
+//                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: textRect.width * 0.1, weight: .bold),
+//                    NSAttributedString.Key.foregroundColor: detection.color,
+//                    NSAttributedString.Key.paragraphStyle: textStyle
+//                ]
+//                
+//                text.draw(in: textRect, withAttributes: textFontAttributes)
+            }
+        }
+        
+        // Get the drawn image from context
+        let drawnImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        // End image context
+        UIGraphicsEndImageContext()
+        
+        return drawnImage
+    }
+
+    // Example usage:
+    // Assuming you have your UIImage and VNRecognizedObjectObservation
+    // let image: UIImage = ...
+    // let observation: VNRecognizedObjectObservation = ...
+
+    // Draw bounding box with label on image
+    // let imageWithBoundingBoxAndLabel = drawBoundingBoxWithLabel(on: image, with: observation)
+    // Now you can use imageWithBoundingBoxAndLabel which contains the original image with the bounding box and label drawn on it.
+
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard error == nil else {
@@ -499,9 +772,6 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 }
             }
         } else if characteristic == cameraDataCharacteristics {
-            
-            
-            
             value.withUnsafeBytes{ (bufferRawBufferPointer) -> Void in
                 let bufferPointerUInt8 = UnsafeBufferPointer<UInt8>.init(start: bufferRawBufferPointer.baseAddress!.bindMemory(to: UInt8.self, capacity: 1), count: packetLength)
                 let sequenceNumberBytes : [UInt8] = [bufferRawBufferPointer[1], bufferRawBufferPointer[0]]
@@ -537,76 +807,99 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         cameraBuffer.removeLast(extraSampleCount)
                         
                         if let uiImage = createImageFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
-                            if (saveImageFlag || buttonPressedFlag) {
-                                // Save image on either iOS UI button press or ring hardware button press
-                                print("Saving image to photo library")
-                                UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-                                saveImageFlag = false
-                            }
-                            
-
                             if let centeredImage = centerImageOnBlackSquare(image: uiImage, squareSize: CGSize(width: 160, height: 160)) {
-                                let image = Image(uiImage: centeredImage)
-                                DispatchQueue.main.async {
-                                    self.updateImage(image: image)
-                                }
-                                
-                                if let cvpixelbuffer = createGrayScalePixelBuffer(image: centeredImage, width: 160, height: 160) {
-
+                                imageToSave = uiImage
+                                if let cgimage = centeredImage.cgImage {
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
-
-                                    classifiedDevice = mlModel.predict(image: cvpixelbuffer)
+                                    let prediction = mlModel.predict(image: cgimage)
+                                    classifiedDevice = prediction[0].0.lowercased()
+                                    if let device = classifiedDevice {
+                                        if let deviceuuid = homeModel.homeDictionary[device] {
+                                            if device == "tv" {
+                                                foundAccessory = nil
+                                            } else {
+                                                print("Detected device:", device)
+                                                foundAccessory = UUID(uuidString: deviceuuid)
+                                            }
+                                        }
+                                        else {
+                                            classifiedDevice = prevClassifiedDevice
+//                                            print("Detected device not in homeDictionary:", homeModel.homeDictionary)
+                                        }
+                                    }
+                                    var predictImage = UIImage(cgImage: cgimage)
                                     
-                                    let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
-                                    let _ = endTime - startTime
-                                    //print("prediction_time_ms: \(1000*timeElapsed)")
-                                    if (buttonPressedFlag) {
-                                        print("Arming controlDeviceFlag")
-                                        controlDeviceFlag = true
+                                    for pred in prediction {
+                                        predictImage = drawBoundingBoxWithLabel(on: predictImage, with: [Detection(box: pred.1, confidence: pred.2, label: pred.0.lowercased(), color: .green)])!
                                     }
                                     
-                                    //print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
-                                } else {
-                                    print("error creating cvpixelbuffer")
+                                    DispatchQueue.main.async {
+                                        self.updateImage(image: Image(uiImage: predictImage))
+                                    }
+                                    if (saveImageFlag || buttonPressedFlag) {
+                                        // Save image on either iOS UI button press or ring hardware button press
+                                        print("Saving image to photo library")
+//                                        UIImageWriteToSavedPhotosAlbum(centeredImage, nil, nil, nil)
+//                                        UIImageWriteToSavedPhotosAlbum(predictImage!, nil, nil, nil)
+                                        UIImageWriteToSavedPhotosAlbum(imageToSave!, nil, nil, nil)
+                                        saveImageFlag = false
+                                    }
+                                    let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
+                                    let timeElapsed = endTime - startTime
+//                                    print("prediction_time_ms: \(1000*timeElapsed)")
+                                }
+                                if (buttonPressedFlag) {
+                                    print("Arming controlDeviceFlag rotationCounter:", rotationCounter)
+                                    controlDeviceFlag = true
                                 }
                             }
+//                            print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
                         } else {
                             print("error creating image from buffer")
                         }
                         cameraBuffer.removeAll()
                     } // startOfFrame end
                     
-//                    if (controlDeviceFlag) {
-//                        // Lights
-//                        if (classifiedDevice == 0) {
-//                            print("Controlling lights!")
-//                            let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
-//                            if let unwrappedUUID = optionalUUID {
-//                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
-//                            } else {
-//                                // Handle the case where optionalUUID is nil
-//                                print("Failed to unwrap UUID")
-//                            }
-//                        } else if (classifiedDevice == 2) {
-//                            print("Controlling Lock!")
-//                            let optionalUUID: UUID? = UUID(uuidString:identifiers[classifiedDevice])
-//                            if let unwrappedUUID = optionalUUID {
-//                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
-//                            } else {
-//                                // Handle the case where optionalUUID is nil
-//                                print("Failed to unwrap UUID")
-//                            }
-//                        }
-//                    } // deviceControl end
+                    // SINGLE PRESS LOGIC START
+                    if (controlDeviceFlag && !buttonPressed && (rotationCounter < rotationThreshold)) { // buttons been released and control flag armed
+                        if (classifiedDevice == "speaker") {
+                            if (musicPlayer.musicPlayer.playbackState == .playing) {
+                                print("PAUSE")
+                                musicPlayer.pause()
+//                                MPVolumeView.setVolume(0)
+//                                muted = true
+                            } else {
+                                print("PLAY")
+                                musicPlayer.resumePlayback()
+//                                MPVolumeView.setVolume(Float(currentVolume))
+//                                muted = false
+                            }
+                       } else if (classifiedDevice == "lights") {
+                            print("Controlling lights!")
+                            if let unwrappedUUID = foundAccessory {
+                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
+                            } else {
+                                // Handle the case where optionalUUID is nil
+                                print("Failed to unwrap UUID")
+                            }
+                        } else if (classifiedDevice == "smart lock") {
+                            print("Controlling Lock!")
+                            if let unwrappedUUID = foundAccessory {
+                                homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
+                            } else {
+                                // Handle the case where optionalUUID is nil
+                                print("Failed to unwrap UUID")
+                            }
+                        }
+                        prevClassifiedDevice = classifiedDevice
+                    }
+                    // DEVICE CONTROL STOP
                     
-
                     // Single Press Gesture
-
-                    if (buttonPressed && (prevButtonPressed == false)) {
+                    if (buttonPressed && (prevButtonPressed == false) && (controlDeviceFlag == false)) {
                         print("First button press")
                         let currentTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
 
-                        //print ("currentTimeMs:" + String(currentTimeMs) + " lastActionTimeMs:" + String(self.lastActionTimeMs))
                         if (currentTimeMs - self.lastActionTimeMs > 500) {
                             // 500ms debounce
                             self.lastActionTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
@@ -615,63 +908,25 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         }
                     } // End of Single Press Gesture
                     
+                    if ((buttonPressed == false) && (controlDeviceFlag == true)) {
+                        print("RESET FLAGS")
+                        buttonPressedFlag = false
+                        controlDeviceFlag = false
+                        rotationCounter = 0
+                        volumeChange = 0
+                    }
+                    
+                    // TILT CODE START
                     if (!buttonPressed) {
                         rotationInitialized = false
                     }
-
-                    if ((buttonPressed == false) && (controlDeviceFlag == true)) {
-                        buttonPressedFlag = false
-                        controlDeviceFlag = false
-                    }
-
-                    // TILT CODE START
+                    
                     if (imuValid && !rotationInitialized && buttonPressed) {
                         // Get initial accelerometer vectors
                         accelX_init = lsbToMps2((Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2]),2,16)
                         accelY_init = lsbToMps2((Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4]),2,16)
                         accelZ_init = lsbToMps2((Int16(bufferPointerUInt8[7]) << 8) | Int16(bufferPointerUInt8[6]),2,16)
-                        
-                        print("Initial Accel")
-                        print(accelX_init, accelY_init, accelZ_init)
-                        
-                        // Build Accel vector
-                        //let accelVector_init = [accelX_init, accelY_init, accelZ_init]
-
-                        // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
-                        //rotationMatrix3D = rotationMatrix(fromVector: accelVector_init, toVector: GRAVITY_REFERENCE_VECTOR)
-                        
-                        
-                        // Apply rotation to 0 out axes
-                        //var rotatedVectorInit = applyRotationMatrix(matrix: rotationMatrix3D, toVector: accelVector_init)
-                        let accelerometerReadings: [Double] = [accelX_init, accelY_init, accelY_init]  // Replace with your actual readings
-                        
-                        // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
-                        var rotationMatrix: [[Double]] = [  [1.0000000,  0.0000000,  0.0000000],
-                                                            [0.0000000,  0.1673408,  0.9858991],
-                                                            [0.0000000, -0.9858991,  0.1673408 ]]
-                        var rotatedVectorInit = applyRotationMatrix(matrix: rotationMatrix, toVector: accelerometerReadings)
-                        accelX_init = rotatedVectorInit[0]
-                        accelY_init = rotatedVectorInit[1]
-                        accelZ_init = rotatedVectorInit[2]
-                        
-
-                        tiltX_init = atan(accelX_init / sqrt(pow(accelY_init,2) + pow(accelZ_init,2))) * 180 / Double.pi
-                        tiltY_init = atan(accelY_init / sqrt(pow(accelX_init,2) + pow(accelZ_init,2))) * 180 / Double.pi
-                        tiltZ_init = atan(sqrt(pow(accelX_init,2) + pow(accelY_init,2)) / accelZ_init) * 180 / Double.pi
-                        
-                        var string1 = String(format: "%.2f %.2f %.2f", tiltX_init, tiltY_init, tiltZ_init)
-                        print("Initial tilt")
-                        print(string1)
-                        
-                        deltaXSum = 0.0
-                        deltaYSum = 0.0
-                        tiltXPrev = tiltX_init
-                        tiltYPrev = tiltY_init
-                        
-                        prevMappedTilt = (tiltX_init + 90) / 180
-                        print("volume init", prevMappedTilt)
-                        
-                        rotationInitialized = true
+                        initRotationMatrix(x: accelX_init, y: accelY_init, z: accelZ_init)
                     }
                     
                     // Update Rotation
@@ -679,56 +934,24 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         accelX_float = lsbToMps2((Int16(bufferPointerUInt8[3]) << 8) | Int16(bufferPointerUInt8[2]), 2, 16)
                         accelY_float = lsbToMps2((Int16(bufferPointerUInt8[5]) << 8) | Int16(bufferPointerUInt8[4]), 2, 16)
                         accelZ_float = lsbToMps2((Int16(bufferPointerUInt8[7]) << 8) | Int16(bufferPointerUInt8[6]), 2, 16)
-                        let accelerometerReadings: [Double] = [accelX_float, accelY_float, accelZ_float]  // Replace with your actual readings
-                        
-                        // Rotate entire 3D coordinate to align to [0,0,9.8] (x,y,z)
-                        var rotationMatrix: [[Double]] = [  [1.0000000,  0.0000000,  0.0000000],
-                                                            [0.0000000,  0.1673408,  0.9858991],
-                                                            [0.0000000, -0.9858991,  0.1673408 ]]
-                        var rotatedVector = applyRotationMatrix(matrix: rotationMatrix, toVector: accelerometerReadings)
-                        
-                        accelX_float = rotatedVector[0]
-                        accelY_float = rotatedVector[1]
-                        accelZ_float = rotatedVector[2]
-                        
-                        accelTilt.x = atan(accelX_float / sqrt(pow(accelY_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
-                        accelTilt.y = atan(accelY_float / sqrt(pow(accelX_float,2) + pow(accelZ_float,2))) * 180 / Double.pi
-                        accelTilt.z = atan(sqrt(pow(accelX_float,2) + pow(accelY_float,2)) / accelZ_float) * 180 / Double.pi
-                        
-                        deltaXSum += accelTilt.x - tiltXPrev
-                        deltaYSum += accelTilt.y - tiltYPrev
-                        
-                        tiltXPrev = accelTilt.x
-                        tiltYPrev = accelTilt.y
-                        
-//                        if (abs(deltaXSum) >= 10) {
-//                            print("ROTATION")
-//                        }
-//                        if (abs(deltaYSum) >= 10) {
-//                            print("UP/DOWN")
-//                        }
-                        
-                        var u_x = accelTilt.x / 90.0
-                        var u_y = accelTilt.y / 90.0
-                        var u_z = accelTilt.z / 90.0
-                        
-                        var mappedTilt = (u_x + u_y + u_z) / 3
-                        
-                      
-                        currentMappedTilt = (accelTilt.x + 90) / 180
-                        volumeChange = currentMappedTilt - prevMappedTilt
-                        prevMappedTilt = currentMappedTilt
+                        updateRotationMatrix(x: accelX_float, y: accelY_float, z: accelZ_float)
                         newVolume = currentVolume + volumeChange
-                        MPVolumeView.setVolume(Float(newVolume))
-//                            var volumeString = String(format: "current:%0.5f, new:%0.5f, %0.9f", currentVolume, newVolume, volumeChange)
-//                            print(volumeString)
-                        currentVolume = newVolume
-
+                        rotationCounter = rotationCounter + 1
+                        // VOLUME CONTROL
+                        if (((classifiedDevice == "speaker") || (prevClassifiedDevice == "speaker")) && rotationCounter >= rotationThreshold) {
+//                            self.lastActionTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
+                            MPVolumeView.setVolume(Float(currentVolume))
+                            currentVolume = newVolume
+                            if (currentVolume > 0) {
+//                                muted = false
+                            }
+                        }
                     }
+                    // TILT CODE END
+                    
                     if (prevButtonPressed != buttonPressed) {
                         prevButtonPressed = buttonPressed
                         print("Update prevButtonWasPressed to", prevButtonPressed)
-                        volumeChange = 0
                     }
                     
                     for i in 14...(packetLength - 1) {
@@ -742,7 +965,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     public func savePicture()
     {
         print("Saving next picture")
-        saveImageFlag = true
+        if let image = imageToSave {
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        }
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {

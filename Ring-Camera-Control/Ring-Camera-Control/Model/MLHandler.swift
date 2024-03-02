@@ -6,131 +6,168 @@
 //
 
 import CoreML
+import Vision
+import UIKit
+import AVFoundation
 
 class MLHandler {
-    private var model: last! // Implicitly unwrapped optional
+    private var model: MLModel
+    private var visionModel: VNCoreMLModel
+    private var detectionOverlay: CALayer! = nil
     
-    // Labels mapping from class indices to names
-    private let labels = ["Door", "Door handle", "Window", "Blind", "Lights", "Smart Lock", "Speaker", "TV"]
+//    private lazy var module: TorchModule = {
+//        if let filePath = Bundle.main.path(forResource: "model", ofType: "pt"),
+//            let module = TorchModule(fileAtPath: filePath) {
+//            return module
+//        } else {
+//            fatalError("Can't find the model file!")
+//        }
+//    }()
 
     // Initialization of the model
     init() {
-        do {
-            let configuration = MLModelConfiguration()
-            self.model = try last(configuration: configuration)
-        } catch {
-            print("Error initializing model: \(error)")
-        }
+        self.model = try! last(configuration: MLModelConfiguration()).model
+        self.visionModel = try! VNCoreMLModel(for: model)
     }
     
-    // Function to predict from an image
-    func predict(image: CVPixelBuffer) -> Int {
-        do {
-            let prediction = try model.prediction(image: image, iouThreshold: 0.45, confidenceThreshold: 0.25)
-            
-            // return a MultiArray(Float32)
-            let classConfidence = prediction.confidence
-            let classCoordinate = prediction.coordinates
-            
-            // Name : [x, y, width, height]
-            var classMap: [String: [Float]] = [:]
-            
-            var maxIndex: Int = -1
-            var maxValue: Float = -1.0
-            for i in 0..<classConfidence.shape[0].intValue {
-                for j in 0..<classConfidence.shape[1].intValue {
-                    let index = [NSNumber(value: i), NSNumber(value: j)]
-                    let value = classConfidence[index].floatValue
-//                     print("Value at [\(i), \(j),]: \(value)")
-                    if maxValue < value {
-                        maxValue = value
-                        maxIndex = j
+    func predict(image: CGImage) -> [(String, CGRect, Float)] {
+        var predictions: [String] = []
+        var boxes: [CGRect] = []
+        var confidences: [Float] = []
+        var preds: [(String, CGRect, Float)] = []
+        let handler = VNImageRequestHandler(cgImage: image, options: [:])
+        
+        let request = VNCoreMLRequest(model: self.visionModel, completionHandler: { (request, error) in
+            let results = request.results
+            for result in results! where result is VNRecognizedObjectObservation {
+                guard let objectObservation = result as? VNRecognizedObjectObservation else {
+                        fatalError()
+                    }
+                
+                // Highest confidence result
+                let topLabelObservation = objectObservation.labels[0]
+                let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(160), Int(160))
+                
+//                print("Found: \(topLabelObservation.identifier) at \(topLabelObservation.confidence)")
+                
+                predictions.append(topLabelObservation.identifier.lowercased())
+                boxes.append(objectBounds)
+                confidences.append(topLabelObservation.confidence)
+                
+                preds.append((topLabelObservation.identifier.lowercased(), objectBounds, topLabelObservation.confidence))
+    
+            }
+        })
+        
+        try! handler.perform([request])
+        
+        let iouThreshold: Float = 0.5
+        
+        print(predictions)
+        
+        var filteredPredictions: [(String, CGRect, Float)] = []
+
+        for pred in preds {
+            var shouldAdd = true
+            for filteredPred in filteredPredictions {
+                if calculateIOU(rectA: pred.1, rectB: filteredPred.1) > iouThreshold {
+                    // If the current prediction overlaps significantly with an existing one,
+                    // only add it if it has a higher confidence.
+                    if pred.2 <= filteredPred.2 {
+                        shouldAdd = false
+                        break
                     }
                 }
-                print("Predicted \(labels[maxIndex]) at confidence \(maxValue)")
-                print("Coordinates: \(classCoordinate)")
-                var objectArray = [Float]()
-                for k in 0..<classCoordinate.shape[1].intValue {
-                    let index = [NSNumber(value: i), NSNumber(value: k)]
-                    let value = classCoordinate[index].floatValue
-                    objectArray.append(value)
-                }
-                classMap[labels[maxIndex]] = objectArray
             }
-            print("map contains: \(classMap.keys), \(classMap.values)")
-            if classMap.count > 0 {
-                let output = calculateCenterBox(resultData: classMap)
-                let finalClass = output.0
-                
-                switch finalClass{
-                case "Lights":
-                    return 0
-                case "Window", "Blind":
-                    return 1
-                case "Door", "Door handle", "Smart Lock":
-                    return 2
-                case "Speaker":
-                    return 3
-                case "TV":
-                    return 4
-                default:
-                    return -1
-                }
+            if shouldAdd {
+                filteredPredictions = filteredPredictions.filter { calculateIOU(rectA: pred.1, rectB: $0.1) <= iouThreshold }
+                filteredPredictions.append(pred)
             }
-        } catch {
-            print("Error making prediction: \(error)")
         }
-        print("nothing printed")
-        return -1
+//        
+//        for p in filteredPredictions {
+//            print("Filtered preds: ", p.0)
+//        }
+        
+        var finalPrediction = [calculateCenterBox(preds: predictions, bounds: boxes, confs: confidences)]
+        
+        for p in preds {
+            if !finalPrediction.contains(where: {$0 == p}) {
+                finalPrediction.append(p)
+            }
+        }
+        return finalPrediction
+//        if filteredPredictions.isEmpty {
+//            filteredPredictions.append(("", CGRect(), 0.0))
+//        }
+//        
+//        return filteredPredictions
     }
-
+    
+    //MARK: - Non Max Suppression
+    func calculateIOU(rectA: CGRect, rectB: CGRect) -> Float {
+        let intersection = rectA.intersection(rectB)
+        let interArea = intersection.width * intersection.height
+        let unionArea = rectA.width * rectA.height + rectB.width * rectB.height - interArea
+        print(Float(interArea / unionArea))
+        return Float(interArea / unionArea)
+    }
+    
     //MARK: - COREML
     
-    func calculateCenter(boxArray: [Float]) -> [Float] {
+    func calculateCenter(boxArray: CGRect) -> (CGFloat, CGFloat) {
         //  X and Y-axis center = (Top-left/Top-right + Bottom-right/Bottom-left) / 2
         // [x, y, width, height]
-        let centerX = (boxArray[2] + boxArray[0]) / 2
-        let centerY = (boxArray[3] + boxArray[1]) / 2
-        return [centerX, centerY]
+        return (boxArray.midX, boxArray.midY)
     }
     
-    func calculateImageCenter(originShape: [Float]) -> [Float]{
-        return [originShape[0] / 2, originShape[1] / 2]
+    func calculateImageCenter(originShape: [Float]) -> (CGFloat, CGFloat){
+        return (CGFloat(originShape[0] / 2), CGFloat(originShape[1] / 2))
     }
     
     // Translated numpy linalg method. double check for validity
-    func euclideanDistance(point1: [Float], point2: [Float]) -> Float? {
-        guard point1.count == point2.count else { return nil }
-        // Calculate the squared differences between corresponding coordinates of the two points
-        let squaredDifference = zip(point1, point2).map { ($0 - $1) * ($0 - $1) }
-        let sumOfSquaredDifference = squaredDifference.reduce(0, +)
-        return sqrt(sumOfSquaredDifference)
+    func euclideanDistance(point1: (CGFloat, CGFloat), point2: (CGFloat, CGFloat)) -> Float {
+        let deltaX = point1.0 - point2.0
+        let deltaY = point1.1 - point2.1
+        let distance = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
+        return Float(distance)
+    }
+    
+    func overlappingArea(rect1: CGRect, rect2: CGRect) -> Float {
+        let overlappingRect = rect1.intersection(rect2)
+        let area = overlappingRect.width * overlappingRect.height
+        return Float(area)
+    }
+    
+    func rectArea(rect: CGRect) -> Float {
+        return Float(rect.width * rect.height)
     }
     
     // Fix resultData argument Type
-    func calculateCenterBox(resultData:  [String: [Float]]) -> (String, Float) {
+    func calculateCenterBox(preds: [String], bounds: [CGRect], confs: [Float]) -> (String, CGRect, Float) {
         let imageCtr = calculateImageCenter(originShape: [160, 160])
         var distance: Float = Float.infinity
-        var index: String = ""
+//        var distance: Float = 0
+        var index: Int = 0
         
-//          Need to know coreml output. this is just python script need translation
-//        for i in range(0, resultData.boxes.shape[0]):
-//                boxCtr = calculateCenter(resultData.boxes.xyxy[i])
-//                boxDistance = euclideanDsitan(boxCtr, imageCtr)
-//                if distance > boxDistance:
-//                    distance = boxDistance
-//                    lowestIndex = i
-        for (key, value) in resultData{
-            let boxCtr = calculateCenter(boxArray: value)
+        if (preds.count == 0) {
+            return ("", CGRect(), 0.0)
+        }
+
+        for i in 0..<bounds.count{
+            let boxCtr = calculateCenter(boxArray: bounds[i])
             let boxDistance = euclideanDistance(point1: boxCtr, point2: imageCtr)
-            if distance > boxDistance! {
-                distance = boxDistance!
-                index = key
+//            var boxDistance = overlappingArea(rect1: bounds[i], rect2: CGRect(x:40, y:40, width:80, height:80))
+//            let overlappedRatio = boxDistance / rectArea(rect: bounds[i])
+//            boxDistance = overlappedRatio - 1
+            if boxDistance < distance {
+                distance = boxDistance
+                index = i
             }
         }
         
         // Name of Class, Euclidean Distance
-        return (index, distance)
+        return (preds[index], bounds[index], confs[index])
     }
     
     //MARK: - Calculations

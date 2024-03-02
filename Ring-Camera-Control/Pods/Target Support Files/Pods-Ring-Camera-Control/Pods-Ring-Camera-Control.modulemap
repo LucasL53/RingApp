@@ -1,0 +1,6 @@
+framework module Pods_Ring_Camera_Control {
+  umbrella header "Pods-Ring-Camera-Control-umbrella.h"
+
+  export *
+  module * { export * }
+}

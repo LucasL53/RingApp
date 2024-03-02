@@ -1,0 +1,16 @@
+{
+  "MLModelVersionStringKey" : "8.1.1",
+  "MLModelDescriptionKey" : "Ultralytics last model trained on \/content\/RevisedResize-Images-3\/data.yaml",
+  "MLModelCreatorDefinedKey" : {
+    "stride" : "32",
+    "Confidence threshold" : "0.10",
+    "IoU threshold" : "0.30",
+    "task" : "detect",
+    "date" : "2024-01-12T19:24:19.739702",
+    "imgsz" : "[160, 160]",
+    "batch" : "1",
+    "names" : "{0: 'Door', 1: 'Door handle', 2: 'Window', 3: 'blind', 4: 'lights', 5: 'smart lock', 6: 'speaker', 7: 'tv'}"
+  },
+  "MLModelAuthorKey" : "Ultralytics",
+  "MLModelLicenseKey" : "AGPL-3.0 https:\/\/ultralytics.com\/license"
+}
