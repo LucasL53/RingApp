@@ -141,6 +141,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var cameraDataCharacteristics   : CBCharacteristic!
     private var cameraControlCharacteristics: CBCharacteristic!
     
+    private var imageToSave: UIImage?
+    
     private var snapshotData            : Data         = Data()
     private var currentImageSize        : Int          = 0
     private var transferRate            : Double       = 0
@@ -535,7 +537,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         image.draw(at: CGPoint(x: xOffset, y: yOffset))
         let centeredImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-
+        
         return centeredImage
     }
     
@@ -806,6 +808,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         
                         if let uiImage = createImageFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
                             if let centeredImage = centerImageOnBlackSquare(image: uiImage, squareSize: CGSize(width: 160, height: 160)) {
+                                imageToSave = uiImage
                                 if let cgimage = centeredImage.cgImage {
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
                                     let prediction = mlModel.predict(image: cgimage)
@@ -838,6 +841,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                         print("Saving image to photo library")
 //                                        UIImageWriteToSavedPhotosAlbum(centeredImage, nil, nil, nil)
 //                                        UIImageWriteToSavedPhotosAlbum(predictImage!, nil, nil, nil)
+                                        UIImageWriteToSavedPhotosAlbum(imageToSave!, nil, nil, nil)
                                         saveImageFlag = false
                                     }
                                     let endTime = CFAbsoluteTimeGetCurrent() // Capture end time
@@ -961,7 +965,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     public func savePicture()
     {
         print("Saving next picture")
-        saveImageFlag = true
+        if let image = imageToSave {
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        }
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
