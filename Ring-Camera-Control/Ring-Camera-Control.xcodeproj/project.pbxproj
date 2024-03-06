@@ -7,9 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0905E07B2B97A3930017BE3B /* best_maru2.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 0905E07A2B97A3930017BE3B /* best_maru2.mlpackage */; };
+		0905E07D2B97F3CD0017BE3B /* best_75.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 0905E07C2B97F3CD0017BE3B /* best_75.mlpackage */; };
+		0905E07F2B97F5170017BE3B /* best_75_2.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 0905E07E2B97F5170017BE3B /* best_75_2.mlpackage */; };
 		094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 094F5FD72A9986FB007EFAC9 /* best.mlmodel */; };
 		09B0AAF62A9FFFCA00A43C9C /* best160x128.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */; };
 		09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */; };
+		09EB852C2B96F41000A65106 /* best_maru.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 09EB852B2B96F41000A65106 /* best_maru.mlpackage */; };
 		1D0511392B51E52B00A27D21 /* last.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 1D0511382B51E52B00A27D21 /* last.mlpackage */; };
 		1D158CF52B1014890017810F /* AccessorySetupCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF42B1014890017810F /* AccessorySetupCard.swift */; };
 		1D158CF82B1017E50017810F /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D158CF72B1017E50017810F /* ScanView.swift */; };
@@ -38,9 +42,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0905E07A2B97A3930017BE3B /* best_maru2.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = best_maru2.mlpackage; sourceTree = "<group>"; };
+		0905E07C2B97F3CD0017BE3B /* best_75.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = best_75.mlpackage; sourceTree = "<group>"; };
+		0905E07E2B97F5170017BE3B /* best_75_2.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = best_75_2.mlpackage; sourceTree = "<group>"; };
 		094F5FD72A9986FB007EFAC9 /* best.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best.mlmodel; sourceTree = "<group>"; };
 		09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best160x128.mlmodel; sourceTree = "<group>"; };
 		09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = best96x96.mlmodel; sourceTree = "<group>"; };
+		09EB852B2B96F41000A65106 /* best_maru.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = best_maru.mlpackage; sourceTree = "<group>"; };
 		1D0511382B51E52B00A27D21 /* last.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = last.mlpackage; sourceTree = "<group>"; };
 		1D158CF42B1014890017810F /* AccessorySetupCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessorySetupCard.swift; sourceTree = "<group>"; };
 		1D158CF72B1017E50017810F /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
@@ -179,8 +187,12 @@
 		1D94E38B2A8C941300B7C625 /* CoreML */ = {
 			isa = PBXGroup;
 			children = (
+				09EB852B2B96F41000A65106 /* best_maru.mlpackage */,
 				1D18BE372B6D88CE008C7478 /* dinov2.pt */,
+				0905E07A2B97A3930017BE3B /* best_maru2.mlpackage */,
+				0905E07E2B97F5170017BE3B /* best_75_2.mlpackage */,
 				09B0AAF52A9FFFCA00A43C9C /* best160x128.mlmodel */,
+				0905E07C2B97F3CD0017BE3B /* best_75.mlpackage */,
 				09B0AAF72A9FFFD900A43C9C /* best96x96.mlmodel */,
 				094F5FD72A9986FB007EFAC9 /* best.mlmodel */,
 				1D94E3882A8C93E000B7C625 /* TestModel.mlmodel */,
@@ -308,9 +320,12 @@
 				1D4945292A88711B00D2DACE /* RoutePickerView.swift in Sources */,
 				09B0AAF82A9FFFD900A43C9C /* best96x96.mlmodel in Sources */,
 				1D94E38D2A8D92A900B7C625 /* MLHandler.swift in Sources */,
+				0905E07D2B97F3CD0017BE3B /* best_75.mlpackage in Sources */,
 				1D49450D2A885CDD00D2DACE /* ContentView.swift in Sources */,
 				1DB7CB0D2AF87492001A29A7 /* EmbeddingModel.swift in Sources */,
+				0905E07B2B97A3930017BE3B /* best_maru2.mlpackage in Sources */,
 				1D49451B2A885D2200D2DACE /* HomeStore.swift in Sources */,
+				09EB852C2B96F41000A65106 /* best_maru.mlpackage in Sources */,
 				1D727F4E2ADDF717003D0A27 /* TVModel.swift in Sources */,
 				1D94E38F2A933BD900B7C625 /* ServicesView.swift in Sources */,
 				1D49451F2A885DF100D2DACE /* BluetoothManager.swift in Sources */,
@@ -322,6 +337,7 @@
 				1D0511392B51E52B00A27D21 /* last.mlpackage in Sources */,
 				1D4945252A88708200D2DACE /* ControlView.swift in Sources */,
 				1D158CF82B1017E50017810F /* ScanView.swift in Sources */,
+				0905E07F2B97F5170017BE3B /* best_75_2.mlpackage in Sources */,
 				1D4945272A8870E700D2DACE /* SelectButton.swift in Sources */,
 				094F5FD82A9986FB007EFAC9 /* best.mlmodel in Sources */,
 				1D94E3932A93401F00B7C625 /* OutlinedButtonStyle.swift in Sources */,
@@ -464,7 +480,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				DEVELOPMENT_TEAM = S69EHXYN33;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -492,7 +508,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-Objc";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp3.Ring-Camera-Control";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Ring-Camera-Control/Ring-Camera-Control-Bridging-Header.h";
@@ -513,7 +529,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
+				DEVELOPMENT_TEAM = S69EHXYN33;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -541,7 +557,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-Objc";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp2.Ring-Camera-Control";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beta.RingApp3.Ring-Camera-Control";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Ring-Camera-Control/Ring-Camera-Control-Bridging-Header.h";

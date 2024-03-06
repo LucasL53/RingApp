@@ -1,0 +1,17 @@
+{
+  "MLModelVersionStringKey" : "8.1.23",
+  "MLModelDescriptionKey" : "Ultralytics best model trained on \/content\/Final-Data-+-Test-Set-1\/data.yaml",
+  "MLModelCreatorDefinedKey" : {
+    "stride" : "32",
+    "Confidence threshold" : "0.5",
+    "IoU threshold" : "0.45",
+    "docs" : "https:\/\/docs.ultralytics.com",
+    "task" : "detect",
+    "imgsz" : "[160, 160]",
+    "date" : "2024-03-04T22:59:22.946269",
+    "batch" : "1",
+    "names" : "{0: 'blinds', 1: 'door', 2: 'door handle', 3: 'laptop', 4: 'lights', 5: 'smart lock', 6: 'speaker', 7: 'tv', 8: 'window'}"
+  },
+  "MLModelAuthorKey" : "Ultralytics",
+  "MLModelLicenseKey" : "AGPL-3.0 License (https:\/\/ultralytics.com\/license)"
+}

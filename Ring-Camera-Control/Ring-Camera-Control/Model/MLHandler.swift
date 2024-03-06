@@ -26,7 +26,9 @@ class MLHandler {
 
     // Initialization of the model
     init() {
-        self.model = try! last(configuration: MLModelConfiguration()).model
+        let config = MLModelConfiguration()
+        config.setValue(1, forKey: "experimentalMLE5EngineUsage")
+        self.model = try! best_75(configuration: config).model
         self.visionModel = try! VNCoreMLModel(for: model)
     }
     
@@ -63,7 +65,7 @@ class MLHandler {
         
         let iouThreshold: Float = 0.5
         
-        print(predictions)
+//        print(predictions)
         
         var filteredPredictions: [(String, CGRect, Float)] = []
 
@@ -109,7 +111,7 @@ class MLHandler {
         let intersection = rectA.intersection(rectB)
         let interArea = intersection.width * intersection.height
         let unionArea = rectA.width * rectA.height + rectB.width * rectB.height - interArea
-        print(Float(interArea / unionArea))
+//        print(Float(interArea / unionArea))
         return Float(interArea / unionArea)
     }
     
