@@ -823,7 +823,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                             }
                                         }
                                         else {
-                                            classifiedDevice = prevClassifiedDevice
+                                            //classifiedDevice = prevClassifiedDevice
+                                            print("Device not in dictionary", classifiedDevice)
 //                                            print("Detected device not in homeDictionary:", homeModel.homeDictionary)
                                         }
                                     }
