@@ -31,26 +31,47 @@ struct ControlView: View {
     var body: some View {
         VStack{
             ScrollView {
-                Section(header: Text("My Banji:")
+                Section(header: Text("IRIS:")
                     .bold()
                     .font(.title) // Increase the font size
                     .frame(maxWidth: .infinity, alignment: .leading)) {
                     Spacer()
-  
-                    Text("banji " + blemanager.banjiStatus)
-
-                    .frame(maxWidth: .infinity) // This keeps the button centered
-                    .padding()
+                        
+                        if blemanager.banjiStatus {
+                            Image("RingLighter")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 100, height: 100)
+                                    .accessibilityLabel("Ring connected")
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+//                                    .onTapGesture {
+//                                        blemanager.banjiStatus = false
+//                                    }
+                            Text("IRIS Connected")
+                                .font(.caption)
+                        } else {
+                            Image("RingDarker")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 100, height: 100)
+                                    .accessibilityLabel("Ring disconnected")
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+//                                    .onTapGesture {
+//                                        blemanager.banjiStatus = true
+//                                    }
+                            Text("Searching for IRIS")
+                                .font(.caption)
+                        }
+                    
                 }
                 Spacer()
-                HStack{
-                    RouterPicker()
-                        .frame(width: 100, height: 50) // adjust as needed
-                        .background(Color.blue)
-                        .clipShape(RoundedRectangle(cornerRadius: 25.0))
-                        .padding()
-//                    AppleMusicPlayer()
-                }
+//                HStack{
+//                    RouterPicker()
+//                        .frame(width: 100, height: 50) // adjust as needed
+//                        .background(Color.blue)
+//                        .clipShape(RoundedRectangle(cornerRadius: 25.0))
+//                        .padding()
+//                }
                 
                 Spacer()
 //                Section(header: Text("My Smart Home Device")
@@ -75,7 +96,7 @@ struct ControlView: View {
                         Rectangle()
                             .fill(Color.gray)
                             .frame(height: 500)
-                            .accessibilityLabel("Live Video Feed \(blemanager.banjiStatus)")
+                            .accessibilityLabel("Live Video Feed")
                         
                         // Foreground image if available
                         if let image = blemanager.thisImage {
@@ -93,40 +114,40 @@ struct ControlView: View {
                 }
                 Spacer(minLength: 30)
                 
-                Button(action: {
-                    blemanager.savePicture()
-                }) {
-                    Text("Save Picture")
-                        .frame(width: 110, height: 10)
-                }
-                .buttonStyle(OutlinedButtonStyle())
-                Spacer(minLength: 30)
-                
-                Button(action: {
-                    model.toggleAccessory(accessoryIdentifier: UUID(uuidString: model.homeDictionary["lights"]!)!)
-                }) {
-                    Text("Toggle Bulb")
-                        .frame(width: 110, height: 10)
-                }
-                .buttonStyle(OutlinedButtonStyle())
-                Spacer(minLength: 30)
-                
-                
-                if spotify {
-                    Image(systemName: "pause.fill")
-                        .font(.title)
-                        .onTapGesture {
-                            musicModel.pause()
-                            spotify = false
-                        }
-                } else {
-                    Image(systemName: "play.fill")
-                        .font(.title)
-                        .onTapGesture {
-                            musicModel.resumePlayback()
-                            spotify = true
-                        }
-                }
+//                Button(action: {
+//                    blemanager.savePicture()
+//                }) {
+//                    Text("Save Picture")
+//                        .frame(width: 110, height: 10)
+//                }
+//                .buttonStyle(OutlinedButtonStyle())
+//                Spacer(minLength: 30)
+//                
+//                Button(action: {
+//                    model.toggleAccessory(accessoryIdentifier: UUID(uuidString: model.homeDictionary["lights"]!)!)
+//                }) {
+//                    Text("Toggle Bulb")
+//                        .frame(width: 110, height: 10)
+//                }
+//                .buttonStyle(OutlinedButtonStyle())
+//                Spacer(minLength: 30)
+//                
+//                
+//                if spotify {
+//                    Image(systemName: "pause.fill")
+//                        .font(.title)
+//                        .onTapGesture {
+//                            musicModel.pause()
+//                            spotify = false
+//                        }
+//                } else {
+//                    Image(systemName: "play.fill")
+//                        .font(.title)
+//                        .onTapGesture {
+//                            musicModel.resumePlayback()
+//                            spotify = true
+//                        }
+//                }
             }
         }.onChange(of: blemanager.banjiStatus) {
             blemanager.scanForPeripherals()

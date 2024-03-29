@@ -129,14 +129,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     var banji            : CBPeripheral!
     
     
-    @Published var banjiStatus : String = "disconnected"
+    @Published var banjiStatus : Bool = false
     @Published var thisImage : Image?
 //    @Published var prediction: UUID?
     @Published var foundAccessory : UUID?
     
     var discoveryHandler : ((CBPeripheral, NSNumber) -> ())?
     var connectionIntervalUpdated = 0
-    var scanStatus  :  Bool = false
+    var scanStatus  :  Bool = false // Scan status is meant for scanning for DinoV2
     
     private var cameraDataCharacteristics   : CBCharacteristic!
     private var cameraControlCharacteristics: CBCharacteristic!
@@ -264,7 +264,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     
     public func scanForPeripherals() {
         print("scan for peripherals ran")
-        self.banjiStatus = "scanning"
+        self.banjiStatus = false
         guard centralManager.isScanning == false else {
             return // Return early if already scanning
         }
@@ -297,7 +297,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if(central.state == .poweredOn) {
             print("BLE powered on")
-            self.banjiStatus = "connected"
+            self.banjiStatus = true
         } else {
             print("ERROR on BLE")
         }
@@ -313,7 +313,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         connectionIntervalUpdated = (connectionIntervalUpdated > 0) ? (connectionIntervalUpdated - 1) : 0
         print("Disconnected with banji \(peripheral.identifier)")
-        self.banjiStatus = "disconnected"
+        self.banjiStatus = false
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -946,6 +946,11 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                             if (currentVolume > 0) {
 //                                muted = false
                             }
+                        }
+                        else if (((classifiedDevice == "lights") || (prevClassifiedDevice == "lights")) && rotationCounter >= rotationThreshold) {
+
+                            // Brightness code here
+
                         }
                     }
                     // TILT CODE END
