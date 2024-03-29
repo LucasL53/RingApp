@@ -39,6 +39,7 @@
 		1D94E3992A9E0AB400B7C625 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D94E3982A9E0AB400B7C625 /* MusicPlayer.swift */; };
 		1DA25EAE2B004CAF00217A1E /* SetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA25EAD2B004CAF00217A1E /* SetUpView.swift */; };
 		1DB7CB0D2AF87492001A29A7 /* EmbeddingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB7CB0C2AF87492001A29A7 /* EmbeddingModel.swift */; };
+		92BF8F14E36B1CE705DA53E5 /* Pods_Ring_Camera_Control.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28170986C99D27AC5572883F /* Pods_Ring_Camera_Control.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 		1D94E39A2A9E0BEA00B7C625 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1DA25EAD2B004CAF00217A1E /* SetUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpView.swift; sourceTree = "<group>"; };
 		1DB7CB0C2AF87492001A29A7 /* EmbeddingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbeddingModel.swift; sourceTree = "<group>"; };
+		28170986C99D27AC5572883F /* Pods_Ring_Camera_Control.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ring_Camera_Control.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1313E756BCD04F8DF64C6C2 /* Pods-Ring-Camera-Control.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ring-Camera-Control.debug.xcconfig"; path = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control.debug.xcconfig"; sourceTree = "<group>"; };
 		E4980BECDD6BCA47DCF46808 /* Pods-Ring-Camera-Control.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ring-Camera-Control.release.xcconfig"; path = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -87,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				92BF8F14E36B1CE705DA53E5 /* Pods_Ring_Camera_Control.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +216,7 @@
 		5629BB486FC9B63C39467FFD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				28170986C99D27AC5572883F /* Pods_Ring_Camera_Control.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

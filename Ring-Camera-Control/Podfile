@@ -4,6 +4,7 @@
 target 'Ring-Camera-Control' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
+  pod 'onnxruntime-objc'
 
   # Pods for Ring-Camera-Control
 end

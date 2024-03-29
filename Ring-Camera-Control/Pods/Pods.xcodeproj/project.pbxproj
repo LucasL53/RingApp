@@ -6,44 +6,193 @@
 	objectVersion = 56;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		01D26C9790741D5F08E2B47A48D79331 /* onnxruntime-c */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 1FAA34C873E6D52B09F47086906FF3E4 /* Build configuration list for PBXAggregateTarget "onnxruntime-c" */;
+			buildPhases = (
+				3CFBA14174592D8554CB04535DA6DCD3 /* [CP] Copy XCFrameworks */,
+			);
+			dependencies = (
+			);
+			name = "onnxruntime-c";
+			productName = "onnxruntime-c";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
-		03B1F85E8C4650667998EA1846EAFC4E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		2227793C531ECEFB49B1660296D62DB8 /* Pods-Ring-Camera-Control-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7361ADDFAD66F8F77C288E8708C16AA5 /* Pods-Ring-Camera-Control-dummy.m */; };
-		413B8819C3BC9E0317A83CCB04DEBB6C /* Pods-Ring-Camera-Control-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = AEBC4EF11EB740E9306B1BB0D235D43D /* Pods-Ring-Camera-Control-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		01FD71C6CF2E429A0DA6ABBDF8582BAC /* ort_enums_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = F9583E7E551CD36717314EA528997572 /* ort_enums_internal.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		0810D83ACC16FF97293ADBAB90B6E219 /* Pods-Ring-Camera-Control-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7361ADDFAD66F8F77C288E8708C16AA5 /* Pods-Ring-Camera-Control-dummy.m */; };
+		16703A4973CEC79FF64C23A53A3938EF /* ort_xnnpack_execution_provider.h in Headers */ = {isa = PBXBuildFile; fileRef = 82CA0FDE8A146CE08BA08F16A4D2FC60 /* ort_xnnpack_execution_provider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C1EA602EE7D8F035D6B0ECBFBAFE162 /* ort_coreml_execution_provider.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8DD144FCF5CBD711D9C9288451C4D4FE /* ort_coreml_execution_provider.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
+		1C764DAF976A285F7EB85DA9C5F9CD6A /* onnxruntime.h in Headers */ = {isa = PBXBuildFile; fileRef = 7513787D23BE06AC0FDFAAF280048010 /* onnxruntime.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		24D3158CD5151F12227B12AB36BF2371 /* ort_value.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9317AFF5D517247283248BE9A028983E /* ort_value.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
+		27E613075C9C2EF930CE0469F9A16C25 /* onnxruntime-objc-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 359F6AAD4CAF848425A177CDAE1DBD39 /* onnxruntime-objc-dummy.m */; };
+		29305887C66FAEA3CBD827B2F5A03940 /* cxx_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 06846C8B1F760458D4DF8F026702E8B4 /* cxx_api.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		3993446566A69FF84BBB9AAD1E51AD04 /* ort_value.h in Headers */ = {isa = PBXBuildFile; fileRef = 08CA959EEF1423696F1568F3F957A0C0 /* ort_value.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3E4BFF147729AAD1E2EFDEA2E01E3084 /* ort_custom_op_registration.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C4D4BB0C4B51A59AFFB0FC3583D9552 /* ort_custom_op_registration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4FA9199F89B2FB852B3428FD2162A0C2 /* ort_xnnpack_execution_provider.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9BD17FEFE5E24B481D9CE7F9B9DE966E /* ort_xnnpack_execution_provider.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
+		5CB8005CAAF52F2198B48816391F5113 /* ort_session.mm in Sources */ = {isa = PBXBuildFile; fileRef = E725EE9154970E914E56FCA05BC83444 /* ort_session.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
+		63347EA539392E871252AFE7FA15A501 /* ort_enums.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0D70175B30486548CF703FFDB0A100BC /* ort_enums.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
+		6BC664E4868A8E571D685328C0C4E6E6 /* ort_value_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 317EB77DFE8B5A601811A4EB91229188 /* ort_value_internal.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		78C85443F407AA2683FF22B7D21AEA0E /* ort_enums.h in Headers */ = {isa = PBXBuildFile; fileRef = CBA54A1B9145D54439A5A6346AA08605 /* ort_enums.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		841449F22588615A37EDA49F314B0139 /* ort_env.h in Headers */ = {isa = PBXBuildFile; fileRef = 37DCB951957B6D2BBDAA06D5F09DCB08 /* ort_env.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8591892D14A1EC3353962EF85CFEEEA6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		8F4CF3484677C7658911763677F7871C /* Pods-Ring-Camera-Control-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = AEBC4EF11EB740E9306B1BB0D235D43D /* Pods-Ring-Camera-Control-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		91AD1A7FA426ECC653AED794B9701406 /* cxx_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 811E5921CEF73A119C943FAF2569DCF2 /* cxx_utils.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		9863B45A6162648A6B2D3B9DCB7BF11A /* ort_env_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CAA2D57A464B60CA981650CF66E80A5 /* ort_env_internal.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		B74409B23F3E7CE0CBDE1296774DBAF9 /* ort_session.h in Headers */ = {isa = PBXBuildFile; fileRef = A16576DFE1F82BA1567FEDDC7A70EB01 /* ort_session.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B799292A7340EAD621DFD46579A664ED /* ort_coreml_execution_provider.h in Headers */ = {isa = PBXBuildFile; fileRef = C49F037C56BA16577B610EA9D52E020E /* ort_coreml_execution_provider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE5F4650AF180C26276EDB2FAB02DE4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		C93ECE056576026025171C6DEE6AE69E /* cxx_utils.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED96C1C593DF9046555AFC7B3A15D3E6 /* cxx_utils.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
+		D35F3B30B1487F66B63C6BBA8CD4C3B9 /* ort_env.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3A4AEF1100A8C4CFBBF15C4AA9DC9B94 /* ort_env.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
+		D710C4F4FCC32A4FA4607F0BF419B064 /* assert_arc_enabled.mm in Sources */ = {isa = PBXBuildFile; fileRef = C837BA8928DD14D52DFB6C2B595C89B5 /* assert_arc_enabled.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
+		E55EF8C6B58C7BF3DCB9A601E2114E0D /* error_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AA521DCDC6AD5D3AED02DF4A48F5610 /* error_utils.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		EE2159FC31089E81DB9D73B912BCB37A /* onnxruntime-objc-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 630684EFCB37836DA1856DC73A379C91 /* onnxruntime-objc-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F2E081E3BED59DC333580407AAD462CF /* ort_session_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 62C0A3AC538472D61A0384D6A359666E /* ort_session_internal.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		FBDBD63070C6F362F52208DBB902CFC1 /* error_utils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EB30D91DA1E2216124A8C1F7686367F /* error_utils.mm */; settings = {COMPILER_FLAGS = "-std=c++17 -fobjc-arc-exceptions -Wall -Wextra -Werror"; }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9D413A4090A8DF6EFA3033A7D79AB200 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01D26C9790741D5F08E2B47A48D79331;
+			remoteInfo = "onnxruntime-c";
+		};
+		A23BD1932863997C065F6E3BEC8B7B28 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD8A7EE9BACB64198DBBF12EA5122AC8;
+			remoteInfo = "onnxruntime-objc";
+		};
+		C463B451B3103BB6AA5CC08EA2F572FC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01D26C9790741D5F08E2B47A48D79331;
+			remoteInfo = "onnxruntime-c";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0114F05FB9CA08DA505D825D949C7FC4 /* Pods-Ring-Camera-Control-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Ring-Camera-Control-acknowledgements.plist"; sourceTree = "<group>"; };
+		01B8C4BF75138EF517149AACCC4BEF0C /* coreml_provider_factory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = coreml_provider_factory.h; path = Headers/coreml_provider_factory.h; sourceTree = "<group>"; };
+		06846C8B1F760458D4DF8F026702E8B4 /* cxx_api.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cxx_api.h; path = objectivec/cxx_api.h; sourceTree = "<group>"; };
+		08CA959EEF1423696F1568F3F957A0C0 /* ort_value.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_value.h; path = objectivec/include/ort_value.h; sourceTree = "<group>"; };
+		0D70175B30486548CF703FFDB0A100BC /* ort_enums.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = ort_enums.mm; path = objectivec/ort_enums.mm; sourceTree = "<group>"; };
 		1C5FF687859A4BEF08EE6B943BAEDE91 /* Pods-Ring-Camera-Control.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Ring-Camera-Control.release.xcconfig"; sourceTree = "<group>"; };
+		1CAA2D57A464B60CA981650CF66E80A5 /* ort_env_internal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_env_internal.h; path = objectivec/ort_env_internal.h; sourceTree = "<group>"; };
+		1EB30D91DA1E2216124A8C1F7686367F /* error_utils.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = error_utils.mm; path = objectivec/error_utils.mm; sourceTree = "<group>"; };
 		1FA8726F30180A185115974D0DD31183 /* Pods-Ring-Camera-Control.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Ring-Camera-Control.debug.xcconfig"; sourceTree = "<group>"; };
 		27CA55086325793303FE360EDA250615 /* Pods-Ring-Camera-Control-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Ring-Camera-Control-Info.plist"; sourceTree = "<group>"; };
+		2B36334330B82A84D5B541E86B002D19 /* onnxruntime-objc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "onnxruntime-objc.release.xcconfig"; sourceTree = "<group>"; };
+		2EAC494EAB25B7901A54D89C61914A07 /* onnxruntime_cxx_api.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = onnxruntime_cxx_api.h; path = Headers/onnxruntime_cxx_api.h; sourceTree = "<group>"; };
+		2F15AD2135952899E587ADF8B78410FB /* onnxruntime-c.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "onnxruntime-c.debug.xcconfig"; sourceTree = "<group>"; };
+		317EB77DFE8B5A601811A4EB91229188 /* ort_value_internal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_value_internal.h; path = objectivec/ort_value_internal.h; sourceTree = "<group>"; };
+		359F6AAD4CAF848425A177CDAE1DBD39 /* onnxruntime-objc-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "onnxruntime-objc-dummy.m"; sourceTree = "<group>"; };
+		37DCB951957B6D2BBDAA06D5F09DCB08 /* ort_env.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_env.h; path = objectivec/include/ort_env.h; sourceTree = "<group>"; };
+		3A4AEF1100A8C4CFBBF15C4AA9DC9B94 /* ort_env.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = ort_env.mm; path = objectivec/ort_env.mm; sourceTree = "<group>"; };
+		3C4D4BB0C4B51A59AFFB0FC3583D9552 /* ort_custom_op_registration.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_custom_op_registration.h; path = objectivec/include/ort_custom_op_registration.h; sourceTree = "<group>"; };
+		435830B7568D74E7D3351D48FCCAC3E5 /* onnxruntime_c_api.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = onnxruntime_c_api.h; path = Headers/onnxruntime_c_api.h; sourceTree = "<group>"; };
+		4AA521DCDC6AD5D3AED02DF4A48F5610 /* error_utils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = error_utils.h; path = objectivec/error_utils.h; sourceTree = "<group>"; };
 		4C8AA62ED5FDC8AA001D45740E5B9C5E /* Pods-Ring-Camera-Control-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Ring-Camera-Control-acknowledgements.markdown"; sourceTree = "<group>"; };
+		5030490E6635C8E980B933DA6DC81DC7 /* onnxruntime_float16.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = onnxruntime_float16.h; path = Headers/onnxruntime_float16.h; sourceTree = "<group>"; };
+		594B54CBC5D5D4201163BDCE33BBA4F5 /* onnxruntime-objc.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "onnxruntime-objc.modulemap"; sourceTree = "<group>"; };
+		62C0A3AC538472D61A0384D6A359666E /* ort_session_internal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_session_internal.h; path = objectivec/ort_session_internal.h; sourceTree = "<group>"; };
+		630684EFCB37836DA1856DC73A379C91 /* onnxruntime-objc-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "onnxruntime-objc-umbrella.h"; sourceTree = "<group>"; };
+		6CCA51BB3BD5454FC3CBE3A91764B374 /* cpu_provider_factory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cpu_provider_factory.h; path = Headers/cpu_provider_factory.h; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7361ADDFAD66F8F77C288E8708C16AA5 /* Pods-Ring-Camera-Control-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Ring-Camera-Control-dummy.m"; sourceTree = "<group>"; };
+		7513787D23BE06AC0FDFAAF280048010 /* onnxruntime.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = onnxruntime.h; path = objectivec/include/onnxruntime.h; sourceTree = "<group>"; };
+		811E5921CEF73A119C943FAF2569DCF2 /* cxx_utils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cxx_utils.h; path = objectivec/cxx_utils.h; sourceTree = "<group>"; };
+		82CA0FDE8A146CE08BA08F16A4D2FC60 /* ort_xnnpack_execution_provider.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_xnnpack_execution_provider.h; path = objectivec/include/ort_xnnpack_execution_provider.h; sourceTree = "<group>"; };
 		8523815A8C8DDB03FA16755AA57DF283 /* Pods-Ring-Camera-Control.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Ring-Camera-Control.modulemap"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		8AB37AA17EBB9EC055C335C6956F77D3 /* onnxruntime_run_options_config_keys.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = onnxruntime_run_options_config_keys.h; path = Headers/onnxruntime_run_options_config_keys.h; sourceTree = "<group>"; };
+		8D88FD098FAF18D3D5F6820B94A7BB13 /* onnxruntime_cxx_inline.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = onnxruntime_cxx_inline.h; path = Headers/onnxruntime_cxx_inline.h; sourceTree = "<group>"; };
+		8DD144FCF5CBD711D9C9288451C4D4FE /* ort_coreml_execution_provider.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = ort_coreml_execution_provider.mm; path = objectivec/ort_coreml_execution_provider.mm; sourceTree = "<group>"; };
+		9317AFF5D517247283248BE9A028983E /* ort_value.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = ort_value.mm; path = objectivec/ort_value.mm; sourceTree = "<group>"; };
+		9BD17FEFE5E24B481D9CE7F9B9DE966E /* ort_xnnpack_execution_provider.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = ort_xnnpack_execution_provider.mm; path = objectivec/ort_xnnpack_execution_provider.mm; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A16576DFE1F82BA1567FEDDC7A70EB01 /* ort_session.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_session.h; path = objectivec/include/ort_session.h; sourceTree = "<group>"; };
 		AEBC4EF11EB740E9306B1BB0D235D43D /* Pods-Ring-Camera-Control-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Ring-Camera-Control-umbrella.h"; sourceTree = "<group>"; };
+		AF44BE896BEBBE099592D03904279C1C /* onnxruntime_objc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = onnxruntime_objc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB78B880ED36EFBAEF561E5F3FD1AF80 /* onnxruntime-objc-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "onnxruntime-objc-prefix.pch"; sourceTree = "<group>"; };
+		C49F037C56BA16577B610EA9D52E020E /* ort_coreml_execution_provider.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_coreml_execution_provider.h; path = objectivec/include/ort_coreml_execution_provider.h; sourceTree = "<group>"; };
+		C54E2EBAADE0D5C4E8013A1699857817 /* onnxruntime-c.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "onnxruntime-c.release.xcconfig"; sourceTree = "<group>"; };
+		C837BA8928DD14D52DFB6C2B595C89B5 /* assert_arc_enabled.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = assert_arc_enabled.mm; path = objectivec/assert_arc_enabled.mm; sourceTree = "<group>"; };
+		C8A76FB954A1FCDB5F5274E5CD613915 /* onnxruntime_session_options_config_keys.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = onnxruntime_session_options_config_keys.h; path = Headers/onnxruntime_session_options_config_keys.h; sourceTree = "<group>"; };
+		CBA54A1B9145D54439A5A6346AA08605 /* ort_enums.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_enums.h; path = objectivec/include/ort_enums.h; sourceTree = "<group>"; };
 		D2B1D6D84D9DAAE4264FF588CC26EA9C /* Pods-Ring-Camera-Control */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Ring-Camera-Control"; path = Pods_Ring_Camera_Control.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA51399B1D43DBB509CAC66A9DC823A5 /* onnxruntime-objc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "onnxruntime-objc.debug.xcconfig"; sourceTree = "<group>"; };
+		E725EE9154970E914E56FCA05BC83444 /* ort_session.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = ort_session.mm; path = objectivec/ort_session.mm; sourceTree = "<group>"; };
+		EA4FB67DBC28DA926C39A4FFEF769270 /* onnxruntime-objc-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "onnxruntime-objc-Info.plist"; sourceTree = "<group>"; };
+		ED96C1C593DF9046555AFC7B3A15D3E6 /* cxx_utils.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = cxx_utils.mm; path = objectivec/cxx_utils.mm; sourceTree = "<group>"; };
+		F1BDDD485372A0C5E5F0F89C1AA0CC91 /* onnxruntime-c-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "onnxruntime-c-xcframeworks.sh"; sourceTree = "<group>"; };
+		F9583E7E551CD36717314EA528997572 /* ort_enums_internal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ort_enums_internal.h; path = objectivec/ort_enums_internal.h; sourceTree = "<group>"; };
+		FE85AED2D7D0F7AE2850E8E7D1356430 /* onnxruntime.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; path = onnxruntime.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		012563A462AD678D05993AA8DC0492FB /* Frameworks */ = {
+		9E6EF32971A299EF7D8E9E9813F31E5D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03B1F85E8C4650667998EA1846EAFC4E /* Foundation.framework in Frameworks */,
+				8591892D14A1EC3353962EF85CFEEEA6 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DED8BBA1CA7D294AA2A6B1E218066829 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE5F4650AF180C26276EDB2FAB02DE4B /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		418B18894CD3C2670C63A2E94BC57971 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				88503C964046E5383AD89D280EB835A4 /* onnxruntime-c */,
+				FD9AF8E90C0AA95D42845C62E8C1F96C /* onnxruntime-objc */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		4642E65EA4AC74F470953958C768E376 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
 				E02CB9439CC4747BD9299FBFB7B4AF25 /* Pods-Ring-Camera-Control */,
 			);
 			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		4700852F618DAB85A91CBDEC04A2E856 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				594B54CBC5D5D4201163BDCE33BBA4F5 /* onnxruntime-objc.modulemap */,
+				359F6AAD4CAF848425A177CDAE1DBD39 /* onnxruntime-objc-dummy.m */,
+				EA4FB67DBC28DA926C39A4FFEF769270 /* onnxruntime-objc-Info.plist */,
+				BB78B880ED36EFBAEF561E5F3FD1AF80 /* onnxruntime-objc-prefix.pch */,
+				630684EFCB37836DA1856DC73A379C91 /* onnxruntime-objc-umbrella.h */,
+				DA51399B1D43DBB509CAC66A9DC823A5 /* onnxruntime-objc.debug.xcconfig */,
+				2B36334330B82A84D5B541E86B002D19 /* onnxruntime-objc.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/onnxruntime-objc";
+			sourceTree = "<group>";
+		};
+		519CC4C5832E5C65F002BDC00C2244C6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FE85AED2D7D0F7AE2850E8E7D1356430 /* onnxruntime.xcframework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
@@ -54,12 +203,41 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
+		82C04989C1B135DFDAC50B9EBD2344CE /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				F1BDDD485372A0C5E5F0F89C1AA0CC91 /* onnxruntime-c-xcframeworks.sh */,
+				2F15AD2135952899E587ADF8B78410FB /* onnxruntime-c.debug.xcconfig */,
+				C54E2EBAADE0D5C4E8013A1699857817 /* onnxruntime-c.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/onnxruntime-c";
+			sourceTree = "<group>";
+		};
+		88503C964046E5383AD89D280EB835A4 /* onnxruntime-c */ = {
+			isa = PBXGroup;
+			children = (
+				01B8C4BF75138EF517149AACCC4BEF0C /* coreml_provider_factory.h */,
+				6CCA51BB3BD5454FC3CBE3A91764B374 /* cpu_provider_factory.h */,
+				435830B7568D74E7D3351D48FCCAC3E5 /* onnxruntime_c_api.h */,
+				2EAC494EAB25B7901A54D89C61914A07 /* onnxruntime_cxx_api.h */,
+				8D88FD098FAF18D3D5F6820B94A7BB13 /* onnxruntime_cxx_inline.h */,
+				5030490E6635C8E980B933DA6DC81DC7 /* onnxruntime_float16.h */,
+				8AB37AA17EBB9EC055C335C6956F77D3 /* onnxruntime_run_options_config_keys.h */,
+				C8A76FB954A1FCDB5F5274E5CD613915 /* onnxruntime_session_options_config_keys.h */,
+				519CC4C5832E5C65F002BDC00C2244C6 /* Frameworks */,
+				82C04989C1B135DFDAC50B9EBD2344CE /* Support Files */,
+			);
+			path = "onnxruntime-c";
+			sourceTree = "<group>";
+		};
 		CF1408CF629C7361332E53B88F7BD30C = {
 			isa = PBXGroup;
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
-				D2B9714B616B377881B357521AD476D4 /* Products */,
+				418B18894CD3C2670C63A2E94BC57971 /* Pods */,
+				F15289ED3361CEB11E8B153192F270C1 /* Products */,
 				4642E65EA4AC74F470953958C768E376 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
@@ -72,12 +250,35 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D2B9714B616B377881B357521AD476D4 /* Products */ = {
+		D4510F13E16A6B27994BB393BF21CDC6 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				D2B1D6D84D9DAAE4264FF588CC26EA9C /* Pods-Ring-Camera-Control */,
+				C837BA8928DD14D52DFB6C2B595C89B5 /* assert_arc_enabled.mm */,
+				06846C8B1F760458D4DF8F026702E8B4 /* cxx_api.h */,
+				811E5921CEF73A119C943FAF2569DCF2 /* cxx_utils.h */,
+				ED96C1C593DF9046555AFC7B3A15D3E6 /* cxx_utils.mm */,
+				4AA521DCDC6AD5D3AED02DF4A48F5610 /* error_utils.h */,
+				1EB30D91DA1E2216124A8C1F7686367F /* error_utils.mm */,
+				7513787D23BE06AC0FDFAAF280048010 /* onnxruntime.h */,
+				C49F037C56BA16577B610EA9D52E020E /* ort_coreml_execution_provider.h */,
+				8DD144FCF5CBD711D9C9288451C4D4FE /* ort_coreml_execution_provider.mm */,
+				3C4D4BB0C4B51A59AFFB0FC3583D9552 /* ort_custom_op_registration.h */,
+				CBA54A1B9145D54439A5A6346AA08605 /* ort_enums.h */,
+				0D70175B30486548CF703FFDB0A100BC /* ort_enums.mm */,
+				F9583E7E551CD36717314EA528997572 /* ort_enums_internal.h */,
+				37DCB951957B6D2BBDAA06D5F09DCB08 /* ort_env.h */,
+				3A4AEF1100A8C4CFBBF15C4AA9DC9B94 /* ort_env.mm */,
+				1CAA2D57A464B60CA981650CF66E80A5 /* ort_env_internal.h */,
+				A16576DFE1F82BA1567FEDDC7A70EB01 /* ort_session.h */,
+				E725EE9154970E914E56FCA05BC83444 /* ort_session.mm */,
+				62C0A3AC538472D61A0384D6A359666E /* ort_session_internal.h */,
+				08CA959EEF1423696F1568F3F957A0C0 /* ort_value.h */,
+				9317AFF5D517247283248BE9A028983E /* ort_value.mm */,
+				317EB77DFE8B5A601811A4EB91229188 /* ort_value_internal.h */,
+				82CA0FDE8A146CE08BA08F16A4D2FC60 /* ort_xnnpack_execution_provider.h */,
+				9BD17FEFE5E24B481D9CE7F9B9DE966E /* ort_xnnpack_execution_provider.mm */,
 			);
-			name = Products;
+			name = Core;
 			sourceTree = "<group>";
 		};
 		E02CB9439CC4747BD9299FBFB7B4AF25 /* Pods-Ring-Camera-Control */ = {
@@ -96,14 +297,55 @@
 			path = "Target Support Files/Pods-Ring-Camera-Control";
 			sourceTree = "<group>";
 		};
+		F15289ED3361CEB11E8B153192F270C1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AF44BE896BEBBE099592D03904279C1C /* onnxruntime_objc.framework */,
+				D2B1D6D84D9DAAE4264FF588CC26EA9C /* Pods-Ring-Camera-Control */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FD9AF8E90C0AA95D42845C62E8C1F96C /* onnxruntime-objc */ = {
+			isa = PBXGroup;
+			children = (
+				D4510F13E16A6B27994BB393BF21CDC6 /* Core */,
+				4700852F618DAB85A91CBDEC04A2E856 /* Support Files */,
+			);
+			path = "onnxruntime-objc";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		9C395CBAE7057D209CCDF2AC02186CD0 /* Headers */ = {
+		169E03728172CC96BB0F8C8176548216 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				413B8819C3BC9E0317A83CCB04DEBB6C /* Pods-Ring-Camera-Control-umbrella.h in Headers */,
+				29305887C66FAEA3CBD827B2F5A03940 /* cxx_api.h in Headers */,
+				91AD1A7FA426ECC653AED794B9701406 /* cxx_utils.h in Headers */,
+				E55EF8C6B58C7BF3DCB9A601E2114E0D /* error_utils.h in Headers */,
+				1C764DAF976A285F7EB85DA9C5F9CD6A /* onnxruntime.h in Headers */,
+				EE2159FC31089E81DB9D73B912BCB37A /* onnxruntime-objc-umbrella.h in Headers */,
+				B799292A7340EAD621DFD46579A664ED /* ort_coreml_execution_provider.h in Headers */,
+				3E4BFF147729AAD1E2EFDEA2E01E3084 /* ort_custom_op_registration.h in Headers */,
+				78C85443F407AA2683FF22B7D21AEA0E /* ort_enums.h in Headers */,
+				01FD71C6CF2E429A0DA6ABBDF8582BAC /* ort_enums_internal.h in Headers */,
+				841449F22588615A37EDA49F314B0139 /* ort_env.h in Headers */,
+				9863B45A6162648A6B2D3B9DCB7BF11A /* ort_env_internal.h in Headers */,
+				B74409B23F3E7CE0CBDE1296774DBAF9 /* ort_session.h in Headers */,
+				F2E081E3BED59DC333580407AAD462CF /* ort_session_internal.h in Headers */,
+				3993446566A69FF84BBB9AAD1E51AD04 /* ort_value.h in Headers */,
+				6BC664E4868A8E571D685328C0C4E6E6 /* ort_value_internal.h in Headers */,
+				16703A4973CEC79FF64C23A53A3938EF /* ort_xnnpack_execution_provider.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9ED9C5F86CFB55F9857C091B26F678BF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F4CF3484677C7658911763677F7871C /* Pods-Ring-Camera-Control-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,20 +354,41 @@
 /* Begin PBXNativeTarget section */
 		D88378C7E6C00FA03F2C64EC7B48E138 /* Pods-Ring-Camera-Control */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 54B93143D6630DFD9703C9AC6E5068A2 /* Build configuration list for PBXNativeTarget "Pods-Ring-Camera-Control" */;
+			buildConfigurationList = 1C07057D7263C17BEDBBB20C2EBB1E42 /* Build configuration list for PBXNativeTarget "Pods-Ring-Camera-Control" */;
 			buildPhases = (
-				9C395CBAE7057D209CCDF2AC02186CD0 /* Headers */,
-				755998F3459855EB5D17719E4B020A4F /* Sources */,
-				012563A462AD678D05993AA8DC0492FB /* Frameworks */,
-				BACFFCF753E437BA0E5F908B46E1FC29 /* Resources */,
+				9ED9C5F86CFB55F9857C091B26F678BF /* Headers */,
+				45A4FDE49F75403CF57E93744DC9116D /* Sources */,
+				DED8BBA1CA7D294AA2A6B1E218066829 /* Frameworks */,
+				FA61907DE0F02FC4C05EC7B796BE213C /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F75E87B6B5AB91F183B9257873277AFB /* PBXTargetDependency */,
+				E540617DDA9E20DE09ADE325AD852F8E /* PBXTargetDependency */,
 			);
 			name = "Pods-Ring-Camera-Control";
 			productName = Pods_Ring_Camera_Control;
 			productReference = D2B1D6D84D9DAAE4264FF588CC26EA9C /* Pods-Ring-Camera-Control */;
+			productType = "com.apple.product-type.framework";
+		};
+		DD8A7EE9BACB64198DBBF12EA5122AC8 /* onnxruntime-objc */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1ABB7B5015457D4F66C9AE8922045727 /* Build configuration list for PBXNativeTarget "onnxruntime-objc" */;
+			buildPhases = (
+				169E03728172CC96BB0F8C8176548216 /* Headers */,
+				0FCE00D679BA89CE8C02320CEC773610 /* Sources */,
+				9E6EF32971A299EF7D8E9E9813F31E5D /* Frameworks */,
+				FB5D436F01B00893C0ACA937A427AFC6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				29FD4AB4E3C7978B6F075E26EA9B9AAE /* PBXTargetDependency */,
+			);
+			name = "onnxruntime-objc";
+			productName = onnxruntime_objc;
+			productReference = AF44BE896BEBBE099592D03904279C1C /* onnxruntime_objc.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -146,17 +409,26 @@
 				en,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = D2B9714B616B377881B357521AD476D4 /* Products */;
+			productRefGroup = F15289ED3361CEB11E8B153192F270C1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				01D26C9790741D5F08E2B47A48D79331 /* onnxruntime-c */,
+				DD8A7EE9BACB64198DBBF12EA5122AC8 /* onnxruntime-objc */,
 				D88378C7E6C00FA03F2C64EC7B48E138 /* Pods-Ring-Camera-Control */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		BACFFCF753E437BA0E5F908B46E1FC29 /* Resources */ = {
+		FA61907DE0F02FC4C05EC7B796BE213C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB5D436F01B00893C0ACA937A427AFC6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -165,18 +437,151 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3CFBA14174592D8554CB04535DA6DCD3 /* [CP] Copy XCFrameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/onnxruntime-c/onnxruntime-c-xcframeworks-input-files.xcfilelist",
+			);
+			name = "[CP] Copy XCFrameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/onnxruntime-c/onnxruntime-c-xcframeworks-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/onnxruntime-c/onnxruntime-c-xcframeworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
-		755998F3459855EB5D17719E4B020A4F /* Sources */ = {
+		0FCE00D679BA89CE8C02320CEC773610 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2227793C531ECEFB49B1660296D62DB8 /* Pods-Ring-Camera-Control-dummy.m in Sources */,
+				D710C4F4FCC32A4FA4607F0BF419B064 /* assert_arc_enabled.mm in Sources */,
+				C93ECE056576026025171C6DEE6AE69E /* cxx_utils.mm in Sources */,
+				FBDBD63070C6F362F52208DBB902CFC1 /* error_utils.mm in Sources */,
+				27E613075C9C2EF930CE0469F9A16C25 /* onnxruntime-objc-dummy.m in Sources */,
+				1C1EA602EE7D8F035D6B0ECBFBAFE162 /* ort_coreml_execution_provider.mm in Sources */,
+				63347EA539392E871252AFE7FA15A501 /* ort_enums.mm in Sources */,
+				D35F3B30B1487F66B63C6BBA8CD4C3B9 /* ort_env.mm in Sources */,
+				5CB8005CAAF52F2198B48816391F5113 /* ort_session.mm in Sources */,
+				24D3158CD5151F12227B12AB36BF2371 /* ort_value.mm in Sources */,
+				4FA9199F89B2FB852B3428FD2162A0C2 /* ort_xnnpack_execution_provider.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		45A4FDE49F75403CF57E93744DC9116D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0810D83ACC16FF97293ADBAB90B6E219 /* Pods-Ring-Camera-Control-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		29FD4AB4E3C7978B6F075E26EA9B9AAE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "onnxruntime-c";
+			target = 01D26C9790741D5F08E2B47A48D79331 /* onnxruntime-c */;
+			targetProxy = 9D413A4090A8DF6EFA3033A7D79AB200 /* PBXContainerItemProxy */;
+		};
+		E540617DDA9E20DE09ADE325AD852F8E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "onnxruntime-objc";
+			target = DD8A7EE9BACB64198DBBF12EA5122AC8 /* onnxruntime-objc */;
+			targetProxy = A23BD1932863997C065F6E3BEC8B7B28 /* PBXContainerItemProxy */;
+		};
+		F75E87B6B5AB91F183B9257873277AFB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "onnxruntime-c";
+			target = 01D26C9790741D5F08E2B47A48D79331 /* onnxruntime-c */;
+			targetProxy = C463B451B3103BB6AA5CC08EA2F572FC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		293A97B4D698822A9F6516168C17BABC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1C5FF687859A4BEF08EE6B943BAEDE91 /* Pods-Ring-Camera-Control.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		2C713B67DDB7575CC842F3071CEF3658 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1FA8726F30180A185115974D0DD31183 /* Pods-Ring-Camera-Control.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		3A056B08DD66062558D035ECA5E7FF72 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -243,11 +648,10 @@
 			};
 			name = Debug;
 		};
-		603A55B04DD64608BC329DBCEC1A522F /* Debug */ = {
+		475A40A2FD48F4C7C7C1019FBE145808 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1FA8726F30180A185115974D0DD31183 /* Pods-Ring-Camera-Control.debug.xcconfig */;
+			baseConfigurationReference = 2B36334330B82A84D5B541E86B002D19 /* onnxruntime-objc.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -257,28 +661,29 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control-Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/onnxruntime-objc/onnxruntime-objc-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/onnxruntime-objc/onnxruntime-objc-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				MODULEMAP_FILE = "Target Support Files/onnxruntime-objc/onnxruntime-objc.modulemap";
+				PRODUCT_MODULE_NAME = onnxruntime_objc;
+				PRODUCT_NAME = onnxruntime_objc;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
 		7C8086C28D2CB3B067F605EAE07F169D /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -342,11 +747,27 @@
 			};
 			name = Release;
 		};
-		FE8849EEB93DFA4B5E6532AA24B9935B /* Release */ = {
+		82E95548D314FBB7AF323CCE09205C32 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1C5FF687859A4BEF08EE6B943BAEDE91 /* Pods-Ring-Camera-Control.release.xcconfig */;
+			baseConfigurationReference = 2F15AD2135952899E587ADF8B78410FB /* onnxruntime-c.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1E19C6064AD162DD8B861951DD8193F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA51399B1D43DBB509CAC66A9DC823A5 /* onnxruntime-objc.debug.xcconfig */;
+			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -356,47 +777,82 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control-Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/onnxruntime-objc/onnxruntime-objc-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/onnxruntime-objc/onnxruntime-objc-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-Ring-Camera-Control/Pods-Ring-Camera-Control.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				MODULEMAP_FILE = "Target Support Files/onnxruntime-objc/onnxruntime-objc.modulemap";
+				PRODUCT_MODULE_NAME = onnxruntime_objc;
+				PRODUCT_NAME = onnxruntime_objc;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		E8095DD3F53809AB089CCA5E4073A60E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C54E2EBAADE0D5C4E8013A1699857817 /* onnxruntime-c.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1ABB7B5015457D4F66C9AE8922045727 /* Build configuration list for PBXNativeTarget "onnxruntime-objc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1E19C6064AD162DD8B861951DD8193F /* Debug */,
+				475A40A2FD48F4C7C7C1019FBE145808 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1C07057D7263C17BEDBBB20C2EBB1E42 /* Build configuration list for PBXNativeTarget "Pods-Ring-Camera-Control" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C713B67DDB7575CC842F3071CEF3658 /* Debug */,
+				293A97B4D698822A9F6516168C17BABC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1FAA34C873E6D52B09F47086906FF3E4 /* Build configuration list for PBXAggregateTarget "onnxruntime-c" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				82E95548D314FBB7AF323CCE09205C32 /* Debug */,
+				E8095DD3F53809AB089CCA5E4073A60E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3A056B08DD66062558D035ECA5E7FF72 /* Debug */,
 				7C8086C28D2CB3B067F605EAE07F169D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		54B93143D6630DFD9703C9AC6E5068A2 /* Build configuration list for PBXNativeTarget "Pods-Ring-Camera-Control" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				603A55B04DD64608BC329DBCEC1A522F /* Debug */,
-				FE8849EEB93DFA4B5E6532AA24B9935B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
