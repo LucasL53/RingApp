@@ -20,7 +20,6 @@ let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3
 let cameraDataCharUUID          = CBUUID(string: "47ea1402-a0e4-554e-5282-0afcd3246970")
 let controlCharUUID             = CBUUID(string: "47ea1403-a0e4-554e-5282-0afcd3246970")
 
-
 enum ImageServiceCommand: UInt8 {
     case noCommand          = 0x00
     case startSingleCapture = 0x01
@@ -852,6 +851,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 if (buttonPressedFlag) {
                                     print("Arming controlDeviceFlag rotationCounter:", rotationCounter)
                                     controlDeviceFlag = true
+                                    // Generate Embedding from cameraBuffer.
+                                    let embedding = mlModel.DinoEmbedding(img_buf: cameraBuffer)
                                 }
                             }
 //                            print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))

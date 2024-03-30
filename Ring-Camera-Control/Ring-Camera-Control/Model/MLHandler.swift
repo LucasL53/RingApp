@@ -9,11 +9,16 @@ import CoreML
 import Vision
 import UIKit
 import AVFoundation
+import onnxruntime_objc
 
 class MLHandler {
     private var model: MLModel
     private var visionModel: VNCoreMLModel
     private var detectionOverlay: CALayer! = nil
+    
+    // DINOV2 model
+    let ortSession: ORTSession
+    let ortEnv: ORTEnv
     
 //    private lazy var module: TorchModule = {
 //        if let filePath = Bundle.main.path(forResource: "model", ofType: "pt"),
@@ -24,12 +29,93 @@ class MLHandler {
 //        }
 //    }()
 
+    enum ModelError: Error {
+        case Error(_ message: String)
+    }
+    
     // Initialization of the model
-    init() {
+    init() throws {
         let config = MLModelConfiguration()
         config.setValue(1, forKey: "experimentalMLE5EngineUsage")
         self.model = try! best_75(configuration: config).model
         self.visionModel = try! VNCoreMLModel(for: model)
+
+        // Loading DINOV2
+        let name = "ring_dinov2_nearestinterp_nocrop"
+        ortEnv = try! ORTEnv(loggingLevel: ORTLoggingLevel.warning)
+        guard let modelPath = Bundle.main.path(forResource: name, ofType: "ort") else {
+            throw ModelError.Error("Failed to find model file:\(name).ort")
+        }
+        ortSession = try! ORTSession(env: ortEnv, modelPath: modelPath, sessionOptions: nil)
+    }
+    
+    
+    // MARK: - Dinov2
+    
+    // Generate an embedding from Dino
+    func DinoEmbedding(img_buf: [UInt8]) -> [[[Float]]]? {
+        let flatTensor =  Array(repeating: img_buf, count: 3).flatMap { $0 }
+        let shape: [NSNumber] = [NSNumber(value: 3), NSNumber(value: 162), NSNumber(value: 119)]
+        let data_obj = flatTensor.withUnsafeBufferPointer { Data(buffer: $0) }
+        
+        do {
+            let ortInput = try ORTValue(
+                        tensorData: NSMutableData(data: data_obj),
+                        elementType: ORTTensorElementDataType.float,
+                        shape: shape)
+
+            let output = try ortSession.run(withInputs: ["input_img": ortInput],
+                                                     outputNames: ["x_norm_patchtokens"],
+                                                     runOptions: nil)
+            
+            guard let ORTout = output["x_norm_patchtokens"] else {
+                print("output was null in Dino run")
+                return nil
+            }
+
+            return ORTToTensor(ortValue: ORTout)
+        } catch {
+            print("error computing Dino feats: \(error)")
+            return nil
+        }
+    }
+    
+    // Converts ORTValue to a 3D array of Floats
+    func ORTToTensor(ortValue: ORTValue) -> [[[Float]]]? {
+        guard let tensorData = try? ortValue.tensorData() as Data else {
+            print("Failed to get tensor data from ORTValue")
+            return nil
+        }
+        
+        guard let shapeNumbers = try? ortValue.tensorTypeAndShapeInfo().shape else {
+          print("ORTValue does not contain a valid shape")
+          return nil
+        }
+        let shape = shapeNumbers.map { Int(truncating: $0) }
+        guard shape.count == 3 else {
+          print("ORTValue does not contain a 3D tensor")
+          return nil
+        }
+        let totalElements = shape.reduce(1, *)
+                guard tensorData.count == totalElements * MemoryLayout<Float>.size else {
+            print("Mismatch between expected tensor size and actual data size")
+            return nil
+        }
+        
+        let floatValues: [Float] = tensorData.withUnsafeBytes {
+            Array(UnsafeBufferPointer(start: $0.baseAddress!.assumingMemoryBound(to: Float.self), count: totalElements))
+        }
+        
+        var threeDArray: [[[Float]]] = Array(repeating: Array(repeating: Array(repeating: 0, count: shape[2]), count: shape[1]), count: shape[0])
+        for i in 0..<shape[0] {
+            for j in 0..<shape[1] {
+                for k in 0..<shape[2] {
+                    threeDArray[i][j][k] = floatValues[i * shape[1] * shape[2] + j * shape[2] + k]
+                }
+            }
+        }
+        
+        return threeDArray
     }
     
     func predict(image: CGImage) -> [(String, CGRect, Float)] {
