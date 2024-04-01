@@ -10,11 +10,11 @@ import SwiftUI
 struct OutlinedButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundColor(.blue)
+            .foregroundColor(.gray)
             .padding()
             .background(
-                RoundedRectangle(cornerRadius: 30)
-                    .stroke(Color.blue, lineWidth: 2)
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.gray, lineWidth: 2)
             )
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
     }

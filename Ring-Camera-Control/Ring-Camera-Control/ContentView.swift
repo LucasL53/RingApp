@@ -21,7 +21,8 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             HomeView(model: homeModel)
-        }.onChange(of: homeModel.areHomesLoaded){
+        }.onAppear(){
+            print("Hello, World!")
             if homeModel.areHomesLoaded {
                 initializeNewHomes()
             }
@@ -31,14 +32,11 @@ struct ContentView: View {
     
     // Checks if every new "home" added to HomeKit has persistent data initialized
     func initializeNewHomes() {
+        print("Ran init Home embeddings")
         for home in homeModel.homes {
             if !embeddings.contains(where: {$0.home == home.name}) {
                 let accessoryEmbeddings: [AccessoryEmbedding] = []
-                // If homeModel.accessories populate only the accesorries of home
-//                for accessory in homeModel.accessories {
-//                    let newAccessory = AccessoryEmbedding(accessoryUUID: accessory.uniqueIdentifier, accessoryName: accessory.name)
-//                    accessoryEmbeddings.append(newAccessory)
-//                }
+
                 let newEmbedding = HomeEmbeddings(home: home.name, accessoryembeddings: accessoryEmbeddings)
                 modelContext.insert(newEmbedding)
             }

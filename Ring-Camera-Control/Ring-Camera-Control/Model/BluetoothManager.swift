@@ -14,6 +14,7 @@ import CoreML
 import CoreVideo
 import MediaPlayer
 import AVFoundation
+import SwiftData
 
 //MARK: - Service Identifiers
 let banjiServiceUUID            = CBUUID(string: "47ea1400-a0e4-554e-5282-0afcd3246970")
@@ -158,6 +159,8 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var rotationInitialized     : Bool         = false
     private var rotationCounter         : Int          = 0
 //    private var muted                   : Bool         = false
+    private var scanDinoFlag            : Bool         = false
+    private var scanDinoAccessory       : AccessoryEmbedding?
     private let rotationThreshold       : Int          = 20
     private let date = Date()
     
@@ -808,6 +811,17 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         
                         if let uiImage = createImageFromUInt8Buffer(buffer: cameraBuffer, width: imgWidth, height: imgHeight) {
                             if let centeredImage = centerImageOnBlackSquare(image: uiImage, squareSize: CGSize(width: 160, height: 160)) {
+                                
+                                // Scuffed Dino Scan section
+                                if scanDinoFlag {
+                                    if let pngData = uiImage.pngData(), let currAccessory = scanDinoAccessory {
+                                        let dinoEmbedding = [0.0] // TODO: Eyoel Dino Code here
+                                        let photoAndEmbedding = PhotoAndEmbedding(photo: pngData, embedding: dinoEmbedding)
+                                        currAccessory.photoAndEmbeddings.append(photoAndEmbedding)
+                                    }
+                                    scanDinoFlag = false
+                                }
+                                
                                 imageToSave = uiImage
                                 if let cgimage = centeredImage.cgImage {
                                     let startTime = CFAbsoluteTimeGetCurrent() // Capture start time
@@ -852,6 +866,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 if (buttonPressedFlag) {
                                     print("Arming controlDeviceFlag rotationCounter:", rotationCounter)
                                     controlDeviceFlag = true
+                                    // TODO: Eyoel Query Code here
                                 }
                             }
 //                            print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
@@ -986,6 +1001,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             print("banji is streaming")
         }
     }
+    
+    // MARK: - DINOv2 scan and query
+    public func scanFrame(accessory: AccessoryEmbedding) {
+        scanDinoAccessory = accessory
+        scanDinoFlag = true
+    }
+    
+    // MARK: - Rotation Calc
     
     // Apply the rotation using the rotation matrix
     public func applyRotationMatrix(matrix: [[Double]], toVector vector: [Double]) -> [Double] {

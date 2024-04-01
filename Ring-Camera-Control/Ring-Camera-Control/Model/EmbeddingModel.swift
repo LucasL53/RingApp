@@ -36,7 +36,7 @@ class AccessoryEmbedding {
     }
     
     func isComplete() -> Bool {
-        return photoAndEmbeddings.count >= 15
+        return photoAndEmbeddings.count >= 5
     }
     
     func size() -> Int {
@@ -56,21 +56,20 @@ class HomeEmbeddings {
         self.accessoryembeddings = accessoryembeddings
     }
     
-    func isPopulated() -> Bool {
-        for accessoryembedding in accessoryembeddings {
-            if accessoryembedding.photoAndEmbeddings.isEmpty {
-                return false
-            }
-        }
-        return true
+    func isPopulated(size: Int) -> Bool {
+        return accessoryembeddings.count == size
     }
     
     func hasAccessory(accessoryName: String) -> Bool {
-        for accessoryembedding in accessoryembeddings {
-            if accessoryembedding.accessoryName == accessoryName {
-                return true
-            }
-        }
-        return false
+        return accessoryembeddings.contains { $0.accessoryName == accessoryName }
     }
+    
+    func printOut(){
+        var sizes: [Int] = []
+        for accessoryembedding in accessoryembeddings {
+            sizes.append(accessoryembedding.size())
+        }
+        print("\(home) has \(accessoryembeddings.count) accessory with \(sizes) different embeddings")
+    }
+
 }

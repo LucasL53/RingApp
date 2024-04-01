@@ -12,9 +12,12 @@ struct SetUpView: View {
     
     @Environment(\.dismiss) var dismiss
     
+    @ObservedObject var blemanager = BluetoothManager()
+    
     @Bindable var home: HomeEmbeddings
     
     @State var selectedAccessory: AccessoryEmbedding?
+
     
     var body: some View {
         NavigationStack{
@@ -32,8 +35,9 @@ struct SetUpView: View {
                         
                         Button {
                             selectedAccessory = accessory
+                            blemanager.scanFrame(accessory: selectedAccessory!)
                         } label: {
-                            Image(systemName: "greaterthan")
+                            Image(systemName: "plus")
                                 .symbolVariant(.circle.fill)
                                 .foregroundStyle(accessory.isComplete() ? .green : .gray)
                                 .font(.title)
@@ -41,11 +45,12 @@ struct SetUpView: View {
                     }
                 }
             }
-            .sheet(item: $selectedAccessory) {
-                selectedAccessory = nil
-            } content: { accessoryEmbedding in
-                ScanView(accessoryEmbedding: accessoryEmbedding)
-            }
+//            .sheet(item: $selectedAccessory) {
+//                selectedAccessory = nil
+//            } content: { accessoryEmbedding in
+//                ScanView(accessoryEmbedding: accessoryEmbedding)
+//            }
+            
         }
     }
 }

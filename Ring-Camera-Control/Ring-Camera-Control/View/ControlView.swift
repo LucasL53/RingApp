@@ -21,8 +21,9 @@ enum exampleClass: String, CaseIterable, Identifiable {
 
 struct ControlView: View {
     @Binding var homeId: UUID?
+    @Binding var homeEmbedding: HomeEmbeddings?
     @ObservedObject var model: HomeStore
-    @StateObject var blemanager = BluetoothManager()
+    @ObservedObject var blemanager = BluetoothManager()
     @ObservedObject var musicModel = MusicModel.shared
 //    @State private var selectedAccessory: String?
     @State private var selectedAccessoryId: UUID? = UUID(uuidString: "1A7337DD-577D-510E-8E50-5E91C5B8BE34")
@@ -42,7 +43,7 @@ struct ControlView: View {
                             {
                                 Spacer()
                                 
-                                if tempBool {
+                                if blemanager.banjiStatus {
                                     VStack {
                                         Image("RingLighter")
                                             .resizable()
@@ -123,18 +124,21 @@ struct ControlView: View {
                                         
                                         // Foreground image if available
                                         if let image = blemanager.thisImage {
-                                            //                            GeometryReader { proxy in
-                                            //                                image
-                                            //                                    .resizable()
-                                            //                                    .scaledToFit()
-                                            //                                    .frame(width: proxy.size.width * 0.95)
-                                            //                                    .frame(width: proxy.size.width, height: proxy.size.height)
-                                            //                            }
                                             image
                                                 .resizable()
                                         }
                                     }
                                 }
+                            Spacer(minLength: 10)
+                            NavigationView {
+                                if let embedding = homeEmbedding {
+                                    NavigationLink(destination: SetUpView(home: embedding)) {
+                                        Text("Add New IRIS Device Reference")
+                                            .frame(maxWidth: .infinity, alignment: .center)
+                                    }.buttonStyle(OutlinedButtonStyle())
+                                }
+                            }
+                            
                         }
                         
                         
@@ -142,6 +146,8 @@ struct ControlView: View {
                     }
                     
                     Spacer(minLength: 30)
+                    
+                    
                     
                     //                Button(action: {
                     //                    blemanager.savePicture()
