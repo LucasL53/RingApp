@@ -27,26 +27,28 @@ struct ControlView: View {
 //    @State private var selectedAccessory: String?
     @State private var selectedAccessoryId: UUID? = UUID(uuidString: "1A7337DD-577D-510E-8E50-5E91C5B8BE34")
     @State private var spotify: Bool = false
+    @State private var tempBool: Bool = false
 
     var body: some View {
         VStack{
             ScrollView {
-                Section(header: Text("IRIS:")
+                Section (header: Text("IRIS")
                     .bold()
                     .font(.title) // Increase the font size
-                    .frame(maxWidth: .infinity, alignment: .leading)) {
+                    .frame(alignment: .leading))
+                {
                     Spacer()
                         
-                        if blemanager.banjiStatus {
+                        if tempBool {
                             Image("RingLighter")
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 100, height: 100)
-                                    .accessibilityLabel("Ring connected")
+                                    .accessibilityLabel("Ring connected symbol")
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
-//                                    .onTapGesture {
-//                                        blemanager.banjiStatus = false
-//                                    }
+                                    .onTapGesture {
+                                        tempBool.toggle()
+                                    }
                             Text("IRIS Connected")
                                 .font(.caption)
                         } else {
@@ -54,11 +56,11 @@ struct ControlView: View {
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 100, height: 100)
-                                    .accessibilityLabel("Ring disconnected")
+                                    .accessibilityLabel("Ring disconnected symbol")
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
-//                                    .onTapGesture {
-//                                        blemanager.banjiStatus = true
-//                                    }
+                                    .onTapGesture {
+                                        tempBool.toggle()
+                                    }
                             Text("Searching for IRIS")
                                 .font(.caption)
                         }
@@ -73,7 +75,7 @@ struct ControlView: View {
 //                        .padding()
 //                }
                 
-                Spacer()
+//                Spacer()
 //                Section(header: Text("My Smart Home Device")
 //                    .frame(maxWidth: .infinity, alignment: .leading)) {
 //                    Picker("My Smart Home Device", selection: $selectedAccessoryId){
@@ -89,29 +91,41 @@ struct ControlView: View {
 //                    }
 //                }
 //                Spacer()
-
-                Section(header: Text("Live View")
-                    .frame(maxWidth: .infinity, alignment: .leading)) {
-                    ZStack {
-                        Rectangle()
-                            .fill(Color.gray)
-                            .frame(height: 500)
-                            .accessibilityLabel("Live Video Feed")
-                        
-                        // Foreground image if available
-                        if let image = blemanager.thisImage {
-//                            GeometryReader { proxy in
-//                                image
-//                                    .resizable()
-//                                    .scaledToFit()
-//                                    .frame(width: proxy.size.width * 0.95)
-//                                    .frame(width: proxy.size.width, height: proxy.size.height)
-//                            }
-                            image
-                            .resizable()
+                HStack {
+                    Spacer(minLength: 20)
+                    
+                    VStack {
+                        Section(header: Text("Live View")
+                            .bold()
+                            .font(.system(size: 22))
+                            .frame(maxWidth: .infinity, alignment: .leading)) {
+                            ZStack {
+                                Rectangle()
+                                    .fill(Color.gray)
+                                    .frame(height: 480)
+                                    .cornerRadius(/*@START_MENU_TOKEN@*/3.0/*@END_MENU_TOKEN@*/)
+                                    .accessibilityLabel("Live Video Feed")
+                                
+                                // Foreground image if available
+                                if let image = blemanager.thisImage {
+        //                            GeometryReader { proxy in
+        //                                image
+        //                                    .resizable()
+        //                                    .scaledToFit()
+        //                                    .frame(width: proxy.size.width * 0.95)
+        //                                    .frame(width: proxy.size.width, height: proxy.size.height)
+        //                            }
+                                    image
+                                    .resizable()
+                                }
+                            }
                         }
                     }
+                    
+                    
+                    Spacer(minLength: 20)
                 }
+                
                 Spacer(minLength: 30)
                 
 //                Button(action: {
@@ -122,7 +136,7 @@ struct ControlView: View {
 //                }
 //                .buttonStyle(OutlinedButtonStyle())
 //                Spacer(minLength: 30)
-//                
+//
 //                Button(action: {
 //                    model.toggleAccessory(accessoryIdentifier: UUID(uuidString: model.homeDictionary["lights"]!)!)
 //                }) {
@@ -131,8 +145,8 @@ struct ControlView: View {
 //                }
 //                .buttonStyle(OutlinedButtonStyle())
 //                Spacer(minLength: 30)
-//                
-//                
+//
+//
 //                if spotify {
 //                    Image(systemName: "pause.fill")
 //                        .font(.title)
