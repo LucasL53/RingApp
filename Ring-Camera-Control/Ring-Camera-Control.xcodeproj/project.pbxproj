@@ -484,7 +484,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = S69EHXYN33;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -533,7 +533,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Ring-Camera-Control/Preview Content\"";
-				DEVELOPMENT_TEAM = S69EHXYN33;
+				DEVELOPMENT_TEAM = 7BYH4HTJ4D;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
