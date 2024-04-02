@@ -26,7 +26,6 @@ struct ControlView: View {
     @ObservedObject var blemanager = BluetoothManager()
     @ObservedObject var musicModel = MusicModel.shared
 //    @State private var selectedAccessory: String?
-    @State private var selectedAccessoryId: UUID? = UUID(uuidString: "1A7337DD-577D-510E-8E50-5E91C5B8BE34")
     @State private var spotify: Bool = false
     @State private var tempBool: Bool = false
 
@@ -188,6 +187,9 @@ struct ControlView: View {
         .onChange(of: blemanager.banjiStatus) {
             blemanager.scanForPeripherals()
             blemanager.setHomeStore(homeStore: model)
+        }
+        .onAppear() {
+            blemanager.updateHome(home: homeEmbedding!)
         }
     }
 }

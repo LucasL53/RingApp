@@ -161,6 +161,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 //    private var muted                   : Bool         = false
     private var scanDinoFlag            : Bool         = false
     private var scanDinoAccessory       : AccessoryEmbedding?
+    private var homeEmbedding           : HomeEmbeddings?
     private let rotationThreshold       : Int          = 20
     private let date = Date()
     
@@ -866,7 +867,13 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                 if (buttonPressedFlag) {
                                     print("Arming controlDeviceFlag rotationCounter:", rotationCounter)
                                     controlDeviceFlag = true
-                                    // TODO: Eyoel Query Code here
+                                    if let homeStorage = homeEmbedding {
+                                        // TODO: Eyoel Query Code here
+                                        // class from YOLO is called classifiedDevice (type String)
+                                        // classifiedDevice {'blinds', 'door', 'door handle', 'laptop', 'lights', 'smart lock', 'speaker', 'tv', 'window'}
+                                        // eyoelFunc(classifiedDevice: String = classifiedDevice,
+                                        //           buffer: [Double] = cameraBuffer, reference: HomeEmbeddings = homeStorage)
+                                    }
                                 }
                             }
 //                            print("Received image " + "bufferCount:" + String(cameraBuffer.count) + " buttonPressed: " + String(statusByte >> 1) + " fps: " + String(Float(1 / interval) ))
@@ -1006,6 +1013,10 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     public func scanFrame(accessory: AccessoryEmbedding) {
         scanDinoAccessory = accessory
         scanDinoFlag = true
+    }
+    
+    public func updateHome(home: HomeEmbeddings) {
+        homeEmbedding = home
     }
     
     // MARK: - Rotation Calc
