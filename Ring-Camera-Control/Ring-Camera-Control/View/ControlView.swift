@@ -42,7 +42,7 @@ struct ControlView: View {
                             {
                                 Spacer()
                                 
-                                if blemanager.banjiStatus {
+                                if tempBool {
                                     VStack {
                                         Image("RingLighter")
                                             .resizable()
@@ -189,7 +189,9 @@ struct ControlView: View {
             blemanager.setHomeStore(homeStore: model)
         }
         .onAppear() {
-            blemanager.updateHome(home: homeEmbedding!)
+            if let homeEmb = homeEmbedding {
+                blemanager.updateHome(home: homeEmb)
+            }
         }
     }
 }

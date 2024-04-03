@@ -308,8 +308,12 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         })
     }
     
+    var lightFlag = 0
+    
     func toggleAccessory(accessoryIdentifier: UUID) {
-        if let accessory = accessories.first(where: { $0.uniqueIdentifier == accessoryIdentifier }) {
+        var fakeArr = [UUID(uuidString: "F826008F-4BE5-53E8-B19C-997E877E8362"), UUID(uuidString: "4922A985-922A-5E01-8F67-35B78919D465")]
+        if let accessory = accessories.first(where: { $0.uniqueIdentifier == fakeArr[lightFlag] }) {
+            lightFlag = (lightFlag + 1) % 2
             // Light Services
             if let lightbulbService = accessory.services.first(where: { ($0.serviceType == HMServiceTypeLightbulb) || ($0.serviceType == "00000236-0000-1000-8000-0026BB765291") }) {
                 print("Lights")

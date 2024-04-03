@@ -898,7 +898,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 //                                muted = false
                             }
                        } else if (classifiedDevice == "lights") {
-                            print("Controlling lights!")
+                            print("Controlling lights!") 
                             if let unwrappedUUID = foundAccessory {
                                 homeModel.toggleAccessory(accessoryIdentifier: unwrappedUUID)
                             } else {
