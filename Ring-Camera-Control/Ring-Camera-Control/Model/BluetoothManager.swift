@@ -159,6 +159,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var rotationCounter         : Int          = 0
 //    private var muted                   : Bool         = false
     private let rotationThreshold       : Int          = 20
+    private var detectDebounce          : Int          = 0
     private let date = Date()
     
     // This must align with MLHandler
@@ -820,10 +821,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                             } else {
                                                 print("Detected device:", device)
                                                 foundAccessory = UUID(uuidString: deviceuuid)
+                                                detectDebounce = 0
                                             }
                                         }
                                         else {
-                                            classifiedDevice = prevClassifiedDevice
+                                            if (detectDebounce == 0) {
+                                                classifiedDevice = prevClassifiedDevice
+                                                detectDebounce = 1
+                                            }
 //                                            print("Detected device not in homeDictionary:", homeModel.homeDictionary)
                                         }
                                     }
@@ -840,7 +845,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                                         // Save image on either iOS UI button press or ring hardware button press
                                         print("Saving image to photo library")
 //                                        UIImageWriteToSavedPhotosAlbum(centeredImage, nil, nil, nil)
-//                                        UIImageWriteToSavedPhotosAlbum(predictImage!, nil, nil, nil)
+                                        UIImageWriteToSavedPhotosAlbum(predictImage, nil, nil, nil)
                                         UIImageWriteToSavedPhotosAlbum(imageToSave!, nil, nil, nil)
                                         saveImageFlag = false
                                     }
@@ -858,6 +863,7 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                             print("error creating image from buffer")
                         }
                         cameraBuffer.removeAll()
+                        
                     } // startOfFrame end
                     
                     // SINGLE PRESS LOGIC START
@@ -866,13 +872,9 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                             if (musicPlayer.musicPlayer.playbackState == .playing) {
                                 print("PAUSE")
                                 musicPlayer.pause()
-//                                MPVolumeView.setVolume(0)
-//                                muted = true
                             } else {
                                 print("PLAY")
                                 musicPlayer.resumePlayback()
-//                                MPVolumeView.setVolume(Float(currentVolume))
-//                                muted = false
                             }
                        } else if (classifiedDevice == "lights") {
                             print("Controlling lights!")
@@ -938,14 +940,14 @@ class BluetoothManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         newVolume = currentVolume + volumeChange
                         rotationCounter = rotationCounter + 1
                         // VOLUME CONTROL
-                        if (((classifiedDevice == "speaker") || (prevClassifiedDevice == "speaker")) && rotationCounter >= rotationThreshold) {
-//                            self.lastActionTimeMs = Int(CFAbsoluteTimeGetCurrent() * 1000)
-                            MPVolumeView.setVolume(Float(currentVolume))
-                            currentVolume = newVolume
-                            if (currentVolume > 0) {
-//                                muted = false
+                        if (rotationCounter >= rotationThreshold) {
+                            if ((classifiedDevice == "speaker") || (prevClassifiedDevice == "speaker")) {
+                                MPVolumeView.setVolume(Float(currentVolume))
+                                currentVolume = newVolume
+                                prevClassifiedDevice = classifiedDevice
                             }
                         }
+                        
                     }
                     // TILT CODE END
                     
